@@ -722,7 +722,7 @@ void ContinueGame(Player &p1) {
 		Mix_PlayChannel(-1, sPlayerHurt, false);
 
 		// Set gamemode to play game
-		gameScene = 0;
+		gameScene = 1;
 
 		// Reset score
 		score = 0;
@@ -1303,15 +1303,15 @@ int main(int argc, char *argv[]) {
 				tempss.str(std::string());
 				tempss << "You lose. Boo hoo.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
-				gText.render(gRenderer, 640/2 - gText.getWidth()/2,
-						 360 * 0.90 - gText.getHeight()-22,
+				gText.render(gRenderer, screenWidth/2 - gText.getWidth()/2,
+						screenHeight * 0.90 - gText.getHeight()-22,
 							 gText.getWidth(), gText.getHeight());
 
 				tempss.str(std::string());
 				tempss << "Press Space to Start.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
-				gText.render(gRenderer, 640/2 - gText.getWidth()/2,
-						 360 * 0.90 - gText.getHeight(),
+				gText.render(gRenderer, screenWidth/2 - gText.getWidth()/2,
+						screenHeight * 0.90 - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 			}
 
