@@ -1,11 +1,9 @@
-
-#include <iostream>
 #include <sstream>
 #include <fstream>
-#include <time.h>       /* time */
-#include <stdio.h>      /* printf */
-#include <stdlib.h>     /* srand, rand */
-#include <math.h>       /* sin */
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -14,11 +12,6 @@
 #include "Particle.h"
 #include "Player.h"
 
-
-//const int screenWidth = 270;
-//const int screenHeight = 152;
-//const int screenWidth = 640;
-//const int screenHeight = 360;
 
 /// Constants ///
 
@@ -494,43 +487,6 @@ void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int
 				particle[i].onScreen = false;
 			}
 
-			// Particle trail
-			/*if (particle[i].trail) {
-				particle[i].trailTimer += particle[i].trailRate;
-				if (particle[i].trailTimer > 60) {
-					particle[i].trailTimer = 0;
-					float trajAngle = atan2(particle[i].vY,particle[i].vX);
-					trajAngle = trajAngle * (180 / 3.1416);
-					//Set player angle max limits
-					if (trajAngle < 0) {
-						trajAngle = 360 - (-trajAngle);
-					}
-					float radians = (3.1415926536/180)*(trajAngle);
-					////////////////////////////////////////////////
-					float barrelW  = (5 * cos(radians) ) - (0 * sin(radians) );	// add this to center of zombie (this will give us the guns barrel position)
-					float barrelH  = (5 * sin(radians) ) + (0 * cos(radians) );
-					////////////////////////////////////////////////
-					// spawn explosion particle effect
-					for (double h=0.0; h< 90.0; h+=rand() % 5 + 2){
-						int rands = randDouble(particle[i].trailMinSize, particle[i].trailMaxSize);
-						float newX = particle[i].x+particle[i].w/2;
-						float newY = particle[i].y+particle[i].h/2;
-						spawnParticleAngle(particle, "none", 4,
-											newX-rands/2 + barrelW,
-											newY-rands/2 + barrelH,
-										   rands, rands,
-										   (trajAngle+180)+h-45, randDouble(1.1, 2.1),
-										   0.0,
-										   particle[i].trailColor, 1,
-										   1, 1,
-										   rand() % 100 + 150, rand() % 10 + 10,
-										   60, 0,
-										   true, 0.11,
-										   true, randDouble(0.005, 0.6));
-					}
-				}
-			}*/
-
 			///////////////////////////////////////////////////////////////////////////////
 			/////////////////////////// Set Corners of a Particle /////////////////////////
 			//---------------------------------------------------------------------------//
@@ -578,7 +534,6 @@ void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int
 				// remove particle
 				part.Remove(particle, i);
 				// spawn explosion
-				//SpawnFireExplosion(particle, particle[i].x+particle[i].w/2, particle[i].y+particle[i].h/2, {200,200,100});
 				part.SpawnExplosion(particle, particle[i].x+particle[i].w/2, particle[i].y+particle[i].h/2, {200,200,200});
 			}
 			else if (particle[i].alpha < 0) {
@@ -593,90 +548,10 @@ void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int
 				// remove particle
 				part.Remove(particle, i);
 				// spawn explosion
-				//SpawnFireExplosion(particle, particle[i].x+particle[i].w/2, particle[i].y+particle[i].h/2, {200,200,100});
 				part.SpawnExplosion(particle, particle[i].x+particle[i].w/2, particle[i].y+particle[i].h/2, {200,200,100});
 				// play sound effect
 				Mix_PlayChannel(-1, sPongScore, 0);
 			}
-
-			// Particle map collision
-			/*else if (particle[i].x+particle[i].w < mapX) {
-				if (particle[i].damage > 0) {
-					//Mix_PlayChannel(-1, sSpellExplode, 0);
-					//SpawnExplosion(particle, particle[i].x2, particle[i].y2, particle[i].color);
-				}
-				Remove(particle, i);
-				//particle[i].x = mapX+mapW-particle[i].w;
-			}
-			else if (particle[i].x > mapX+mapW) {
-				if (particle[i].damage > 0) {
-					//Mix_PlayChannel(-1, sSpellExplode, 0);
-					//SpawnExplosion(particle, particle[i].x2, particle[i].y2, particle[i].color);
-				}
-				Remove(particle, i);
-				//particle[i].x = mapX-particle[i].w;
-			}
-			else if (particle[i].y+particle[i].h < mapY) {
-				if (particle[i].damage > 0) {
-					//Mix_PlayChannel(-1, sSpellExplode, 0);
-					//SpawnExplosion(particle, particle[i].x2, particle[i].y2, particle[i].color);
-				}
-				Remove(particle, i);
-				//particle[i].y = mapY+mapH-particle[i].h;
-			}
-			else if (particle[i].y > mapY+mapH) {
-				if (particle[i].damage > 0) {
-					//Mix_PlayChannel(-1, sSpellExplode, 0);
-					//SpawnExplosion(particle, particle[i].x2, particle[i].y2, particle[i].color);
-				}
-				Remove(particle, i);
-				//particle[i].y = mapY-particle[i].h;
-			}*/
-
-			// particle circle collision check with other particles
-			/*for (int j = 0; j < max; j++) {
-				if (i !=j) {
-					if (particle[j].alive) {
-						if (particle[j].tag != particle[i].tag) {
-							if (particle[j].damage > 0 &&  particle[i].damage > 0) {
-								float bmx = particle[j].x+particle[j].w/2;
-								float bmy = particle[j].y+particle[j].h/2;
-								float bmx2 = particle[i].x+particle[i].w/2;
-								float bmy2 = particle[i].y+particle[i].h/2;
-								float angle = atan2(bmy - bmy2,bmx - bmx2);
-								angle = angle * (180 / 3.1416);
-								if (angle < 0) {
-									angle = 360 - (-angle);
-								}
-								float radians = (3.1415926536/180)*(angle);
-								float Cos = floor(cos(radians)*10+0.5)/10;
-								float Sin = floor(sin(radians)*10+0.5)/10;
-								float distance = sqrt((bmx - bmx2) * (bmx - bmx2)+
-													  (bmy - bmy2) * (bmy - bmy2));
-								if (distance <= 1) {
-									distance = 1;
-								}
-								if (distance < 2 + 2) {
-									//particle[i].vX -= 1 * Cos;
-									//particle[i].vY -= 1 * Sin;
-									Mix_PlayChannel(-1, sSpellExplode, 0);
-									float bmx, bmy, bmx2, bmy2;
-									bmx  = particle[j].x+particle[j].w/2;
-									bmy  = particle[j].y+particle[j].h/2;
-									bmx2 = particle[i].x+particle[i].w/2;
-									bmy2 = particle[i].y+particle[i].h/2;
-
-									// Get midpoint between player 1 and player 2
-									int midX = (bmx + bmx2) /2;
-									int midY = (bmy + bmy2) /2;
-									SpawnExplosion(particle, midX, midY, {255, 255,255} );
-									Remove(particle, i);
-								}
-							}
-						}
-					}
-				}
-			}*/
 		}
 	}
 }
@@ -989,64 +864,6 @@ int main(int argc, char *argv[]) {
 							0.0, 0.0, false, 0, 0.0);
 					// play sfx
 					Mix_PlayChannel(-1, sShoot, false);
-
-					/*int randPosition = rand() % int(p1.getHeight());
-					 int randSetBack = rand() % 3 + 1;
-					 //p1.setX( p1.getX() - randSetBack );
-					 //float newX = p1.getX() + p1.getWidth() + 4;
-					 //float newY = p1.getY() + randPosition - 2;
-					 float newX = p1.getX() + p1.getWidth();
-					 float newY = p1.getY() + p1.getHeight()/2 - 4/2;
-					 part.spawnParticleAngle(particles, "slow", 4,
-					 newX, newY,
-					 12, 12,
-					 // 0.0, randDouble(9.9, 11.9),
-					 0.0, 4,
-					 0.0,
-					 {200,200,200}, 1,
-					 1, 1,
-					 255, 0,
-					 60, 0,
-					 false, 0.11,
-					 false, 0.11,
-					 false, 0.0, white,
-					 0.0, 0.0,
-					 0.0,
-					 false, 0.0, 0.0,
-					 false, 0,
-					 0.05);*/
-					// spawn explosion
-					//.SpawnExplosion(particles, newX, newY, {200,200,200});
-					/*if (p1.shootTimer > 0) {
-					 p1.shootTimer -= 1;
-					 // shoot
-					 for (int i=0; i <= 60; i+= 20) {
-					 if (i == int(p1.shootTimer)) {
-					 int randPosition = rand() % p1.getHeight();
-					 int randSetBack = rand() % 3 + 1;
-					 p1.setX( p1.getX() - randSetBack );
-					 float newX = p1.getX() + p1.getWidth() + 4;
-					 float newY = p1.getY() + randPosition - 2;
-					 part.spawnParticleAngle(particles, "slow", 4,
-					 newX, newY,
-					 4, 4,
-					 0.0, randDouble(9.9, 11.9),
-					 0.0,
-					 {200,200,100}, 1,
-					 1, 1,
-					 255, 0,
-					 rand() % 10 + 50, 3,
-					 false, 0.11,
-					 false, 0.11);
-					 // play sfx
-					 Mix_PlayChannel(-1, sShoot, false);
-					 // spawn explosion
-					 part.SpawnExplosion(particles, newX, newY, {200,200,100});
-					 }
-					 }
-					 }else{
-					 p1.shoot = false;
-					 }*/
 				}
 
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1092,35 +909,6 @@ int main(int argc, char *argv[]) {
 							// Enemy check
 							for (int j = 0; j < enemyMax; j++) {
 								if (enemy[j].alive) {
-
-									// Splash Damage Collision Check
-
-									// Camera target distance
-									/*float bmx, bmy, bmx2, bmy2;
-									 bmx  = enemy[j].x+enemy[j].w/2;
-									 bmy  = enemy[j].y+enemy[j].h/2;
-									 bmx2  = particles[i].x+particles[i].w/2;
-									 bmy2  = particles[i].y+particles[i].h/2;
-									 float distance = sqrt((bmx - bmx2) * (bmx - bmx2)+
-									 (bmy - bmy2) * (bmy - bmy2));
-									 if (distance < 64) {
-									 // Remove enemy
-									 enemy[j].alive = false;
-									 enemyCount--;
-									 // remove particle
-									 // spawn explosion
-									 // play sound effect
-									 part.Remove(particles, i);
-									 part.SpawnExplosion(particles, particles[i].x+particles[i].w/2, particles[i].y+particles[i].h/2, {200,200,200});
-									 Mix_PlayChannel(-1, sPongScore, 0);
-									 }*/
-
-									// Camera target
-									/*float vX, vY;
-									 if (distance > 0.5){
-									 vX 	= 2 * (10*distance/600) * (bmx - bmx2) / distance;
-									 vY 	= 2 * (10*distance/600) * (bmy - bmy2) / distance;
-									 }*/
 
 									// ON-HIT Collision Check
 									if (checkCollision(particles[i].x,

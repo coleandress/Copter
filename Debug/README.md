@@ -1,2 +1,0 @@
-# Copter
- Helicopter bullet hell.

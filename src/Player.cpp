@@ -295,15 +295,15 @@ void Player::render(SDL_Renderer *gRenderer) {
 	//SDL_RenderDrawRect(gRenderer, &tempRect);
 
 	// Create Health bar
-	SDL_Rect tempRect = {x, y-20, w, 15};
+	SDL_FRect tempRect = {x, y-20, w, 15};
 	SDL_SetRenderDrawColor(gRenderer, 0, 50, 0, 255);
-	SDL_RenderFillRect(gRenderer, &tempRect);
+	SDL_RenderFillRectF(gRenderer, &tempRect);
 
 	tempRect = {x, y-20, (w*health)/100, 15};
 	SDL_SetRenderDrawColor(gRenderer, 0, 200, 0, 255);
-	SDL_RenderFillRect(gRenderer, &tempRect);
+	SDL_RenderFillRectF(gRenderer, &tempRect);
 
 	tempRect = {x, y-20, w, 15};
 	SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
-	SDL_RenderDrawRect(gRenderer, &tempRect);
+	SDL_RenderDrawRectF(gRenderer, &tempRect);
 }

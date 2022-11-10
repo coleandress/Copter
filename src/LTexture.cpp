@@ -73,7 +73,7 @@ bool LTexture::loadFromFile(SDL_Renderer *gRenderer, std::string path, bool itsA
 	return mTexture != NULL;
 }
 
-#ifdef _SDL_TTF_H
+//#ifdef _SDL_TTF_H
 bool LTexture::loadFromRenderedText(SDL_Renderer *gRenderer,
 									std::string textureText,
 									SDL_Color textColor,
@@ -115,7 +115,7 @@ bool LTexture::loadFromRenderedText(SDL_Renderer *gRenderer,
 	//Return success
 	return mTexture != NULL;
 }
-#endif
+//#endif
 
 void LTexture::free() {
 	//Free texture if it exists

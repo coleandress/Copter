@@ -28,11 +28,11 @@ public:
 	//Loads image at specified path
 	bool loadFromFile(SDL_Renderer *gRenderer, std::string path, bool itsAFont = false, bool save = false);
 
-#ifdef _SDL_TTF_H
+//#ifdef _SDL_TTF_H
 	//Creates image from font string
 	bool loadFromRenderedText(SDL_Renderer *gRenderer, std::string textureText, SDL_Color textColor,
 							TTF_Font *fontname, Uint32 wrapLength = 0xffffffff);
-#endif
+//#endif
 
 	//Creates blank texture
 	bool createBlank( SDL_Renderer *gRenderer, int width, int height, SDL_TextureAccess = SDL_TEXTUREACCESS_STREAMING );
