@@ -14,18 +14,6 @@
 #include "Player.h"
 
 
-/// Constants ///
-
-// Create window dimensions
-const int screenWidth = 1280;
-const int screenHeight = 720;
-
-// ground
-const float ground = 720;
-
-int mWidth;
-int mHeight;
-
 // Scores
 
 /* 0: Before game scene
@@ -132,8 +120,8 @@ void initSDL() {
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
 
 	// Declare window dimensions
-	mWidth = screenWidth;
-	mHeight = screenHeight;
+	//mWidth = screenWidth;
+	//mHeight = screenHeight;
 
 	// Declare window
 	//mWindow = SDL_CreateWindow("Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWidth, mHeight, SDL_WINDOW_SHOWN);
@@ -166,7 +154,7 @@ void loadMedia() {
 	gCopter.loadFromFile(gRenderer, "resource/gfx/player-copter.png");
 
 	// load fonts
-	viga = TTF_OpenFont("viga-regular.ttf", 24); //this opens a font style and sets a size
+	viga = TTF_OpenFont("resource/fonts/Viga-Regular.ttf", 24); //this opens a font style and sets a size
 
 	// Texture clips
 
@@ -487,8 +475,8 @@ void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int
 			particle[i].radius = particle[i].w;
 
 			//If the tile is in the screen
-			if (particle[i].x + particle[i].w > camx && particle[i].x < camx + screenWidth
-			 && particle[i].y + particle[i].h > camy && particle[i].y < camy + screenHeight) {
+			if (particle[i].x + particle[i].w > camx && particle[i].x < camx + mWindow.getWidth()
+			 && particle[i].y + particle[i].h > camy && particle[i].y < camy + mWindow.getHeight()) {
 				particle[i].onScreen = true;
 			} else {
 				particle[i].onScreen = false;
@@ -550,7 +538,8 @@ void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int
 				part.Remove(particle, i);
 			}
 			// Ground bounce
-			else if (particle[i].y + particle[i].h > ground - 32 && particle[i].alphaspeed == 0) {
+			//else if (particle[i].y + particle[i].h > ground - 32 && particle[i].alphaspeed == 0) { // I changed this but need to document it's the ground CA 2022-11-10
+			else if (particle[i].y + particle[i].h > mWindow.getHeight() - 32 && particle[i].alphaspeed == 0) {
 				particle[i].onScreen = true;
 				// remove particle
 				part.Remove(particle, i);
@@ -752,7 +741,8 @@ int main(int argc, char *argv[])
 	int playerFrame = 0;
 
 	// World
-	SDL_Rect floor = {0, mHeight-28, mWidth, 28};
+	//SDL_Rect floor = {0, mHeight-28, mWidth, 28};
+	SDL_Rect floor = {0, mWindow.getHeight() - 28, mWindow.getWidth(), 28};
 	SDL_RectM rSunClouds = {0, 0, 640, 360};
 	SDL_RectM rCity3 = {0, 0, 640, 360};
 	SDL_RectM rCity2 = {0, 0, 640, 360};
@@ -975,8 +965,9 @@ int main(int argc, char *argv[])
 			if (enemySpawnTimer > 60) {
 				enemySpawnTimer = 0;
 
-				// Spawn a random enemy a few pixels to the right of the screen
-				spawnEnemy(enemy, 1280 + rand() % 100, ground - 64 - 32 + 5, 64,
+				// Spawn a random enemy a few pixels to the right of the scree
+				//spawnEnemy(enemy, 1280 + rand() % 100, ground - 64 - 32 + 5, 64, // I changed this need to indicate the height is the ground CA 2022-11-10
+				spawnEnemy(enemy, 1280 + rand() % 100, mWindow.getHeight() - 64 - 32 + 5, 64,
 						64, rand() % 3);
 			}
 
@@ -1025,32 +1016,33 @@ int main(int argc, char *argv[])
 		}
 
 		// Update Particles
-		ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
+		//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
+		ParticleUpdate(part, particles, 0, 0, mWindow.getWidth(), mWindow.getHeight(), 0, 0);
 		//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
-		part.updateStarParticles(particles, 0, 0, mWidth, mHeight);
-		part.updateBulletParticles(particles, 0, 0, mWidth, mHeight);
+		part.updateStarParticles(particles, 0, 0, mWindow.getWidth(), mWindow.getHeight());
+		part.updateBulletParticles(particles, 0, 0, mWindow.getWidth(), mWindow.getHeight());
 
 		// Clear render screen
 		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
 		SDL_RenderClear(gRenderer);
 
 			// Layer 0, Orange Background
-			gOrangeBG.render(gRenderer, 0, 0, screenWidth, screenHeight);
+			gOrangeBG.render(gRenderer, 0, 0, mWindow.getWidth(), mWindow.getHeight());
 
 			// Layer 1, Sun and Clouds
-			gSunClouds.render(gRenderer, rSunClouds.x, rSunClouds.y, screenWidth, screenHeight);
+			gSunClouds.render(gRenderer, rSunClouds.x, rSunClouds.y, mWindow.getWidth(), mWindow.getHeight());
 
 			// Layer 2, City
-			gCity3.render(gRenderer, rCity3.x+1280, rCity3.y, screenWidth, screenHeight);
-			gCity3.render(gRenderer, rCity3.x, rCity3.y, screenWidth, screenHeight);
+			gCity3.render(gRenderer, rCity3.x+1280, rCity3.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity3.render(gRenderer, rCity3.x, rCity3.y, mWindow.getWidth(), mWindow.getHeight());
 
 			// Layer 3, City
-			gCity2.render(gRenderer, rCity2.x, rCity2.y, screenWidth, screenHeight);
-			gCity2.render(gRenderer, rCity2.x+1280, rCity2.y, screenWidth, screenHeight);
+			gCity2.render(gRenderer, rCity2.x, rCity2.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity2.render(gRenderer, rCity2.x+1280, rCity2.y, mWindow.getWidth(), mWindow.getHeight());
 
 			// Layer 4, City
-			gCity1.render(gRenderer, rCity1.x, rCity1.y, screenWidth, screenHeight);
-			gCity1.render(gRenderer, rCity1.x+1280, rCity1.y, screenWidth, screenHeight);
+			gCity1.render(gRenderer, rCity1.x, rCity1.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity1.render(gRenderer, rCity1.x+1280, rCity1.y, mWindow.getWidth(), mWindow.getHeight());
 
 			// Render particles
 			part.Render(gRenderer, particles, 0, 0);
@@ -1090,7 +1082,7 @@ int main(int argc, char *argv[])
 				tempss.str(std::string());
 				tempss << "Press Space to Start.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
-				gText.render(gRenderer, screenWidth/2 - gText.getWidth()/2, screenHeight * 0.90 - gText.getHeight(),
+				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2, mWindow.getHeight() * 0.90 - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 
 			}
@@ -1106,15 +1098,15 @@ int main(int argc, char *argv[])
 				tempss.str(std::string());
 				tempss << "You lose. Boo hoo.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
-				gText.render(gRenderer, screenWidth/2 - gText.getWidth()/2,
-						screenHeight * 0.90 - gText.getHeight()-22,
+				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2,
+						mWindow.getHeight() * 0.90 - gText.getHeight()-22,
 							 gText.getWidth(), gText.getHeight());
 
 				tempss.str(std::string());
 				tempss << "Press Space to Start.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
-				gText.render(gRenderer, screenWidth/2 - gText.getWidth()/2,
-						screenHeight * 0.90 - gText.getHeight(),
+				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2,
+						mWindow.getHeight() * 0.90 - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 			}
 
@@ -1171,7 +1163,7 @@ int main(int argc, char *argv[])
 			}
 
 			gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
-			gText.render(gRenderer, screenWidth - gText.getWidth() - 10, 4, gText.getWidth(), gText.getHeight());
+			gText.render(gRenderer, mWindow.getWidth() - gText.getWidth() - 10, 4, gText.getWidth(), gText.getHeight());
 
 			// Render score text top-right of screen
 			tempss.str(std::string());
@@ -1196,7 +1188,7 @@ int main(int argc, char *argv[])
 				tempss << "Score: 000000" << score;
 			}
 			gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
-			gText.render(gRenderer, screenWidth - gText.getWidth() - 10, 28, gText.getWidth(), gText.getHeight());
+			gText.render(gRenderer, mWindow.getWidth() - gText.getWidth() - 10, 28, gText.getWidth(), gText.getHeight());
 
 			//////// Debug ///////
 
