@@ -27,7 +27,7 @@ Player::Player() {
 	health = 100.0;
 	angle = 0.0;
 	turretAngle = 0.0;
-	sPongScore = NULL;
+	mPongScore = NULL;
 	alpha = 255;
 	flashTimer = 0;
 	flash = false;
@@ -59,8 +59,8 @@ void Player::reset() {
 }
 
 // Set Player position
-void Player::init(Mix_Chunk *sPongScore) {
-	this->sPongScore = sPongScore;
+void Player::init(Mix_Chunk *PongScore) {
+	mPongScore = PongScore;
 }
 
 // Set Player position
@@ -236,7 +236,7 @@ void Player::update(Particle &part, Particle particles[]) {
 			flash = true;
 
 			// Play SFX
-			Mix_PlayChannel(-1, sPongScore, 0);
+			Mix_PlayChannel(-1, mPongScore, 0);
 
 			// Spawn explosion
 			part.SpawnExplosion(particles,
@@ -295,15 +295,15 @@ void Player::render(SDL_Renderer *gRenderer) {
 	//SDL_RenderDrawRect(gRenderer, &tempRect);
 
 	// Create Health bar
-	SDL_FRect tempRect = {x, y-20, w, 15};
+	SDL_Rect tempRect = {x, y-20, w, 15};
 	SDL_SetRenderDrawColor(gRenderer, 0, 50, 0, 255);
-	SDL_RenderFillRectF(gRenderer, &tempRect);
+	SDL_RenderFillRect(gRenderer, &tempRect);
 
 	tempRect = {x, y-20, (w*health)/100, 15};
 	SDL_SetRenderDrawColor(gRenderer, 0, 200, 0, 255);
-	SDL_RenderFillRectF(gRenderer, &tempRect);
+	SDL_RenderFillRect(gRenderer, &tempRect);
 
 	tempRect = {x, y-20, w, 15};
 	SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
-	SDL_RenderDrawRectF(gRenderer, &tempRect);
+	SDL_RenderDrawRect(gRenderer, &tempRect);
 }

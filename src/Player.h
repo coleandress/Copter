@@ -13,9 +13,9 @@ class Player {
 public:
 
 	// Create pong scoring
-	Mix_Chunk *sPongScore;
+	Mix_Chunk *mPongScore;
 
-	const float grav = 0.09;
+	const float grav{ 0.09f };
 
 	// Default constructor
 	Player();
@@ -114,9 +114,9 @@ public: // abilities
 	bool alive;
 
 private:
-	float x;
-	float y;
-	float w;
-	float h;
-	float health;
+	int x;
+	int y;
+	int w;
+	int h;
+	int health;
 };

@@ -76,7 +76,7 @@ public:	// SAT theorem for collision during rotation's
 	 * C: Top Left
 	 * D: Bottom Left
 	 * */
-	Point A, B, C, D;
+	Point A{}, B{}, C{}, D{};
 
 public:
 	bool decay;				// decay particle speed?
