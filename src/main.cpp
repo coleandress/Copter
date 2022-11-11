@@ -9,6 +9,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "LWindow.h"
 #include "Particle.h"
 #include "Player.h"
 
@@ -45,7 +46,7 @@ bool paused = false;
 SDL_Event events;
 
 // Create window
-SDL_Window *mWindow = NULL;
+//SDL_Window *mWindow = NULL;
 
 // Create renderer
 SDL_Renderer *gRenderer;
@@ -117,6 +118,8 @@ bool checkCollision(float x, float y, int w, int h, float x2, float y2, int w2, 
 	}
 }
 
+LWindow mWindow;
+
 // Initialize SDL
 void initSDL() {
 	// Initialize Video
@@ -133,10 +136,13 @@ void initSDL() {
 	mHeight = screenHeight;
 
 	// Declare window
-	mWindow = SDL_CreateWindow("Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWidth, mHeight, SDL_WINDOW_SHOWN);
+	//mWindow = SDL_CreateWindow("Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWidth, mHeight, SDL_WINDOW_SHOWN);
+	//LWindow mWindow;
+	mWindow.create("Ping", 2, 1, 1, 0);
 
 	// Declare renderer
-	gRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	//gRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	gRenderer = mWindow.createRenderer();
 }
 
 // Load media
@@ -206,8 +212,9 @@ void freeSDL() {
 	Mix_FreeMusic(sMusic);
 
 	// Close upon exit
-	SDL_DestroyRenderer(gRenderer);
-	SDL_DestroyWindow(mWindow);
+	//SDL_DestroyRenderer(gRenderer);
+	mWindow.free();
+	//SDL_DestroyWindow(mWindow);
 
 	//Quit SDL subsystems
 	Mix_Quit();
@@ -608,7 +615,8 @@ void ContinueGame(Player &p1) {
 	}
 }
 
-int main(int argc, char *argv[]) {
+void setup()
+{
 
 	// Make random actually random
 	srand(time(0));
@@ -621,6 +629,85 @@ int main(int argc, char *argv[]) {
 
 	// Load high score
 	LoadHighScore();
+}
+
+void handleInput(Player& p1)
+{
+	// Key Pressed
+	if (events.type == SDL_KEYDOWN && events.key.repeat == 0) {
+
+		// Switch case of all possible keyboard presses
+		switch (events.key.keysym.sym) {
+			case SDLK_a:
+				p1.moveLeft = true;
+				break;
+			case SDLK_d:
+				p1.moveRight = true;
+				break;
+			case SDLK_w:				// If W Pressed, set Player moveUp to true
+				p1.moveUp = true;
+				break;
+			case SDLK_s	:				// If S Pressed, set Player moveUp to true
+				p1.moveDown = true;
+				break;
+			case SDLK_ESCAPE:			// pause game
+				paused = (!paused);
+				break;
+			case SDLK_SPACE:			// start game
+				ContinueGame(p1);
+				break;
+		}
+	}
+
+	// Key Released
+	else if (events.type == SDL_KEYUP && events.key.repeat == 0) {
+
+		// Switch case of all possible keyboard presses
+		switch (events.key.keysym.sym) {
+			case SDLK_a:
+				p1.moveLeft = false;
+				break;
+			case SDLK_d:
+				p1.moveRight = false;
+				break;
+			case SDLK_w:	// If W Released, set Player moveUp to false
+				p1.moveUp = false;
+				break;
+			case SDLK_s:	// If S Released, set Player moveDown to false
+				p1.moveDown = false;
+				break;
+			case SDLK_SPACE:	// Player 1, shoot
+				//p1.shoot = false;
+				break;
+		}
+	}
+
+	// Mouse pressed
+	if (events.type == SDL_MOUSEBUTTONDOWN) {
+		if (events.button.button == SDL_BUTTON_LEFT) {
+			if (!paused) {
+				if (gameScene == 1) {
+					//p1.holdPower = false;
+					p1.shoot = true;
+					//p1.xPower = 0.0;
+					//p1.holdPower = true;
+					//p1.shootTimer = 60;
+				}
+			}
+		}
+	}
+
+	// Mouse pressed
+	if (events.type == SDL_MOUSEBUTTONUP) {
+		if (events.button.button == SDL_BUTTON_LEFT) {
+
+		}
+	}
+}
+
+int main(int argc, char *argv[]) 
+{
+	setup();
 
 	// Game loop
 	bool quit = false;
@@ -683,11 +770,8 @@ int main(int argc, char *argv[]) {
 	Mix_FadeInMusic(sMusic, -1, 2000);
 
 	// Game loop
-	while (!quit) {
-
-		// reset Player's positions
-		//p1.setX(64);
-
+	while (!quit) 
+	{
 		// Start FPS cap
 		fps.start();
 
@@ -703,78 +787,9 @@ int main(int argc, char *argv[]) {
 			}
 
 			// Handle window input events
-			else{
-
-				// Key Pressed
-				if (events.type == SDL_KEYDOWN && events.key.repeat == 0) {
-
-					// Switch case of all possible keyboard presses
-					switch (events.key.keysym.sym) {
-						case SDLK_a:
-							p1.moveLeft = true;
-							break;
-						case SDLK_d:
-							p1.moveRight = true;
-							break;
-						case SDLK_w:				// If W Pressed, set Player moveUp to true
-							p1.moveUp = true;
-							break;
-						case SDLK_s	:				// If S Pressed, set Player moveUp to true
-							p1.moveDown = true;
-							break;
-						case SDLK_ESCAPE:			// pause game
-							paused = (!paused);
-							break;
-						case SDLK_SPACE:			// start game
-							ContinueGame(p1);
-							break;
-					}
-				}
-
-				// Key Released
-				else if (events.type == SDL_KEYUP && events.key.repeat == 0) {
-
-					// Switch case of all possible keyboard presses
-					switch (events.key.keysym.sym) {
-						case SDLK_a:
-							p1.moveLeft = false;
-							break;
-						case SDLK_d:
-							p1.moveRight = false;
-							break;
-						case SDLK_w:	// If W Released, set Player moveUp to false
-							p1.moveUp = false;
-							break;
-						case SDLK_s:	// If S Released, set Player moveDown to false
-							p1.moveDown = false;
-							break;
-						case SDLK_SPACE:	// Player 1, shoot
-							//p1.shoot = false;
-							break;
-					}
-				}
-
-				// Mouse pressed
-				if (events.type == SDL_MOUSEBUTTONDOWN) {
-					if (events.button.button == SDL_BUTTON_LEFT) {
-						if (!paused) {
-							if (gameScene == 1) {
-								//p1.holdPower = false;
-								p1.shoot = true;
-								//p1.xPower = 0.0;
-								//p1.holdPower = true;
-								//p1.shootTimer = 60;
-							}
-						}
-					}
-				}
-
-				// Mouse pressed
-				if (events.type == SDL_MOUSEBUTTONUP) {
-					if (events.button.button == SDL_BUTTON_LEFT) {
-
-					}
-				}
+			else
+			{
+				handleInput(p1);
 			}
 		}
 
