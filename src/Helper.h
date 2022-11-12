@@ -83,8 +83,8 @@ public:	// Render dialogue text, and render status bars such as health bars
 	// Render dialog
 	void renderDialogText(SDL_Renderer *gRenderer,
 						  std::string speakerName, std::string speakerText, std::string indicator,
-						  float dialogueX, float dialogueY, float dialogueW, float dialogueH,
-						  float speakerX, float speakerY, float speakerW, float speakerH,
+						  int dialogueX, int dialogueY, int dialogueW, int dialogueH,
+						  int speakerX, int speakerY, int speakerW, int speakerH,
 						  SDL_Color speakerNameColor, SDL_Color speakerTextColor,
 						  SDL_Color colorBG, SDL_Color colorBorder,
 						  SDL_Color colorBGSpeaker, SDL_Color colorBorderSpeaker,
@@ -92,9 +92,9 @@ public:	// Render dialogue text, and render status bars such as health bars
 						  Uint32 wrapLength, bool drawBorders = false);
 
 	// Render status bar
-	void renderStatusBar(SDL_Renderer *gRenderer, float x, float y, float w, float h,
-						 float yDistanceFromTarget,
-						 double health, double healthDecay, double maxHealth,
+	void renderStatusBar(SDL_Renderer *gRenderer, int x, int y, int w, int h,
+						 int yDistanceFromTarget,
+						 int health, int healthDecay, int maxHealth,
 						 SDL_Color bgColor, SDL_Color decayColor,
 						 SDL_Color healthColor, SDL_Color borderColor,
 						 bool border = false);

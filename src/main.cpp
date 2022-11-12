@@ -426,15 +426,15 @@ void renderEnemy(Enemy enemy[], float camx, float camy) {
 void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int mapW, int mapH,
 					  float camx, float camy) {
 	for (int i = 0; i < 1000; i++) {
-		if (particle[i].alive)
+		if (particle[i].mAlive)
 		{
 			// If there is a timer before moving, do timer first before handling Particle
-			if (particle[i].timerBeforeMoving != 0) {
-				particle[i].timerBeforeMoving -= 1;
+			if (particle[i].mTtimerBeforeMoving != 0) {
+				particle[i].mTtimerBeforeMoving -= 1;
 			}else{
 				// Play one time sound effect
-				if (particle[i].playSFXBeforeMoving) {
-					particle[i].playSFXBeforeMoving = false;
+				if (particle[i].mPlaySFXBeforeMoving) {
+					particle[i].mPlaySFXBeforeMoving = false;
 					// play SFX
 					//Mix_PlayChannel(-1, sFireBall, 0);
 				}
@@ -443,108 +443,108 @@ void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int
 			///////////////////////////////////////////////////////////
 
 			// Particle Y gravity
-			particle[i].vY += particle[i].grav;
+			particle[i].mVY += particle[i].mGrav;
 
 			// Particle movement
-			particle[i].x += particle[i].vX * particle[i].speed;
-			particle[i].y += particle[i].vY * particle[i].speed;
+			particle[i].mX += particle[i].mVX * particle[i].mSpeed;
+			particle[i].mY += particle[i].mVY * particle[i].mSpeed;
 
 			// Speed decay of grenade
-			if (particle[i].decay) {
-				particle[i].speed = particle[i].speed - particle[i].speed * particle[i].decaySpeed;
+			if (particle[i].mDecay) {
+				particle[i].mSpeed = particle[i].mSpeed - particle[i].mSpeed * particle[i].mDecaySpeed;
 			}
 			// Particle death, upon size
-			if (particle[i].sizeDeath) {
-				particle[i].w -= particle[i].deathSpe;
-				particle[i].h -= particle[i].deathSpe;
+			if (particle[i].mSizeDeath) {
+				particle[i].mW -= particle[i].mDeathSpe;
+				particle[i].mH -= particle[i].mDeathSpe;
 
 			}
 			// Particle spin
-			particle[i].angle += particle[i].angleSpe * particle[i].angleDir;
+			particle[i].mAngle += particle[i].mAngleSpe * particle[i].mAngleDir;
 			// Particle death, Time
-			particle[i].time += particle[i].deathTimerSpeed;
+			particle[i].mTime += particle[i].mDeathTimerSpeed;
 			// Particle death, transparency
-			particle[i].alpha -= particle[i].alphaspeed;
+			particle[i].mAlpha -= particle[i].mAlphaspeed;
 			//////////////////////////////////////////////////////////
 
 			// particle center
-			particle[i].x2 = particle[i].x + particle[i].w/2;
-			particle[i].y2 = particle[i].y + particle[i].h/2;
+			particle[i].mX2 = particle[i].mX + particle[i].mW/2;
+			particle[i].mY2 = particle[i].mY + particle[i].mH/2;
 
 			// get particle radius
-			particle[i].radius = particle[i].w;
+			particle[i].mRadius = particle[i].mW;
 
 			//If the tile is in the screen
-			if (particle[i].x + particle[i].w > camx && particle[i].x < camx + mWindow.getWidth()
-			 && particle[i].y + particle[i].h > camy && particle[i].y < camy + mWindow.getHeight()) {
-				particle[i].onScreen = true;
+			if (particle[i].mX + particle[i].mW > camx && particle[i].mX < camx + mWindow.getWidth()
+			 && particle[i].mY + particle[i].mH > camy && particle[i].mY < camy + mWindow.getHeight()) {
+				particle[i].mOnScreen = true;
 			} else {
-				particle[i].onScreen = false;
+				particle[i].mOnScreen = false;
 			}
 
 			///////////////////////////////////////////////////////////////////////////////
 			/////////////////////////// Set Corners of a Particle /////////////////////////
 			//---------------------------------------------------------------------------//
-			float particleCX = particle[i].x+particle[i].w/2;
-			float particleCY = particle[i].y+particle[i].h/2;
-			float particleAngle = particle[i].angle;
-			float radians   = (3.1415926536/180)*(particle[i].angle);
+			float particleCX = particle[i].mX+particle[i].mW/2;
+			float particleCY = particle[i].mY+particle[i].mH/2;
+			float particleAngle = particle[i].mAngle;
+			float radians   = (3.1415926536/180)*(particle[i].mAngle);
 			float Cos 		= floor(cos(radians)*100+0.05)/100;
 			float Sin 		= floor(sin(radians)*100+0.05)/100;
 
 			// Top Right corner
-		    float barrelW  = ((particle[i].w/2) * Cos ) - (-(particle[i].h/2) * Sin );
-		    float barrelH  = ((particle[i].w/2) * Sin ) + (-(particle[i].h/2) * Cos );
+		    float barrelW  = ((particle[i].mW/2) * Cos ) - (-(particle[i].mH/2) * Sin );
+		    float barrelH  = ((particle[i].mW/2) * Sin ) + (-(particle[i].mH/2) * Cos );
 		    float barrelX = particleCX + barrelW;
 		    float barrelY = particleCY + barrelH;
 			particle[i].A.x = barrelX;
 			particle[i].A.y = barrelY;
 
 			// Bottom Right corner
-			barrelW  = ((particle[i].w/2) * Cos ) - ((particle[i].h/2) * Sin );
-			barrelH  = ((particle[i].w/2) * Sin ) + ((particle[i].h/2) * Cos );
+			barrelW  = ((particle[i].mW/2) * Cos ) - ((particle[i].mH/2) * Sin );
+			barrelH  = ((particle[i].mW/2) * Sin ) + ((particle[i].mH/2) * Cos );
 			barrelX = particleCX + barrelW;
 			barrelY = particleCY + barrelH;
 			particle[i].B.x = barrelX;
 			particle[i].B.y = barrelY;
 
 			// Top Left corner
-			barrelW  = (-(particle[i].w/2) * Cos ) - (-(particle[i].h/2) * Sin );
-			barrelH  = (-(particle[i].w/2) * Sin ) + (-(particle[i].h/2) * Cos );
+			barrelW  = (-(particle[i].mW/2) * Cos ) - (-(particle[i].mH/2) * Sin );
+			barrelH  = (-(particle[i].mW/2) * Sin ) + (-(particle[i].mH/2) * Cos );
 			barrelX = particleCX + barrelW;
 			barrelY = particleCY + barrelH;
 			particle[i].C.x = barrelX;
 			particle[i].C.y = barrelY;
 
 			// Bottom Left corner
-			barrelW  = (-(particle[i].w/2) * Cos ) - ((particle[i].h/2) * Sin );
-			barrelH  = (-(particle[i].w/2) * Sin ) + ((particle[i].h/2) * Cos );
+			barrelW  = (-(particle[i].mW/2) * Cos ) - ((particle[i].mH/2) * Sin );
+			barrelH  = (-(particle[i].mW/2) * Sin ) + ((particle[i].mH/2) * Cos );
 			barrelX = particleCX + barrelW;
 			barrelY = particleCY + barrelH;
 			particle[i].D.x = barrelX;
 			particle[i].D.y = barrelY;
 
 			// Handle different types of deaths
-			if (particle[i].time > particle[i].deathTimer) {
+			if (particle[i].mTime > particle[i].mDeathTimer) {
 				// remove particle
 				part.Remove(particle, i);
 				// spawn explosion
-				part.SpawnExplosion(particle, particle[i].x+particle[i].w/2, particle[i].y+particle[i].h/2, {200,200,200});
+				part.SpawnExplosion(particle, particle[i].mX+particle[i].mW/2, particle[i].mY+particle[i].mH/2, {200,200,200});
 			}
-			else if (particle[i].alpha < 0) {
+			else if (particle[i].mAlpha < 0) {
 				part.Remove(particle, i);
 			}
-			else if (particle[i].w <= 0 || particle[i].h <= 0){
+			else if (particle[i].mW <= 0 || particle[i].mH <= 0){
 				part.Remove(particle, i);
 			}
 			// Ground bounce
 			//else if (particle[i].y + particle[i].h > ground - 32 && particle[i].alphaspeed == 0) { // I changed this but need to document it's the ground CA 2022-11-10
-			else if (particle[i].y + particle[i].h > mWindow.getHeight() - 32 && particle[i].alphaspeed == 0) {
-				particle[i].onScreen = true;
+			else if (particle[i].mY + particle[i].mH > mWindow.getHeight() - 32 && particle[i].mAlphaspeed == 0) {
+				particle[i].mOnScreen = true;
 				// remove particle
 				part.Remove(particle, i);
 				// spawn explosion
-				part.SpawnExplosion(particle, particle[i].x+particle[i].w/2, particle[i].y+particle[i].h/2, {200,200,100});
+				part.SpawnExplosion(particle, particle[i].mX+particle[i].mW/2, particle[i].mY+particle[i].mH/2, {200,200,100});
 				// play sound effect
 				Mix_PlayChannel(-1, sPongScore, 0);
 			}
@@ -788,10 +788,10 @@ int main(int argc, char *argv[])
 			if (gameScene == 1) {
 
 				// particle test for particles
-				for (int i = 0; i < part.max; i++) {
-					if (particles[i].alive) {
+				for (int i = 0; i < part.mMax; i++) {
+					if (particles[i].mAlive) {
 						// Star particles
-						if (particles[i].type == 4) {
+						if (particles[i].mType == 4) {
 							// pong particle effects
 							fireTimer += 60;
 							if (fireTimer > 60) {
@@ -877,11 +877,11 @@ int main(int argc, char *argv[])
 				// Particle collision with Player
 				if (!p1.flash) {
 					for (int i = 0; i < 1000; i++) {
-						if (particles[i].alive) {
-							if (particles[i].type == 3) {
+						if (particles[i].mAlive) {
+							if (particles[i].mType == 3) {
 								// Player check
-								if (checkCollision(particles[i].x, particles[i].y,
-										particles[i].w, particles[i].h, p1.getX(),
+								if (checkCollision(particles[i].mX, particles[i].mY,
+										particles[i].mW, particles[i].mH, p1.getX(),
 										p1.getY(), p1.getWidth(), p1.getHeight())) {
 
 									// Hurt player
@@ -895,8 +895,8 @@ int main(int argc, char *argv[])
 
 									// spawn explosion
 									part.SpawnExplosion(particles,
-											particles[i].x + particles[i].w / 2,
-											particles[i].y + particles[i].h / 2, { 200,
+											particles[i].mX + particles[i].mW / 2,
+											particles[i].mY + particles[i].mH / 2, { 200,
 													200, 200 });
 
 									// play sound effect
@@ -909,16 +909,16 @@ int main(int argc, char *argv[])
 
 				// Particle collision with Enemies
 				for (int i = 0; i < 1000; i++) {
-					if (particles[i].alive) {
-						if (particles[i].type == 4) {
+					if (particles[i].mAlive) {
+						if (particles[i].mType == 4) {
 							// Enemy check
 							for (int j = 0; j < enemyMax; j++) {
 								if (enemy[j].alive) {
 
 									// ON-HIT Collision Check
-									if (checkCollision(particles[i].x,
-											particles[i].y, particles[i].w,
-											particles[i].h, enemy[j].x, enemy[j].y,
+									if (checkCollision(particles[i].mX,
+											particles[i].mY, particles[i].mW,
+											particles[i].mH, enemy[j].x, enemy[j].y,
 											enemy[j].w, enemy[j].h)) {
 
 										// Flash enemy
@@ -932,8 +932,8 @@ int main(int argc, char *argv[])
 
 										// spawn explosion
 										part.SpawnExplosion(particles,
-												particles[i].x + particles[i].w / 2,
-												particles[i].y + particles[i].h / 2,
+												particles[i].mX + particles[i].mW / 2,
+												particles[i].mY + particles[i].mH / 2,
 												{ 200, 200, 200 });
 
 										// Play SFX

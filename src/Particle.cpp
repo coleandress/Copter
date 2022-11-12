@@ -24,70 +24,70 @@
 //-------------------------------------------------------------------------------------------------------------------------------//
 
 void Particle::load(SDL_Renderer* gRenderer){
-	setClips(cParticles[0], 0, 0, 8, 8);
-	setClips(cParticles[1], 8, 0, 8, 8 );
-	gParticles.loadFromFile(gRenderer, "resource/gfx/particles.png");
-	gParticles.setBlendMode(SDL_BLENDMODE_ADD);
+	setClips(mCParticles[0], 0, 0, 8, 8);
+	setClips(mCParticles[1], 8, 0, 8, 8 );
+	mGParticles.loadFromFile(gRenderer, "resource/gfx/particles.png");
+	mGParticles.setBlendMode(SDL_BLENDMODE_ADD);
 }
 
 void Particle::free(){
-	gParticles.free();
+	mGParticles.free();
 }
 
 void Particle::init(Particle particle[]) {
-	count = 0;
-	for (int i = 0; i < max; i++) {
-		particle[i].x 				= 0;
-		particle[i].y 				= 0;
-		particle[i].w 				= 4;
-		particle[i].h 				= 4;
-		particle[i].alpha 			= 255;
-		particle[i].time 			= 0;
-		particle[i].timeri 			= 0;
-		particle[i].alphaspeed 		= 0;
-		particle[i].deathTimer 		= 100;
-		particle[i].deathTimerSpeed = 1;
-		particle[i].speed 			= 0.00;
-		particle[i].vX 				= 0.00;
-		particle[i].vY 				= 0.00;
-		particle[i].speed 			= 0.00;
-		particle[i].angle 			= 0.00;
-		particle[i].angleSpe 		= 0;
-		particle[i].angleDir 		= 0;
-		particle[i].onScreen 		= false;
-		particle[i].collide 		= false;
-		particle[i].decay 			= false;
-		particle[i].decaySpeed 		= 0.0;
-		particle[i].alive 			= false;
-		particle[i].sizeDeath 		= false;
-		particle[i].deathSpe 		= 0;
-		particle[i].trail 			= false;
-		particle[i].trailRate 		= 0;
+	mCount = 0;
+	for (int i = 0; i < mMax; i++) {
+		particle[i].mX 				= 0;
+		particle[i].mY 				= 0;
+		particle[i].mW 				= 4;
+		particle[i].mH 				= 4;
+		particle[i].mAlpha 			= 255;
+		particle[i].mTime 			= 0;
+		particle[i].mTimeri 			= 0;
+		particle[i].mAlphaspeed 		= 0;
+		particle[i].mDeathTimer 		= 100;
+		particle[i].mDeathTimerSpeed = 1;
+		particle[i].mSpeed 			= 0.00;
+		particle[i].mVX 				= 0.00;
+		particle[i].mVY 				= 0.00;
+		particle[i].mSpeed 			= 0.00;
+		particle[i].mAngle 			= 0.00;
+		particle[i].mAngleSpe 		= 0;
+		particle[i].mAngleDir 		= 0;
+		particle[i].mOnScreen 		= false;
+		particle[i].mCollide 		= false;
+		particle[i].mDecay 			= false;
+		particle[i].mDecaySpeed 		= 0.0;
+		particle[i].mAlive 			= false;
+		particle[i].mSizeDeath 		= false;
+		particle[i].mDeathSpe 		= 0;
+		particle[i].mTrail 			= false;
+		particle[i].mTrailRate 		= 0;
 		particle[i].side 			= "";
-		particle[i].type 			= 0;
-		particle[i].damage 			= 0;
-		particle[i].color 			= { 255, 255, 255, 255 };
-		particle[i].goTowardsTarget 	= false;
-		particle[i].playSFXBeforeMoving 	= false;
+		particle[i].mType 			= 0;
+		particle[i].mDamage 			= 0;
+		particle[i].mColor 			= { 255, 255, 255, 255 };
+		particle[i].mGoTowardsTarget 	= false;
+		particle[i].mPlaySFXBeforeMoving 	= false;
 	}
 }
 
 void Particle::Remove(Particle particle[], int i) {
-	particle[i].alive = false;
-	count--;;
+	particle[i].mAlive = false;
+	mCount--;;
 }
 
 void Particle::RemoveAll(Particle particle[]) {
-	count = 0;
-	for (int i = 0; i < max; i++) {
-		particle[i].alive 			= false;
+	mCount = 0;
+	for (int i = 0; i < mMax; i++) {
+		particle[i].mAlive 			= false;
 	}
 }
 
 void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type,
 		float spawnX, float spawnY,
 		float spawnW, float spawnH,
-		double angle, double speed,
+		float angle, double speed,
 		double damage,
 		SDL_Color color, int layer,
 		int angleSpe, int angleDir,
@@ -101,38 +101,38 @@ void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type
 		bool goTowardsTarget, float targetX, float targetY,
 		bool playSFXBeforeMoving, int bounces,
 		float grav) {
-	for (int i = 0; i < max; i++)
+	for (int i = 0; i < mMax; i++)
 	{
-		if (!particle[i].alive)
+		if (!particle[i].mAlive)
 		{
-			particle[i].tag 			= tag;
-			particle[i].type 			= type;
-			particle[i].x 				= spawnX;
-			particle[i].y 				= spawnY;
-			particle[i].w 				= spawnW;
-			particle[i].h 				= spawnH;
-			particle[i].x2 				= spawnX + spawnW/2;
-			particle[i].y2 				= spawnY + spawnH/2;
-			particle[i].time 			= 0;
-			particle[i].timeri 			= 0;
-			particle[i].angle 			= angle;
-			particle[i].speed 			= speed;
-			particle[i].grav 			= grav;
+			particle[i].mTag 			= tag;
+			particle[i].mType 			= type;
+			particle[i].mX 				= spawnX;
+			particle[i].mY 				= spawnY;
+			particle[i].mW 				= spawnW;
+			particle[i].mH 				= spawnH;
+			particle[i].mX2 				= spawnX + spawnW/2;
+			particle[i].mY2 				= spawnY + spawnH/2;
+			particle[i].mTime 			= 0;
+			particle[i].mTimeri 			= 0;
+			particle[i].mAngle 			= angle;
+			particle[i].mSpeed 			= speed;
+			particle[i].mGrav 			= grav;
 			// If true, after timerBeforeMoving is over, the Particles will move towards the target
 			//particle[i].goTowardsTarget = goTowardsTarget;
 			if (goTowardsTarget) {
-				float shootAngle = atan2(targetY - particle[i].y-particle[i].h/2,targetX - particle[i].x-particle[i].w/2);
+				float shootAngle = atan2(targetY - particle[i].mY-particle[i].mH/2,targetX - particle[i].mX-particle[i].mW/2);
 				shootAngle = shootAngle * (180 / 3.1416);
 				if (shootAngle < 0) { shootAngle = 360 - (-shootAngle); }
-				particle[i].vX 				= (cos( (3.14159265/180)*(shootAngle) ));
-				particle[i].vY 				= (sin( (3.14159265/180)*(shootAngle) ));
+				particle[i].mVX 				= (cos( (3.14159265/180)*(shootAngle) ));
+				particle[i].mVY 				= (sin( (3.14159265/180)*(shootAngle) ));
 				// Also change Particle direction? decide this
-				particle[i].angle = shootAngle;
+				particle[i].mAngle = shootAngle;
 			}else{
-				particle[i].vX 				= (cos( (3.14159265/180)*(angle) ));
-				particle[i].vY 				= (sin( (3.14159265/180)*(angle) ));
+				particle[i].mVX 				= (cos( (3.14159265/180)*(angle) ));
+				particle[i].mVY 				= (sin( (3.14159265/180)*(angle) ));
 			}
-			particle[i].damage 			= damage;
+			particle[i].mDamage 			= damage;
 			//particle[i].x 				= spawnX + (rand() % 4 + 2 * (cos( (3.14159265/180)*(angle) )));
 			//particle[i].y 				= spawnY + (rand() % 4 + 2 * (sin( (3.14159265/180)*(angle) )));
 			//particle[i].x 				= spawnX + cos( (3.14159265/180)*(angle) );
@@ -143,7 +143,7 @@ void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type
 			float particleCX = spawnX+spawnW/2;
 			float particleCY = spawnY+spawnH/2;
 			float particleAngle = angle;
-			float radians   = (3.1415926536/180)*(particle[i].angle);
+			float radians   = (3.1415926536/180)*(particle[i].mAngle);
 			float Cos 		= floor(cos(radians)*100+0.05)/100;
 			float Sin 		= floor(sin(radians)*100+0.05)/100;
 			// Top Right corner
@@ -178,31 +178,31 @@ void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type
 			//////////////////////////////////////////////////////////////////////////
 
 			particle[i].side 			= "";
-			particle[i].onScreen 		= false;
-			particle[i].collide 		= false;
-			particle[i].decay 			= decay;
-			particle[i].decaySpeed 		= decaySpeed;
-			particle[i].color 			= color;
-			particle[i].layer 			= layer;
-			particle[i].alphaspeed 		= alphaspeed;
-			particle[i].alpha 			= alpha;
-			particle[i].deathTimer 		= deathTimer;
-			particle[i].deathTimerSpeed = deathTimerSpeed;
-			particle[i].angleSpe		= angleSpe;
-			particle[i].angleDir		= angleDir;
-			particle[i].sizeDeath 		= sizeDeath;
-			particle[i].deathSpe 		= deathSpe;
-			particle[i].trail 			= trail;
-			particle[i].trailTimer 		= 0;
-			particle[i].trailRate 		= trailRate;
-			particle[i].trailColor 		= trailColor;
-			particle[i].trailMinSize 	= trailMinSize;
-			particle[i].trailMaxSize 	= trailMaxSize;
-			particle[i].timerBeforeMoving 	= timerBeforeMoving;
-			particle[i].alive 			= true;
-			particle[i].playSFXBeforeMoving 	= playSFXBeforeMoving;
-			particle[i].bounces 	= bounces;
-			count++;
+			particle[i].mOnScreen 		= false;
+			particle[i].mCollide 		= false;
+			particle[i].mDecay 			= decay;
+			particle[i].mDecaySpeed 		= decaySpeed;
+			particle[i].mColor 			= color;
+			particle[i].mLayer 			= layer;
+			particle[i].mAlphaspeed 		= alphaspeed;
+			particle[i].mAlpha 			= alpha;
+			particle[i].mDeathTimer 		= deathTimer;
+			particle[i].mDeathTimerSpeed = deathTimerSpeed;
+			particle[i].mAngleSpe		= angleSpe;
+			particle[i].mAngleDir		= angleDir;
+			particle[i].mSizeDeath 		= sizeDeath;
+			particle[i].mDeathSpe 		= deathSpe;
+			particle[i].mTrail 			= trail;
+			particle[i].mTrailTimer 		= 0;
+			particle[i].mTrailRate 		= trailRate;
+			particle[i].mTrailColor 		= trailColor;
+			particle[i].mTrailMinSize 	= trailMinSize;
+			particle[i].mTrailMaxSize 	= trailMaxSize;
+			particle[i].mTtimerBeforeMoving 	= timerBeforeMoving;
+			particle[i].mAlive 			= true;
+			particle[i].mPlaySFXBeforeMoving 	= playSFXBeforeMoving;
+			particle[i].mBounces 	= bounces;
+			mCount++;
 			break;
 		}
 	}
@@ -345,25 +345,25 @@ void Particle::genStars(Particle particle[], int startX, int startY, int endW, i
 
 
 void Particle::updateBulletParticles(Particle particle[], int mapX, int mapY, int mapW, int mapH) {
-	for (int i = 0; i < max; i++) {
-		if (particle[i].alive)
+	for (int i = 0; i < mMax; i++) {
+		if (particle[i].mAlive)
 		{
 
 			// Enemy particle I
-			if (particle[i].type == 0) {
+			if (particle[i].mType == 0) {
 				// Update particles angle based on its X and Y velocities
-				particle[i].angle = atan2 ( particle[i].vY, particle[i].vX) * 180 / 3.14159265;
+				particle[i].mAngle = atan2 ( particle[i].mVY, particle[i].mVX) * 180 / 3.14159265;
 			}
 			// Enemy particle II
-			if (particle[i].type == 1) {
+			if (particle[i].mType == 1) {
 
 			}
 			// Enemy particle IV
-			if (particle[i].type == 3) {
+			if (particle[i].mType == 3) {
 
 			}
 			// Enemy particle V
-			if (particle[i].type == 4) {
+			if (particle[i].mType == 4) {
 
 			}
 
@@ -450,11 +450,11 @@ void Particle::updateBulletParticles(Particle particle[], int mapX, int mapY, in
 
 // Update Particles
 void Particle::updateStarParticles(Particle particle[], int mapX, int mapY, int mapW, int mapH) {
-	for (int i = 0; i < max; i++) {
-		if (particle[i].alive)
+	for (int i = 0; i < mMax; i++) {
+		if (particle[i].mAlive)
 		{
 			// Star particles
-			if (particle[i].type == 2)
+			if (particle[i].mType == 2)
 			{
 
 			}
@@ -462,30 +462,30 @@ void Particle::updateStarParticles(Particle particle[], int mapX, int mapY, int 
 	}
 }
 void Particle::Render(SDL_Renderer* gRenderer, Particle particle[], int camX, int camY) {
-	for (int i = 0; i < max; i++) {
-		if (particle[i].alive) {
-			gParticles.setAlpha(particle[i].alpha);
-			gParticles.setColor(particle[i].color.r, particle[i].color.g, particle[i].color.b);
-			gParticles.render(gRenderer, particle[i].x - camX/particle[i].layer,particle[i].y - camY/particle[i].layer,
-										 particle[i].w, particle[i].h,
-										 &cParticles[0], particle[i].angle);
+	for (int i = 0; i < mMax; i++) {
+		if (particle[i].mAlive) {
+			mGParticles.setAlpha(particle[i].mAlpha);
+			mGParticles.setColor(particle[i].mColor.r, particle[i].mColor.g, particle[i].mColor.b);
+			mGParticles.render(gRenderer, particle[i].mX - camX/particle[i].mLayer,particle[i].mY - camY/particle[i].mLayer,
+										 particle[i].mW, particle[i].mH,
+										 &mCParticles[0], particle[i].mAngle);
 		}
 	}
 }
 
 // Render stars
 void Particle::renderStarParticle(Particle particle[], int camx, int camy, float playerZ, SDL_Renderer* gRenderer) {
-	for (int i = 0; i < max; i++) {
-		if (particle[i].alive) {
+	for (int i = 0; i < mMax; i++) {
+		if (particle[i].mAlive) {
 
 			// Render stars particle
-			if (particle[i].type == 2) {
+			if (particle[i].mType == 2) {
 
-				gParticles.setAlpha(particle[i].alpha);
-				gParticles.setColor(particle[i].color.r, particle[i].color.g, particle[i].color.b);
-				gParticles.render(gRenderer, particle[i].x - camx,particle[i].y - camy,
-											 particle[i].w, particle[i].h,
-											 &cParticles[0], particle[i].angle);
+				mGParticles.setAlpha(particle[i].mAlpha);
+				mGParticles.setColor(particle[i].mColor.r, particle[i].mColor.g, particle[i].mColor.b);
+				mGParticles.render(gRenderer, particle[i].mX - camx,particle[i].mY - camy,
+											 particle[i].mW, particle[i].mH,
+											 &mCParticles[0], particle[i].mAngle);
 
 				// Top Right corner
 			    /*SDL_Rect tempRect = { particle[i].A.x-1  - camx, particle[i].A.y-1 - camy, 2, 2 };

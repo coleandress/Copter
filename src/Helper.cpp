@@ -158,8 +158,8 @@ bool Helper::doIntersect(Point p1, Point q1, Point p2, Point q2)
 
 void Helper::renderDialogText(SDL_Renderer *gRenderer,
 					  std::string speakerName, std::string speakerText, std::string indicator,
-					  float speakerX, float speakerY, float speakerW, float speakerH,
-					  float dialogueX, float dialogueY, float dialogueW, float dialogueH,
+					  int speakerX, int speakerY, int speakerW, int speakerH,
+					  int dialogueX, int dialogueY, int dialogueW, int dialogueH,
 					  SDL_Color speakerNameColor, SDL_Color speakerTextColor,
 					  SDL_Color colorBG, SDL_Color colorBorder,
 					  SDL_Color colorBGSpeaker, SDL_Color colorBorderSpeaker,
@@ -224,9 +224,9 @@ void Helper::renderDialogText(SDL_Renderer *gRenderer,
 							newWidth, newHeight);
 }
 
-void Helper::renderStatusBar(SDL_Renderer *gRenderer, float x, float y, float w, float h,
-		 	 	 	 float yDistanceFromTarget,
-					 double health, double healthDecay, double maxHealth,
+void Helper::renderStatusBar(SDL_Renderer *gRenderer, int x, int y, int w, int h,
+		 	 	 	 int yDistanceFromTarget,
+					 int health, int healthDecay, int maxHealth,
 					 SDL_Color bgColor, SDL_Color decayColor,
 					 SDL_Color healthColor, SDL_Color borderColor,
 					 bool border){
