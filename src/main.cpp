@@ -98,6 +98,12 @@ double randDouble(double fMin, double fMax)
 	return fMin + f * (fMax - fMin);
 }
 
+float randFloat(float fMin, float fMax)
+{
+	float f = (double)rand() / RAND_MAX;
+	return fMin + f * (fMax - fMin);
+}
+
 bool checkCollision(float x, float y, int w, int h, float x2, float y2, int w2, int h2) {
 	if (x+w > x2 && x < x2+w2 && y+h > y2 && y < y2+h2) {
 		return true;
@@ -274,10 +280,10 @@ struct Enemy {
 	 * 2: Heavy Trooper
 	 */
 	int type;
-	float health;
+	int health;
 	float shootRate;
 	float shootTimer;
-	float alpha;
+	Uint8 alpha;
 	int flashTimer;
 	bool flash;
 	bool alive;
@@ -310,17 +316,17 @@ void spawnEnemy(Enemy enemy[], float x, float y, float w, float h, int type) {
 			enemy[i].type = type;
 			if (type == 0) {
 				enemy[i].health = 100;
-				enemy[i].shootRate = 1.09;
+				enemy[i].shootRate = 1.09f;
 				enemy[i].shootTimer = 0;
 			}
 			else if (type == 1) {
 				enemy[i].health = 175;
-				enemy[i].shootRate = 0.89;
+				enemy[i].shootRate = 0.89f;
 				enemy[i].shootTimer = 0;
 			}
 			else if (type == 2) {
 				enemy[i].health = 300;
-				enemy[i].shootRate = 0.66;
+				enemy[i].shootRate = 0.66f;
 				enemy[i].shootTimer = 0;
 			}
 			enemy[i].alpha = 255;
@@ -339,13 +345,13 @@ void updateEnemy(Enemy enemy[]) {
 
 			// enemy constantly moving left
 			if (enemy[i].type == 0) {
-				enemy[i].x -= 2.77;
+				enemy[i].x -= 2.77f;
 			}
 			else if (enemy[i].type == 1) {
-				enemy[i].x -= 2.89;
+				enemy[i].x -= 2.89f;
 			}
 			else if (enemy[i].type == 2) {
-				enemy[i].x -= 3.34;
+				enemy[i].x -= 3.34f;
 			}
 
 			// Flash enemy
@@ -553,11 +559,11 @@ void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int
 }
 
 
-typedef struct SDL_RectM
+struct SDL_RectM
 {
     float x, y;
     float w, h;
-} SDL_RectM;
+};
 
 void ContinueGame(Player &p1) {
 
@@ -694,7 +700,7 @@ void handleInput(Player& p1)
 	}
 }
 
-int main(int argc, char *argv[]) 
+int main(int, char**) 
 {
 	setup();
 
@@ -733,7 +739,6 @@ int main(int argc, char *argv[])
 
 	// Enemy Variables
 	float enemySpawnTimer = 0.0;
-	float enemySpawnRate = 0.45;
 
 	// Player Variables
 	const float playerFrameRate = 15;
@@ -819,11 +824,6 @@ int main(int argc, char *argv[])
 				// Update Player's, manually
 				if (p1.shoot) {
 					p1.shoot = false;
-					int randPosition = rand() % int(p1.getHeight());
-					int randSetBack = rand() % 3 + 1;
-					float newX = p1.getX() + p1.getWidth() - 16;
-					float newY = p1.getY() + p1.getHeight() / 2 + 32 - 6;
-
 					float centerX = p1.getCenterX();
 					float centerY = p1.getCenterY();
 
@@ -961,13 +961,13 @@ int main(int argc, char *argv[])
 			updateEnemy(enemy);
 
 			// Spawn Enemies
-			enemySpawnTimer += 0.22;
+			enemySpawnTimer += 0.22f;
 			if (enemySpawnTimer > 60) {
 				enemySpawnTimer = 0;
 
 				// Spawn a random enemy a few pixels to the right of the scree
 				//spawnEnemy(enemy, 1280 + rand() % 100, ground - 64 - 32 + 5, 64, // I changed this need to indicate the height is the ground CA 2022-11-10
-				spawnEnemy(enemy, 1280 + rand() % 100, mWindow.getHeight() - 64 - 32 + 5, 64,
+				spawnEnemy(enemy, 1280.0f + rand() % 100, mWindow.getHeight() - 64.0f - 32.0f + 5.0f, 64,
 						64, rand() % 3);
 			}
 
@@ -982,11 +982,11 @@ int main(int argc, char *argv[])
 						float newX = enemy[i].x + enemy[i].w / 2 - 12;
 						float newY = enemy[i].y + enemy[i].h / 2 - 9;
 						part.spawnParticleAngle(particles, "slow", 3, newX,
-								newY, 11, 11, randDouble(200, 225), 9, 0.0, {
+								newY, 11, 11, randFloat(200, 225), 9, 0.0, {
 										200, 200, 200 }, 1, 1, 1, 255, 0, 60, 0,
 								false, 0.11, false, 0.11, false, 0.0, white,
 								0.0, 0.0, 0.0, false, 0.0, 0.0, false, 0,
-								0.004);
+								0.004f);
 						// play sfx
 						Mix_PlayChannel(-1, sShoot, false);
 					}
@@ -995,7 +995,7 @@ int main(int argc, char *argv[])
 		}		// end !paused
 
 		// Move backgrounds
-		rSunClouds.x -= 0.05;
+		rSunClouds.x -= 0.05f;
 		rCity3.x -= 2;
 		rCity2.x -= 3;
 		rCity1.x -= 4;
@@ -1030,19 +1030,19 @@ int main(int argc, char *argv[])
 			gOrangeBG.render(gRenderer, 0, 0, mWindow.getWidth(), mWindow.getHeight());
 
 			// Layer 1, Sun and Clouds
-			gSunClouds.render(gRenderer, rSunClouds.x, rSunClouds.y, mWindow.getWidth(), mWindow.getHeight());
+			gSunClouds.render(gRenderer, (int)rSunClouds.x, (int)rSunClouds.y, mWindow.getWidth(), mWindow.getHeight());
 
 			// Layer 2, City
-			gCity3.render(gRenderer, rCity3.x+1280, rCity3.y, mWindow.getWidth(), mWindow.getHeight());
-			gCity3.render(gRenderer, rCity3.x, rCity3.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity3.render(gRenderer, (int)rCity3.x+1280, (int)rCity3.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity3.render(gRenderer, (int)rCity3.x, (int)rCity3.y, mWindow.getWidth(), mWindow.getHeight());
 
 			// Layer 3, City
-			gCity2.render(gRenderer, rCity2.x, rCity2.y, mWindow.getWidth(), mWindow.getHeight());
-			gCity2.render(gRenderer, rCity2.x+1280, rCity2.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity2.render(gRenderer, (int)rCity2.x, (int)rCity2.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity2.render(gRenderer, (int)rCity2.x+1280, (int)rCity2.y, mWindow.getWidth(), mWindow.getHeight());
 
 			// Layer 4, City
-			gCity1.render(gRenderer, rCity1.x, rCity1.y, mWindow.getWidth(), mWindow.getHeight());
-			gCity1.render(gRenderer, rCity1.x+1280, rCity1.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity1.render(gRenderer, (int)rCity1.x, (int)rCity1.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity1.render(gRenderer, (int)rCity1.x+1280, (int)rCity1.y, mWindow.getWidth(), mWindow.getHeight());
 
 			// Render particles
 			part.Render(gRenderer, particles, 0, 0);
@@ -1052,7 +1052,12 @@ int main(int argc, char *argv[])
 			SDL_RenderFillRect(gRenderer, &floor);
 
 			// Render floor
-			SDL_Rect playerPower = {p1.getX()+p1.getWidth(), p1.getY()+p1.getHeight()/2-1, p1.xPower*6, 2};
+			SDL_Rect playerPower = { 
+				(int)p1.getX() + (int)p1.getWidth(), 
+				(int)p1.getY() + (int)p1.getHeight()/2-1, 
+				(int)p1.xPower*6, 2 
+			};
+
 			SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
 			SDL_RenderFillRect(gRenderer, &playerPower);
 
@@ -1061,11 +1066,9 @@ int main(int argc, char *argv[])
 			// Render Player 1
 			if (p1.alive) {
 				gCopter.setAlpha(p1.alpha);
-				gCopter.render(gRenderer, p1.getX(), p1.getY(), p1.getWidth(), p1.getHeight(), &rCopter[playerFrame], p1.angle);
+				gCopter.render(gRenderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &rCopter[playerFrame], p1.angle);
 				p1.render(gRenderer);
 			}
-
-			//p1.render(gRenderer);
 
 			// Render enemy
 			renderEnemy(enemy, 0, 0);
@@ -1082,7 +1085,7 @@ int main(int argc, char *argv[])
 				tempss.str(std::string());
 				tempss << "Press Space to Start.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
-				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2, mWindow.getHeight() * 0.90 - gText.getHeight(),
+				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2, mWindow.getHeight() - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 
 			}
@@ -1099,14 +1102,14 @@ int main(int argc, char *argv[])
 				tempss << "You lose. Boo hoo.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
 				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2,
-						mWindow.getHeight() * 0.90 - gText.getHeight()-22,
+						mWindow.getHeight() - gText.getHeight()-22,
 							 gText.getWidth(), gText.getHeight());
 
 				tempss.str(std::string());
 				tempss << "Press Space to Start.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
 				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2,
-						mWindow.getHeight() * 0.90 - gText.getHeight(),
+						mWindow.getHeight() - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 			}
 
@@ -1116,14 +1119,14 @@ int main(int argc, char *argv[])
 				tempss << "You win something!";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
 				gText.render(gRenderer, 640/2 - gText.getWidth()/2,
-						 360 * 0.90 - gText.getHeight()-22,
+						 360 - gText.getHeight()-22,
 							 gText.getWidth(), gText.getHeight());
 
 				tempss.str(std::string());
 				tempss << "Press Space to Start again.";
 				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
 				gText.render(gRenderer, 640/2 - gText.getWidth()/2,
-						 360 * 0.90 - gText.getHeight(),
+						 360 - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 			}
 

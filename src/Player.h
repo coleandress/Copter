@@ -94,10 +94,10 @@ public:
 	bool moveDown;
 
 	// Player x speed
-	float speedX;
+	float speedX{};
 
 	// Player y speed
-	float speedY;
+	float speedY{};
 
 public: // abilities
 
@@ -108,7 +108,7 @@ public: // abilities
 	float yPower;
 	float angle;
 	float turretAngle;
-	float alpha;
+	Uint8 alpha;
 	float flashTimer;
 	bool flash;
 	bool alive;

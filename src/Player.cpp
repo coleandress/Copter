@@ -240,8 +240,8 @@ void Player::update(Particle &part, Particle particles[]) {
 
 			// Spawn explosion
 			part.SpawnExplosion(particles,
-					this->x + this->w / 2,
-					this->y + this->h / 2, { 200,
+					(float)(this->x + this->w) / 2,
+					(float)(this->y + this->h) / 2, { 200,
 							200, 200 });
 
 			// Health
@@ -251,7 +251,7 @@ void Player::update(Particle &part, Particle particles[]) {
 
 	// Shoot power
 	if (holdPower) {
-		addXPower(0.1);
+		addXPower(0.1f);
 	}
 
 	if (health <= 0) {
