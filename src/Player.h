@@ -114,9 +114,9 @@ public: // abilities
 	bool alive;
 
 private:
-	int x;
-	int y;
-	int w;
-	int h;
-	int health;
+	float x;
+	float y;
+	float w;
+	float h;
+	float health;
 };

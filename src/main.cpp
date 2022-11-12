@@ -100,7 +100,7 @@ double randDouble(double fMin, double fMax)
 
 float randFloat(float fMin, float fMax)
 {
-	float f = (double)rand() / RAND_MAX;
+	float f = (float)rand() / RAND_MAX;
 	return fMin + f * (fMax - fMin);
 }
 
@@ -413,10 +413,10 @@ void renderEnemy(Enemy enemy[], float camx, float camy) {
 		if (enemy[i].alive) {
 			if (enemy[i].flash) {
 				gTanks.setAlpha(enemy[i].alpha);
-				gTanks.render(gRenderer, enemy[i].x-camx, enemy[i].y-camy,  enemy[i].w, enemy[i].h, &rTanks[enemy[i].type]);
+				gTanks.render(gRenderer, (int)enemy[i].x-camx, (int)enemy[i].y-camy,  (int)enemy[i].w, (int)enemy[i].h, &rTanks[enemy[i].type]);
 			} else {
 				gTanks.setAlpha(enemy[i].alpha);
-				gTanks.render(gRenderer, enemy[i].x-camx, enemy[i].y-camy,  enemy[i].w, enemy[i].h, &rTanks[enemy[i].type]);
+				gTanks.render(gRenderer, (int)enemy[i].x-camx, (int)enemy[i].y-camy,  (int)enemy[i].w, (int)enemy[i].h, &rTanks[enemy[i].type]);
 			}
 			/*SDL_Rect playerPower = {enemy[i].x-camx, enemy[i].y-camy,  enemy[i].w, enemy[i].h};
 			SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);

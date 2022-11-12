@@ -169,20 +169,20 @@ void Player::update(Particle &part, Particle particles[]) {
 
 	// Move player left
 	if (moveLeft && speedX > -6) {
-		speedX -= 0.26;
+		speedX -= 0.26f;
 	}
 	// Move player right
 	else if (moveRight && speedX < 6) {
-		speedX += 0.37;
+		speedX += 0.37f;
 	}
 
 	// No movement, start decay
 	if (!moveLeft && !moveRight) {
-		speedX = speedX - speedX * 0.05;
+		speedX = speedX - speedX * 0.05f;
 
 		// Level coptor after tilting
 		if (angle != 0) {
-			angle = angle - angle * 0.05;
+			angle = angle - angle * 0.05f;
 		}
 	}
 
@@ -295,15 +295,15 @@ void Player::render(SDL_Renderer *gRenderer) {
 	//SDL_RenderDrawRect(gRenderer, &tempRect);
 
 	// Create Health bar
-	SDL_Rect tempRect = {x, y-20, w, 15};
+	SDL_Rect tempRect = { (int)x, (int)y-20, (int)w, 15 };
 	SDL_SetRenderDrawColor(gRenderer, 0, 50, 0, 255);
 	SDL_RenderFillRect(gRenderer, &tempRect);
 
-	tempRect = {x, y-20, (w*health)/100, 15};
+	tempRect = { (int)x, (int)y-20, (int)(w*health)/100, 15 };
 	SDL_SetRenderDrawColor(gRenderer, 0, 200, 0, 255);
 	SDL_RenderFillRect(gRenderer, &tempRect);
 
-	tempRect = {x, y-20, w, 15};
+	tempRect = { (int)x, (int)y-20, (int)w, 15 };
 	SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
 	SDL_RenderDrawRect(gRenderer, &tempRect);
 }
