@@ -64,18 +64,18 @@ void Player::init(Mix_Chunk *PongScore) {
 }
 
 // Set Player position
-void Player::setPosition(int spawnX, int spawnY) {
+void Player::setPosition(float spawnX, float spawnY) {
 	x = spawnX;
 	y = spawnY;
 }
 
 // Set Player x position
-void Player::setX(int spawnX) {
+void Player::setX(float spawnX) {
 	x = spawnX;
 }
 
 // Set Player y position
-void Player::setY(int spawnY) {
+void Player::setY(float spawnY) {
 	y = spawnY;
 }
 

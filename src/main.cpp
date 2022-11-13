@@ -413,10 +413,10 @@ void renderEnemy(Enemy enemy[], float camx, float camy) {
 		if (enemy[i].alive) {
 			if (enemy[i].flash) {
 				gTanks.setAlpha(enemy[i].alpha);
-				gTanks.render(gRenderer, (int)enemy[i].x-camx, (int)enemy[i].y-camy,  (int)enemy[i].w, (int)enemy[i].h, &rTanks[enemy[i].type]);
+				gTanks.render(gRenderer, (int)enemy[i].x - (int)camx, (int)enemy[i].y - (int)camy,  (int)enemy[i].w, (int)enemy[i].h, &rTanks[enemy[i].type]);
 			} else {
 				gTanks.setAlpha(enemy[i].alpha);
-				gTanks.render(gRenderer, (int)enemy[i].x-camx, (int)enemy[i].y-camy,  (int)enemy[i].w, (int)enemy[i].h, &rTanks[enemy[i].type]);
+				gTanks.render(gRenderer, (int)enemy[i].x - (int)camx, (int)enemy[i].y - (int)camy,  (int)enemy[i].w, (int)enemy[i].h, &rTanks[enemy[i].type]);
 			}
 			/*SDL_Rect playerPower = {enemy[i].x-camx, enemy[i].y-camy,  enemy[i].w, enemy[i].h};
 			SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
@@ -429,7 +429,7 @@ void renderEnemy(Enemy enemy[], float camx, float camy) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////// PARTICLES //////////////////////////////////////////////////////////////
 //----------------------------------------------------------------------------------------------------------------------------------//
-void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int mapW, int mapH,
+void ParticleUpdate(Particle &part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
 					  float camx, float camy) {
 	for (int i = 0; i < 1000; i++) {
 		if (particle[i].mAlive)
@@ -493,10 +493,9 @@ void ParticleUpdate(Particle &part, Particle particle[], int mapX, int mapY, int
 			//---------------------------------------------------------------------------//
 			float particleCX = particle[i].mX+particle[i].mW/2;
 			float particleCY = particle[i].mY+particle[i].mH/2;
-			float particleAngle = particle[i].mAngle;
-			float radians   = (3.1415926536/180)*(particle[i].mAngle);
-			float Cos 		= floor(cos(radians)*100+0.05)/100;
-			float Sin 		= floor(sin(radians)*100+0.05)/100;
+			float radians   = (3.1415926536f / 180) * (particle[i].mAngle);
+			float Cos 		= floor(cos(radians)*100+0.05f)/100;
+			float Sin 		= floor(sin(radians)*100+0.05f)/100;
 
 			// Top Right corner
 		    float barrelW  = ((particle[i].mW/2) * Cos ) - (-(particle[i].mH/2) * Sin );
@@ -614,7 +613,7 @@ void setup()
 {
 
 	// Make random actually random
-	srand(time(0));
+	srand((unsigned int)time(NULL));
 
 	// Initialize SDL
 	initSDL();
@@ -834,7 +833,7 @@ int main(int, char**)
 					float turret1w = 128;
 					float turret1h = 64;
 					float frigateAngle = p1.angle;
-					float radians = (3.1415926536 / 180) * (p1.angle);
+					float radians = (3.1415926536f / 180) * (p1.angle);
 					//float Cos 		= floor(cos(radians)*100+0.05)/100;
 					//float Sin 		= floor(sin(radians)*100+0.05)/100;
 					float Cos = cos(radians);
@@ -852,7 +851,7 @@ int main(int, char**)
 
 					/***** Get turrets nose angle (get the exact position even when the player rotates) *****/
 					frigateAngle = p1.angle;
-					radians = (3.1415926536 / 180) * (p1.angle);
+					radians = (3.1415926536f / 180) * (p1.angle);
 					barrelW = (60 * cos(radians)) - (32 * sin(radians));// add this to center of zombie (this will give us the guns barrel position)
 					barrelH = (60 * sin(radians)) + (32 * cos(radians));
 					barrelX = turret1x + turret1w / 2 - particleW / 2 + barrelW;
@@ -860,13 +859,13 @@ int main(int, char**)
 					/***** Get turrets nose angle *****/
 
 					float newAngle = atan2(my - barrelY, mx - barrelX);
-					newAngle = newAngle * 180 / M_PI;
+					newAngle = newAngle * 180 / (float)M_PI;
 
 					part.spawnParticleAngle(particles, "slow", 4, barrelX, barrelY,
-							particleW, particleH, newAngle, 11, 0.0,
-							{ 200, 200, 100 }, 1, 0, 0, 255, 0, 60, 0, false, 0.11,
-							false, 0.11, false, 0.0, white, 0.0, 0.0, 0.0, false,
-							0.0, 0.0, false, 0, 0.0);
+							particleW, particleH, newAngle, 11, 0.0f,
+							{ 200, 200, 100 }, 1, 0, 0, 255, 0, 60, 0, false, 0.11f,
+							false, 0.11f, false, 0.0f, white, 0.0f, 0.0f, 0.0f, false,
+							0.0f, 0.0f, false, 0, 0.0f);
 					// play sfx
 					Mix_PlayChannel(-1, sShoot, false);
 				}
@@ -982,10 +981,10 @@ int main(int, char**)
 						float newX = enemy[i].x + enemy[i].w / 2 - 12;
 						float newY = enemy[i].y + enemy[i].h / 2 - 9;
 						part.spawnParticleAngle(particles, "slow", 3, newX,
-								newY, 11, 11, randFloat(200, 225), 9, 0.0, {
+								newY, 11, 11, randFloat(200, 225), 9, 0.0f, {
 										200, 200, 200 }, 1, 1, 1, 255, 0, 60, 0,
-								false, 0.11, false, 0.11, false, 0.0, white,
-								0.0, 0.0, 0.0, false, 0.0, 0.0, false, 0,
+								false, 0.11f, false, 0.11f, false, 0.0f, white,
+								0.0f, 0.0f, 0.0f, false, 0.0f, 0.0f, false, 0,
 								0.004f);
 						// play sfx
 						Mix_PlayChannel(-1, sShoot, false);

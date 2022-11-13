@@ -24,7 +24,7 @@ LTexture::~LTexture() {
 	free();
 }
 
-bool LTexture::loadFromFile(SDL_Renderer *gRenderer, std::string path, bool itsAFont, bool save) {
+bool LTexture::loadFromFile(SDL_Renderer *gRenderer, std::string path, bool /*itsAFont*/, bool /*save*/) {
 	//Get rid of preexisting texture
 	free();
 

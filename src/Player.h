@@ -25,13 +25,13 @@ public:
 	void reset();
 
 	// Set Player position
-	void setPosition(int spawnX, int spawnY);
+	void setPosition(float spawnX, float spawnY);
 
 	// Set Player position
-	void setX(int spawnX);
+	void setX(float spawnX);
 
 	// Set Player position
-	void setY(int spawnY);
+	void setY(float spawnY);
 
 	// Add xPower
 	void addXPower(float amount);

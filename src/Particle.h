@@ -23,7 +23,7 @@ public:	// other variables
 
 public:	// variables
 	float mX2{}, mY2{};							// particle center
-	int mRadius{};								// particle radius
+	float mRadius{};								// particle radius
 	float mX{}, mY{};
 	float mW{}, mH{};
 	double mAlpha{};
@@ -32,9 +32,9 @@ public:	// variables
 	double mDeathTimer{};						// Max ticks before particle death
 	double mDeathTimerSpeed{};					// Death tick rate
 	float mAngle;
-	double mVX{}, mVY{};
-	double mSpeed{};
-	double mAngleSpe{}, mAngleDir{};
+	float mVX{}, mVY{};
+	float mSpeed{};
+	float mAngleSpe{}, mAngleDir{};
 	bool mOnScreen{};
 	bool mAlive{};
 	bool mCollide{};
@@ -93,10 +93,10 @@ public:	// functions
 	void spawnParticleAngle(Particle particle[], std::string tag, int type,
 			float spawnX, float spawnY,
 			float spawnW, float spawnH,
-			float angle, double speed,
+			float angle, float speed,
 			float damage,
 			SDL_Color color, int layer,
-			int angleSpe, int angleDir,
+			float angleSpe, float angleDir,
 			float alpha, float alphaspeed,
 			float deathTimer, float deathTimerSpeed,
 			bool sizeDeath = false, float deathSpe = 0.0,

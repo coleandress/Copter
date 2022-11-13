@@ -113,8 +113,8 @@ int Helper::orientation(Point p, Point q, Point r)
 {
     // See http://www.geeksforgeeks.org/orientation-3-ordered-points/
     // for details of below formula.
-    int val = (q.y - p.y) * (r.x - q.x) -
-              (q.x - p.x) * (r.y - q.y);
+    int val = (int)(q.y - p.y) * (int)(r.x - q.x) -
+              (int)(q.x - p.x) * (int)(r.y - q.y);
 
     if (val == 0) return 0;  // colinear
 

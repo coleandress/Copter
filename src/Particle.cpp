@@ -87,10 +87,10 @@ void Particle::RemoveAll(Particle particle[]) {
 void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type,
 		float spawnX, float spawnY,
 		float spawnW, float spawnH,
-		float angle, double speed,
+		float angle, float speed,
 		float damage,
 		SDL_Color color, int layer,
-		int angleSpe, int angleDir,
+		float angleSpe, float angleDir,
 		float alpha, float alphaspeed,
 		float deathTimer, float deathTimerSpeed,
 		bool sizeDeath, float deathSpe,
@@ -122,15 +122,15 @@ void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type
 			//particle[i].goTowardsTarget = goTowardsTarget;
 			if (goTowardsTarget) {
 				float shootAngle = atan2(targetY - particle[i].mY-particle[i].mH/2,targetX - particle[i].mX-particle[i].mW/2);
-				shootAngle = shootAngle * (180 / 3.1416);
+				shootAngle = shootAngle * (180 / 3.1416f);
 				if (shootAngle < 0) { shootAngle = 360 - (-shootAngle); }
-				particle[i].mVX 				= (cos( (3.14159265/180)*(shootAngle) ));
-				particle[i].mVY 				= (sin( (3.14159265/180)*(shootAngle) ));
+				particle[i].mVX 				= (cos( (3.14159265f / 180) * (shootAngle) ));
+				particle[i].mVY 				= (sin( (3.14159265f / 180) * (shootAngle) ));
 				// Also change Particle direction? decide this
 				particle[i].mAngle = shootAngle;
 			}else{
-				particle[i].mVX 				= (cos( (3.14159265/180)*(angle) ));
-				particle[i].mVY 				= (sin( (3.14159265/180)*(angle) ));
+				particle[i].mVX 				= (cos( (3.14159265f / 180) * (angle) ));
+				particle[i].mVY 				= (sin( (3.14159265f / 180) * (angle) ));
 			}
 			particle[i].mDamage 			= damage;
 			//particle[i].x 				= spawnX + (rand() % 4 + 2 * (cos( (3.14159265/180)*(angle) )));
@@ -142,10 +142,9 @@ void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type
 			//////////////////////////////// Set Corners /////////////////////////////
 			float particleCX = spawnX+spawnW/2;
 			float particleCY = spawnY+spawnH/2;
-			float particleAngle = angle;
-			float radians   = (3.1415926536/180)*(particle[i].mAngle);
-			float Cos 		= floor(cos(radians)*100+0.05)/100;
-			float Sin 		= floor(sin(radians)*100+0.05)/100;
+			float radians   = (3.1415926536f / 180) * (particle[i].mAngle);
+			float Cos 		= floor(cos(radians) * 100 + 0.05f) / 100;
+			float Sin 		= floor(sin(radians) * 100+ 0.05f) / 100;
 			// Top Right corner
 		    float barrelW  = ((spawnW/2) * Cos ) - (-(spawnH/2) * Sin );
 		    float barrelH  = ((spawnW/2) * Sin ) + (-(spawnH/2) * Cos );
@@ -250,30 +249,30 @@ void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type
 }*/
 
 // Generate Stars
-void Particle::genStars(Particle particle[], int startX, int startY, int endW, int endH){
+void Particle::genStars(Particle particle[], int startX, int startY, int /*endW*/, int /*endH*/) {
 	//this->ptimer += 1;
 	//if (this->ptimer > 10){
 	//	this->ptimer = 0;
 	for (int i=0; i<65; i++){
 		int randl = rand() % 5 + 3;
-		int rands = rand() % 3 + 4;
+		//int rands = rand() % 3 + 4;
 		int randW = rand() % 2304;
 		int randH = rand() % 1296;
 		//iint randW = rand() % 8000;
 		//iint randH = rand() % 3300;
-		int randc = rand() %  100 + 150;
-		SDL_Color tempColor = {randc,randc,randc};
+		Uint8 randc = rand() %  100 + 150;
+		SDL_Color tempColor = { randc, randc, randc };
 		spawnParticleAngle(particle, "none", 4,
-				startX/randl + randW,
-				startY/randl + randH,
-						   10 - randl, 10 - randl,
-						   0.0, 0.0,
+				(float)(startX/randl + randW),
+				(float)(startY/randl + randH),
+						   (float)(10 - randl), (float)(10 - randl),
+						   0.0f, 0.0f,
 						   0,
 						   tempColor, randl,
 						   1, 1,
-						   rand() % 100 + 50, randDouble(0.5, 1.1),
+						   (float)(rand() % 100 + 50), (float)randDouble(0.5, 1.1),
 						   100, 0,
-						   true, 0.08);
+						   true, 0.08f);
 	}
 
 
@@ -344,7 +343,7 @@ void Particle::genStars(Particle particle[], int startX, int startY, int endW, i
 }*/
 
 
-void Particle::updateBulletParticles(Particle particle[], int mapX, int mapY, int mapW, int mapH) {
+void Particle::updateBulletParticles(Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/) {
 	for (int i = 0; i < mMax; i++) {
 		if (particle[i].mAlive)
 		{
@@ -352,7 +351,7 @@ void Particle::updateBulletParticles(Particle particle[], int mapX, int mapY, in
 			// Enemy particle I
 			if (particle[i].mType == 0) {
 				// Update particles angle based on its X and Y velocities
-				particle[i].mAngle = atan2 ( particle[i].mVY, particle[i].mVX) * 180 / 3.14159265;
+				particle[i].mAngle = atan2 ( particle[i].mVY, particle[i].mVX) * 180 / 3.14159265f;
 			}
 			// Enemy particle II
 			if (particle[i].mType == 1) {
@@ -449,7 +448,7 @@ void Particle::updateBulletParticles(Particle particle[], int mapX, int mapY, in
 }
 
 // Update Particles
-void Particle::updateStarParticles(Particle particle[], int mapX, int mapY, int mapW, int mapH) {
+void Particle::updateStarParticles(Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/) {
 	for (int i = 0; i < mMax; i++) {
 		if (particle[i].mAlive)
 		{
@@ -464,28 +463,36 @@ void Particle::updateStarParticles(Particle particle[], int mapX, int mapY, int 
 void Particle::Render(SDL_Renderer* gRenderer, Particle particle[], int camX, int camY) {
 	for (int i = 0; i < mMax; i++) {
 		if (particle[i].mAlive) {
-			mGParticles.setAlpha(particle[i].mAlpha);
+			mGParticles.setAlpha((Uint8)particle[i].mAlpha);
 			mGParticles.setColor(particle[i].mColor.r, particle[i].mColor.g, particle[i].mColor.b);
-			mGParticles.render(gRenderer, particle[i].mX - camX/particle[i].mLayer,particle[i].mY - camY/particle[i].mLayer,
-										 particle[i].mW, particle[i].mH,
-										 &mCParticles[0], particle[i].mAngle);
+			mGParticles.render(gRenderer,
+				(int)(particle[i].mX - camX/particle[i].mLayer),
+				(int)(particle[i].mY - camY/particle[i].mLayer),
+				(int)particle[i].mW,
+				(int)particle[i].mH,
+				&mCParticles[0],
+				(double)particle[i].mAngle);
 		}
 	}
 }
 
 // Render stars
-void Particle::renderStarParticle(Particle particle[], int camx, int camy, float playerZ, SDL_Renderer* gRenderer) {
+void Particle::renderStarParticle(Particle particle[], int camx, int camy, float /*playerZ*/, SDL_Renderer* gRenderer) {
 	for (int i = 0; i < mMax; i++) {
 		if (particle[i].mAlive) {
 
 			// Render stars particle
 			if (particle[i].mType == 2) {
 
-				mGParticles.setAlpha(particle[i].mAlpha);
+				mGParticles.setAlpha((Uint8)particle[i].mAlpha);
 				mGParticles.setColor(particle[i].mColor.r, particle[i].mColor.g, particle[i].mColor.b);
-				mGParticles.render(gRenderer, particle[i].mX - camx,particle[i].mY - camy,
-											 particle[i].mW, particle[i].mH,
-											 &mCParticles[0], particle[i].mAngle);
+				mGParticles.render(gRenderer,
+					(int)particle[i].mX - camx,
+					(int)particle[i].mY - camy,
+					(int)particle[i].mW,
+					(int)particle[i].mH,
+					&mCParticles[0],
+					particle[i].mAngle);
 
 				// Top Right corner
 			    /*SDL_Rect tempRect = { particle[i].A.x-1  - camx, particle[i].A.y-1 - camy, 2, 2 };
@@ -529,18 +536,28 @@ void Particle::renderStarParticle(Particle particle[], int camx, int camy, float
 void Particle::SpawnExplosion(Particle particle[], float x, float y, SDL_Color explosionColor) {
 	for (double j=0.0; j< 360.0; j+=rand() % 10 + 10){
 		int rands = rand() % 4 + 2;
-		spawnParticleAngle(particle, "none", 2,
-							x-rands/2,
-							y-rands/2,
-						   rands, rands,
-						   j, randDouble(0.9, 3.1),
-						   0.0,
-						   explosionColor, 1,
-						   1, 1,
-						   rand() % 100 + 150, rand() % 2 + 2,
-						   rand() % 50 + 90, 0,
-						   true, 0.11,
-						   true, 0.11);
+		spawnParticleAngle(particle,
+			"none", 
+			2,
+			(float)x-rands / 2,
+			(float)y-rands / 2,
+			(float)rands,
+			(float)rands,
+			(float)j,
+			(float)randDouble(0.9, 3.1),
+			0.0,
+			explosionColor,
+			1,
+			1,
+			1,
+			(float)(rand() % 100 + 150), 
+			(float)(rand() % 2 + 2),
+			(float)(rand() % 50 + 90),
+			0,
+			true, 
+			0.11f,
+			true,
+			0.11f);
 	}
 }
 
@@ -550,27 +567,28 @@ void Particle::SpawnFireExplosion(Particle particle[], float x, float y, SDL_Col
 		spawnParticleAngle(particle, "none", 4,
 							x-rands/2-2,
 							y-rands/2-2,
-						   rands+4, rands+4,
-						   j, randDouble(0.9, 3.1),
+						   (float)rands+4, (float)rands+4,
+						   (float)j, (float)randDouble(0.9, 3.1),
 						   0.0,
 						   {244,144,100}, 1,
 						   1, 1,
-						   rand() % 100 + 150, rand() % 2 + 2,
-						   rand() % 50 + 90, 0,
-						   true, 0.11,
-						   true, 0.11);
+						   (float)(rand() % 100 + 150),
+						   (float)(rand() % 2 + 2),
+						   (float)(rand() % 50 + 90), 0,
+						   true, 0.11f,
+						   true, 0.11f);
 		spawnParticleAngle(particle, "none", 4,
 							x-rands/2,
 							y-rands/2,
-						   rands, rands,
-						   j, randDouble(0.9, 3.1),
+						   (float)rands, (float)rands,
+						   (float)j, (float)randDouble(0.9, 3.1),
 						   0.0,
 						   explosionColor, 1,
 						   1, 1,
-						   rand() % 100 + 150, rand() % 2 + 2,
-						   rand() % 50 + 90, 0,
-						   true, 0.11,
-						   true, 0.11);
+						   (float)(rand() % 100 + 150), (float)(rand() % 2 + 2),
+						   (float)(rand() % 50 + 90), 0,
+						   true, 0.11f,
+						   true, 0.11f);
 	}
 }
 
@@ -579,15 +597,15 @@ void Particle::SpawnTrail(Particle particle[], float x, float y, SDL_Color explo
 	spawnParticleAngle(particle, "none", 4,
 						x-rands/2,
 						y-rands/2,
-					   rands, rands,
-					   360, randDouble(0.9, 3.1),
+					   (float)rands, (float)rands,
+					   360, (float)randDouble(0.9, 3.1),
 					   0.0,
 					   explosionColor, 1,
 					   1, 1,
-					   rand() % 100 + 150, rand() % 2 + 2,
-					   rand() % 50 + 90, 0,
-					   true, 0.11,
-					   true, 0.11);
+					   (float)(rand() % 100 + 150), (float)(rand() % 2 + 2),
+					   (float)(rand() % 50 + 90), 0,
+					   true, 0.11f,
+					   true, 0.11f);
 }
 
 void Particle::SpawnFireTrail(Particle particle[], float x, float y, SDL_Color explosionColor) {
@@ -595,27 +613,27 @@ void Particle::SpawnFireTrail(Particle particle[], float x, float y, SDL_Color e
 	spawnParticleAngle(particle, "none", 4,
 						x-rands/2-2,
 						y-rands/2-2,
-					   rands+4, rands+4,
-					   360, randDouble(0.9, 3.1),
+					   (float)rands+4, (float)rands+4,
+					   360, (float)randDouble(0.9, 3.1),
 					   0.0,
 					   {244,144,100}, 1,
 					   1, 1,
-					   rand() % 100 + 150, rand() % 2 + 2,
-					   rand() % 50 + 90, 0,
-					   true, 0.11,
-					   true, 0.11);
+					   (float)(rand() % 100 + 150), (float)(rand() % 2 + 2),
+					   (float)(rand() % 50 + 90), 0,
+					   true, 0.11f,
+					   true, 0.11f);
 	spawnParticleAngle(particle, "none", 4,
 						x-rands/2,
 						y-rands/2,
-					   rands, rands,
-					   360, randDouble(0.9, 3.1),
+					   (float)rands, (float)rands,
+					   360, (float)randDouble(0.9, 3.1),
 					   0.0,
 					   explosionColor, 1,
 					   1, 1,
-					   rand() % 100 + 150, rand() % 2 + 2,
-					   rand() % 50 + 90, 0,
-					   true, 0.11,
-					   true, 0.11);
+					   (float)(rand() % 100 + 150), (float)(rand() % 2 + 2),
+					   (float)(rand() % 50 + 90), 0,
+					   true, 0.11f,
+					   true, 0.11f);
 }
 
 //------------------------------------------------------ Function Extensions-----------------------------------------------------//
