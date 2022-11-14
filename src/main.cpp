@@ -144,11 +144,11 @@ void initSDL() {
 void loadMedia() {
 
 	// load audio
-	sPongPlayer = Mix_LoadWAV("pong-player.wav");
-	sPongScreen = Mix_LoadWAV("pong-screen.wav");
-	sPongScore = Mix_LoadWAV("pong-score.wav");
-	sPlayerHurt = Mix_LoadWAV("player-hurt.wav");
-	sShoot = Mix_LoadWAV("player-shoot.wav");
+	sPongPlayer = Mix_LoadWAV("resource/sounds/pong-player.wav");
+	sPongScreen = Mix_LoadWAV("resource/sounds/pong-screen.wav");
+	sPongScore = Mix_LoadWAV("resource/sounds/pong-score.wav");
+	sPlayerHurt = Mix_LoadWAV("resource/sounds/player-hurt.wav");
+	sShoot = Mix_LoadWAV("resource/sounds/player-shoot.wav");
 	sMusic = Mix_LoadMUS("resource/sounds/music.mp3");
 
 	gOrangeBG.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_08_1920 x 1080.png");
