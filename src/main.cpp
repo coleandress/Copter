@@ -17,39 +17,6 @@
 #include "Enemy.h"
 
 
-
-// Create player hitting pong sound effect
-Mix_Chunk* sPongPlayer = NULL;
-
-// Create pong hitting screen sound effect
-Mix_Chunk* sPongScreen = NULL;
-
-// Create pong scoring
-Mix_Chunk* sPongScore = NULL;
-
-// Create player hurt
-Mix_Chunk* sPlayerHurt = NULL;
-
-// Create shoot audio
-Mix_Chunk* sShoot = NULL;
-
-// Create font variable
-TTF_Font* viga = NULL;
-
-// Colors
-SDL_Color black = { 0, 0, 0, 255 };
-SDL_Color blue = { 0, 0, 255, 255 };
-SDL_Color green = { 0, 255, 0, 255 };
-SDL_Color red = { 255, 0, 0, 255 };
-SDL_Color white = { 255, 255, 255, 255 };
-SDL_Color orange = { 180, 90, 20, 255 };
-
-// Create Surface to put font text on
-SDL_Surface* surface1 = NULL;
-
-// Create Texture from a Surface
-SDL_Texture* texture1 = NULL;
-
 LTexture gText;
 
 /// Backgrounds ///
@@ -94,15 +61,25 @@ void initSDL(LWindow& mWindow, SDL_Renderer** gRenderer) {
 }
 
 // Load media
-void loadMedia(SDL_Renderer** gRenderer, Mix_Music** sMusic) {
+void loadMedia(
+	SDL_Renderer** gRenderer,
+	Mix_Music** sMusic,
+	Mix_Chunk** sPongPlayer,
+	Mix_Chunk** sPongScreen,
+	Mix_Chunk** sPongScore,
+	Mix_Chunk** sPlayerHurt,
+	Mix_Chunk** sShoot,
+	TTF_Font** viga
+) 
+{
 
 	// load audio
-	sPongPlayer = Mix_LoadWAV("resource/sounds/pong-player.wav");
-	sPongScreen = Mix_LoadWAV("resource/sounds/pong-screen.wav");
-	sPongScore = Mix_LoadWAV("resource/sounds/pong-score.wav");
-	sPlayerHurt = Mix_LoadWAV("resource/sounds/player-hurt.wav");
-	sShoot = Mix_LoadWAV("resource/sounds/player-shoot.wav");
 	*sMusic = Mix_LoadMUS("resource/sounds/music.mp3");
+	*sPongPlayer = Mix_LoadWAV("resource/sounds/pong-player.wav");
+	*sPongScreen = Mix_LoadWAV("resource/sounds/pong-screen.wav");
+	*sPongScore = Mix_LoadWAV("resource/sounds/pong-score.wav");
+	*sPlayerHurt = Mix_LoadWAV("resource/sounds/player-hurt.wav");
+	*sShoot = Mix_LoadWAV("resource/sounds/player-shoot.wav");
 
 	gOrangeBG.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_08_1920 x 1080.png");
 	gSunClouds.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_07_1920 x 1080.png");
@@ -114,7 +91,7 @@ void loadMedia(SDL_Renderer** gRenderer, Mix_Music** sMusic) {
 	gCopter.loadFromFile(gRenderer, "resource/gfx/player-copter.png");
 
 	// load fonts
-	viga = TTF_OpenFont("resource/fonts/Viga-Regular.ttf", 24); //this opens a font style and sets a size
+	*viga = TTF_OpenFont("resource/fonts/Viga-Regular.ttf", 24); //this opens a font style and sets a size
 
 	// Texture clips
 
@@ -136,12 +113,16 @@ void loadMedia(SDL_Renderer** gRenderer, Mix_Music** sMusic) {
 }
 
 // Free SDL
-void freeSDL(LWindow& mWindow, Mix_Music** sMusic) {
-	// Free texture
-	SDL_DestroyTexture(texture1);
-
-	// Free surface
-	SDL_FreeSurface(surface1);
+void freeSDL(
+	LWindow& mWindow,
+	Mix_Music** sMusic,
+	Mix_Chunk** sPongPlayer,
+	Mix_Chunk** sPongScreen,
+	Mix_Chunk** sPongScore,
+	Mix_Chunk** sPlayerHurt,
+	Mix_Chunk** sShoot
+	) 
+{
 	gText.free();
 	gOrangeBG.free();
 	gSunClouds.free();
@@ -152,17 +133,14 @@ void freeSDL(LWindow& mWindow, Mix_Music** sMusic) {
 	gCopter.free();
 
 	// Free audio
-	Mix_FreeChunk(sPongPlayer);
-	Mix_FreeChunk(sPongScreen);
-	Mix_FreeChunk(sPongScore);
-	Mix_FreeChunk(sPlayerHurt);
-	Mix_FreeChunk(sShoot);
 	Mix_FreeMusic(*sMusic);
+	Mix_FreeChunk(*sPongPlayer);
+	Mix_FreeChunk(*sPongScreen);
+	Mix_FreeChunk(*sPongScore);
+	Mix_FreeChunk(*sPlayerHurt);
+	Mix_FreeChunk(*sShoot);
 
-	// Close upon exit
-	//SDL_DestroyRenderer(gRenderer);
 	mWindow.free();
-	//SDL_DestroyWindow(mWindow);
 
 	//Quit SDL subsystems
 	Mix_Quit();
@@ -225,7 +203,7 @@ struct SDL_RectM
     float w, h;
 };
 
-void ContinueGame(Player &p1, int& gameScene, int& previousHighScore, int& score) {
+void ContinueGame(Player &p1, int& gameScene, int& previousHighScore, int& score, Mix_Chunk** sPongScore, Mix_Chunk** sPlayerHurt) {
 
 	// Before game play scene, start game
 	if (gameScene == 0)
@@ -236,7 +214,7 @@ void ContinueGame(Player &p1, int& gameScene, int& previousHighScore, int& score
 		LoadHighScore(previousHighScore);
 
 		// Play SFX
-		Mix_PlayChannel(-1, sPongScore, false);
+		Mix_PlayChannel(-1, *sPongScore, false);
 
 		// Reset score
 		score = 0;
@@ -256,7 +234,7 @@ void ContinueGame(Player &p1, int& gameScene, int& previousHighScore, int& score
 		LoadHighScore(previousHighScore);
 
 		// Play SFX
-		Mix_PlayChannel(-1, sPlayerHurt, false);
+		Mix_PlayChannel(-1, *sPlayerHurt, false);
 
 		// Set gamemode to play game
 		gameScene = 1;
@@ -271,7 +249,18 @@ void ContinueGame(Player &p1, int& gameScene, int& previousHighScore, int& score
 	}
 }
 
-void setup(LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore, Mix_Music** sMusic)
+void setup(
+	LWindow& mWindow,
+	SDL_Renderer** gRenderer,
+	int& previousHighScore,
+	Mix_Music** sMusic,
+	Mix_Chunk** sPongPlayer,
+	Mix_Chunk** sPongScreen,
+	Mix_Chunk** sPongScore,
+	Mix_Chunk** sPlayerHurt,
+	Mix_Chunk** sShoot,
+	TTF_Font** viga
+	)
 {
 
 	// Make random actually random
@@ -281,13 +270,13 @@ void setup(LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore, M
 	initSDL(mWindow, gRenderer);
 
 	// Load media
-	loadMedia(gRenderer, sMusic);
+	loadMedia(gRenderer, sMusic, sPongPlayer, sPongScreen, sPongScore, sPlayerHurt, sShoot, viga);
 
 	// Load high score
 	LoadHighScore(previousHighScore);
 }
 
-void handleInput(Player& p1, int& gameScene, int& previousHighScore, int& score, bool& paused, SDL_Event& events)
+void handleInput(Player& p1, int& gameScene, int& previousHighScore, int& score, bool& paused, SDL_Event& events, Mix_Chunk** sPongScore, Mix_Chunk** sPlayerHurt)
 {
 	// Key Pressed
 	if (events.type == SDL_KEYDOWN && events.key.repeat == 0) {
@@ -310,7 +299,7 @@ void handleInput(Player& p1, int& gameScene, int& previousHighScore, int& score,
 				paused = (!paused);
 				break;
 			case SDLK_SPACE:			// start game
-				ContinueGame(p1, gameScene, previousHighScore, score);
+				ContinueGame(p1, gameScene, previousHighScore, score, sPongScore, sPlayerHurt);
 				break;
 		}
 	}
@@ -396,23 +385,43 @@ int main(int, char**)
 
 	LWindow window{};
 	SDL_Renderer* renderer{};
-	int gameScene = 0;
-	int highscore = -1;
-	int previousHighScore = -1;
-	int score = 0;
+	int gameScene{ 0 };
+	//int highscore{ -1 };
+	int previousHighScore{ -1 };
+	int score{ 0 };
 	Mix_Music* sMusic{ nullptr };
+	Mix_Chunk* sPongPlayer{ nullptr };
+	Mix_Chunk* sPongScreen{ nullptr };
+	Mix_Chunk* sPongScore{ nullptr };
+	Mix_Chunk* sPlayerHurt{ nullptr };
+	Mix_Chunk* sShoot{ nullptr };
+	TTF_Font* viga{ nullptr };
 
 	setup(
 		window,
 		&renderer,
 		previousHighScore,
-		&sMusic
+		&sMusic,
+		&sPongPlayer,
+		&sPongScreen,
+		&sPongScore,
+		&sPlayerHurt,
+		&sShoot,
+		&viga
 	);
 
 	bool paused = false;
 
 	// Create pointer for events
-	SDL_Event events;
+	SDL_Event events; 
+	
+	// Colors
+	SDL_Color black = { 0, 0, 0, 255 };
+	SDL_Color blue = { 0, 0, 255, 255 };
+	SDL_Color green = { 0, 255, 0, 255 };
+	SDL_Color red = { 255, 0, 0, 255 };
+	SDL_Color white = { 255, 255, 255, 255 };
+	SDL_Color orange = { 180, 90, 20, 255 };
 
 	// Game loop
 	bool quit = false;
@@ -493,7 +502,7 @@ int main(int, char**)
 			// Handle window input events
 			else
 			{
-				handleInput(p1, gameScene, previousHighScore, score, paused, events);
+				handleInput(p1, gameScene, previousHighScore, score, paused, events, &sPongScore, &sPlayerHurt);
 			}
 		}
 
@@ -933,7 +942,7 @@ int main(int, char**)
 
 	// Free resources
 	part.free();
-	freeSDL(window, &sMusic);
+	freeSDL(window, &sMusic, &sPongPlayer, &sPongScreen, &sPongScore, &sPlayerHurt, &sShoot);
 
 	return 0;
 }
