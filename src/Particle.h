@@ -15,6 +15,7 @@
 #include "Helper.h"
 #include "LTexture.h"
 #include "LWindow.h"
+#include "Sound.h"
 
 class Particle: public Helper {
 public:	// other variables
@@ -132,7 +133,7 @@ public:	// Star
 
 
 	static void ParticleUpdate(Particle& part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
-		float camx, float camy, LWindow& mWindow, Mix_Chunk* sPongScore);
+		float camx, float camy, LWindow& mWindow, Sound& sound);
 };
 
 #endif /* LOCAL_PARTICLE_H_ */

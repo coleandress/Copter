@@ -7,20 +7,21 @@
 
 #include <SDL2/SDL_mixer.h>
 #include "Particle.h"
+#include "Sound.h"
 
 // Player class
 class Player {
 public:
 
 	// Create pong scoring
-	Mix_Chunk *mPongScore;
+	//Mix_Chunk *mPongScore;
 
 	const float grav{ 0.09f };
 
 	// Default constructor
 	Player();
 
-	void init(Mix_Chunk *sPongScore);
+	void init();
 
 	void reset();
 
@@ -76,7 +77,7 @@ public:
 	float getSpeedY();
 
 	// Update Player
-	void update(Particle &part, Particle particles[]);
+	void update(Particle &part, Particle particles[], Sound& sound);
 
 	// Draw Player
 	void render(SDL_Renderer *gRenderer);

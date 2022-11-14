@@ -27,7 +27,7 @@ Player::Player() {
 	health = 100.0;
 	angle = 0.0;
 	turretAngle = 0.0;
-	mPongScore = NULL;
+	//mPongScore = NULL;
 	alpha = 255;
 	flashTimer = 0;
 	flash = false;
@@ -59,8 +59,8 @@ void Player::reset() {
 }
 
 // Set Player position
-void Player::init(Mix_Chunk *PongScore) {
-	mPongScore = PongScore;
+void Player::init() {
+	//mPongScore = PongScore;
 }
 
 // Set Player position
@@ -152,7 +152,8 @@ float Player::getSpeedY() {
 }
 
 // Update Player
-void Player::update(Particle &part, Particle particles[]) {
+//TODO: Store a reference to the sound object as a member variable
+void Player::update(Particle &part, Particle particles[], Sound& sound) {
 	const int screenWidth = 1280;
 	const int screenHeight = 720;
 
@@ -236,7 +237,8 @@ void Player::update(Particle &part, Particle particles[]) {
 			flash = true;
 
 			// Play SFX
-			Mix_PlayChannel(-1, mPongScore, 0);
+			//Mix_PlayChannel(-1, mPongScore, 0);
+			sound.playSound(PONG_SCORE);
 
 			// Spawn explosion
 			part.SpawnExplosion(particles,

@@ -637,7 +637,7 @@ void Particle::SpawnFireTrail(Particle particle[], float x, float y, SDL_Color e
 }
 
 void Particle::ParticleUpdate(Particle& part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
-	float camx, float camy, LWindow& mWindow, Mix_Chunk* sPongScore) {
+	float camx, float camy, LWindow& mWindow, Sound& sound) {
 	for (int i = 0; i < 1000; i++) {
 		if (particle[i].mAlive)
 		{
@@ -760,7 +760,8 @@ void Particle::ParticleUpdate(Particle& part, Particle particle[], int /*mapX*/,
 				// spawn explosion
 				part.SpawnExplosion(particle, particle[i].mX + particle[i].mW / 2, particle[i].mY + particle[i].mH / 2, { 200,200,100 });
 				// play sound effect
-				Mix_PlayChannel(-1, sPongScore, 0);
+				//Mix_PlayChannel(-1, sPongScore, 0);
+				sound.playSound(PONG_SCORE);
 			}
 		}
 	}
