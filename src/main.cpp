@@ -1,3 +1,5 @@
+#define DEBUG 1
+
 #include <sstream>
 #include <fstream>
 #include <time.h>
@@ -270,8 +272,6 @@ struct Gun {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////// ENEMY ////////////////////////////////////////////////////////////////
 //----------------------------------------------------------------------------------------------------------------------------------//
-int enemyCount = 0;
-const int enemyMax = 64;
 
 
 struct SDL_RectM
@@ -319,6 +319,7 @@ void ContinueGame(Player &p1) {
 		// Reset score
 		score = 0;
 
+		p1.reset();
 		// Reset protection
 		//protection = true;
 		//protectionTimer = 0;
@@ -428,10 +429,6 @@ int main(int, char**)
 	part.init(particles);
 	part.load(gRenderer);
 
-	// Enemy
-	Enemy enemy[enemyMax];
-	Enemy::initEnemy(enemy, enemyCount, enemyMax);
-
 	// Create Guns
 	Gun M16(12.5);
 
@@ -453,7 +450,11 @@ int main(int, char**)
 	float fireRate = 15;
 
 	// Enemy Variables
-	float enemySpawnTimer = 0.0;
+	int enemyCount = 0;
+	const int enemyMax = 64;
+	float enemySpawnTimer = 0.0; 
+	Enemy enemy[enemyMax];
+	Enemy::initEnemy(enemy, enemyCount, enemyMax);
 
 	// Player Variables
 	const float playerFrameRate = 15;
@@ -469,7 +470,6 @@ int main(int, char**)
 	SDL_RectM rCity1 = {0, 0, 640, 360};
 
 	// Call before loop
-	enemyCount = 0;
 	gameScene = 0;
 	paused = false;
 	quit = false;
@@ -918,12 +918,14 @@ int main(int, char**)
 
 			//////// Debug ///////
 
+#if DEBUG
 			// Render text: To start game
-			/*tempss.str(std::string());
+			tempss.str(std::string());
 			tempss << "gameScene: " << gameScene;
 			gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
 			gText.render(gRenderer, 0, 0,
-						 gText.getWidth(), gText.getHeight());*/
+						 gText.getWidth(), gText.getHeight());
+#endif
 
 
 		// Update screen

@@ -31,7 +31,7 @@ public:
 //#ifdef _SDL_TTF_H
 	//Creates image from font string
 	bool loadFromRenderedText(SDL_Renderer *gRenderer, std::string textureText, SDL_Color textColor,
-							TTF_Font *fontname, Uint32 wrapLength = 0xffffffff);
+							TTF_Font *fontname, Uint32 wrapLength = 1280);
 //#endif
 
 	//Creates blank texture
