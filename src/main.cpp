@@ -274,138 +274,6 @@ int enemyCount = 0;
 const int enemyMax = 64;
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////// PARTICLES //////////////////////////////////////////////////////////////
-//----------------------------------------------------------------------------------------------------------------------------------//
-void ParticleUpdate(Particle &part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
-					  float camx, float camy) {
-	for (int i = 0; i < 1000; i++) {
-		if (particle[i].mAlive)
-		{
-			// If there is a timer before moving, do timer first before handling Particle
-			if (particle[i].mTtimerBeforeMoving != 0) {
-				particle[i].mTtimerBeforeMoving -= 1;
-			}else{
-				// Play one time sound effect
-				if (particle[i].mPlaySFXBeforeMoving) {
-					particle[i].mPlaySFXBeforeMoving = false;
-					// play SFX
-					//Mix_PlayChannel(-1, sFireBall, 0);
-				}
-			}
-
-			///////////////////////////////////////////////////////////
-
-			// Particle Y gravity
-			particle[i].mVY += particle[i].mGrav;
-
-			// Particle movement
-			particle[i].mX += particle[i].mVX * particle[i].mSpeed;
-			particle[i].mY += particle[i].mVY * particle[i].mSpeed;
-
-			// Speed decay of grenade
-			if (particle[i].mDecay) {
-				particle[i].mSpeed = particle[i].mSpeed - particle[i].mSpeed * particle[i].mDecaySpeed;
-			}
-			// Particle death, upon size
-			if (particle[i].mSizeDeath) {
-				particle[i].mW -= particle[i].mDeathSpe;
-				particle[i].mH -= particle[i].mDeathSpe;
-
-			}
-			// Particle spin
-			particle[i].mAngle += particle[i].mAngleSpe * particle[i].mAngleDir;
-			// Particle death, Time
-			particle[i].mTime += particle[i].mDeathTimerSpeed;
-			// Particle death, transparency
-			particle[i].mAlpha -= particle[i].mAlphaspeed;
-			//////////////////////////////////////////////////////////
-
-			// particle center
-			particle[i].mX2 = particle[i].mX + particle[i].mW/2;
-			particle[i].mY2 = particle[i].mY + particle[i].mH/2;
-
-			// get particle radius
-			particle[i].mRadius = particle[i].mW;
-
-			//If the tile is in the screen
-			if (particle[i].mX + particle[i].mW > camx && particle[i].mX < camx + mWindow.getWidth()
-			 && particle[i].mY + particle[i].mH > camy && particle[i].mY < camy + mWindow.getHeight()) {
-				particle[i].mOnScreen = true;
-			} else {
-				particle[i].mOnScreen = false;
-			}
-
-			///////////////////////////////////////////////////////////////////////////////
-			/////////////////////////// Set Corners of a Particle /////////////////////////
-			//---------------------------------------------------------------------------//
-			float particleCX = particle[i].mX+particle[i].mW/2;
-			float particleCY = particle[i].mY+particle[i].mH/2;
-			float radians   = (3.1415926536f / 180) * (particle[i].mAngle);
-			float Cos 		= floor(cos(radians)*100+0.05f)/100;
-			float Sin 		= floor(sin(radians)*100+0.05f)/100;
-
-			// Top Right corner
-		    float barrelW  = ((particle[i].mW/2) * Cos ) - (-(particle[i].mH/2) * Sin );
-		    float barrelH  = ((particle[i].mW/2) * Sin ) + (-(particle[i].mH/2) * Cos );
-		    float barrelX = particleCX + barrelW;
-		    float barrelY = particleCY + barrelH;
-			particle[i].A.x = barrelX;
-			particle[i].A.y = barrelY;
-
-			// Bottom Right corner
-			barrelW  = ((particle[i].mW/2) * Cos ) - ((particle[i].mH/2) * Sin );
-			barrelH  = ((particle[i].mW/2) * Sin ) + ((particle[i].mH/2) * Cos );
-			barrelX = particleCX + barrelW;
-			barrelY = particleCY + barrelH;
-			particle[i].B.x = barrelX;
-			particle[i].B.y = barrelY;
-
-			// Top Left corner
-			barrelW  = (-(particle[i].mW/2) * Cos ) - (-(particle[i].mH/2) * Sin );
-			barrelH  = (-(particle[i].mW/2) * Sin ) + (-(particle[i].mH/2) * Cos );
-			barrelX = particleCX + barrelW;
-			barrelY = particleCY + barrelH;
-			particle[i].C.x = barrelX;
-			particle[i].C.y = barrelY;
-
-			// Bottom Left corner
-			barrelW  = (-(particle[i].mW/2) * Cos ) - ((particle[i].mH/2) * Sin );
-			barrelH  = (-(particle[i].mW/2) * Sin ) + ((particle[i].mH/2) * Cos );
-			barrelX = particleCX + barrelW;
-			barrelY = particleCY + barrelH;
-			particle[i].D.x = barrelX;
-			particle[i].D.y = barrelY;
-
-			// Handle different types of deaths
-			if (particle[i].mTime > particle[i].mDeathTimer) {
-				// remove particle
-				part.Remove(particle, i);
-				// spawn explosion
-				part.SpawnExplosion(particle, particle[i].mX+particle[i].mW/2, particle[i].mY+particle[i].mH/2, {200,200,200});
-			}
-			else if (particle[i].mAlpha < 0) {
-				part.Remove(particle, i);
-			}
-			else if (particle[i].mW <= 0 || particle[i].mH <= 0){
-				part.Remove(particle, i);
-			}
-			// Ground bounce
-			//else if (particle[i].y + particle[i].h > ground - 32 && particle[i].alphaspeed == 0) { // I changed this but need to document it's the ground CA 2022-11-10
-			else if (particle[i].mY + particle[i].mH > mWindow.getHeight() - 32 && particle[i].mAlphaspeed == 0) {
-				particle[i].mOnScreen = true;
-				// remove particle
-				part.Remove(particle, i);
-				// spawn explosion
-				part.SpawnExplosion(particle, particle[i].mX+particle[i].mW/2, particle[i].mY+particle[i].mH/2, {200,200,100});
-				// play sound effect
-				Mix_PlayChannel(-1, sPongScore, 0);
-			}
-		}
-	}
-}
-
-
 struct SDL_RectM
 {
     float x, y;
@@ -872,7 +740,7 @@ int main(int, char**)
 
 		// Update Particles
 		//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
-		ParticleUpdate(part, particles, 0, 0, mWindow.getWidth(), mWindow.getHeight(), 0, 0);
+		Particle::ParticleUpdate(part, particles, 0, 0, mWindow.getWidth(), mWindow.getHeight(), 0, 0, mWindow, sPongScore);
 		//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
 		part.updateStarParticles(particles, 0, 0, mWindow.getWidth(), mWindow.getHeight());
 		part.updateBulletParticles(particles, 0, 0, mWindow.getWidth(), mWindow.getHeight());

@@ -10,8 +10,11 @@
 #ifndef LOCAL_PARTICLE_H_
 #define LOCAL_PARTICLE_H_
 
+#include <SDL2/SDL_Mixer.h>
+
 #include "Helper.h"
 #include "LTexture.h"
+#include "LWindow.h"
 
 class Particle: public Helper {
 public:	// other variables
@@ -126,6 +129,10 @@ public:	// Star
 	void genStars(Particle particle[], int startX, int startYy, int endW, int endH);
 	void updateStarParticles(Particle particle[], int mapX, int mapY, int mapW, int mapH);
 	void renderStarParticle(Particle particle[], int camX, int camY, float playerZ, SDL_Renderer* gRenderer);
+
+
+	static void ParticleUpdate(Particle& part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
+		float camx, float camy, LWindow& mWindow, Mix_Chunk* sPongScore);
 };
 
 #endif /* LOCAL_PARTICLE_H_ */
