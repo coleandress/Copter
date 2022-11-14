@@ -16,25 +16,7 @@
 #include "Player.h"
 #include "Enemy.h"
 
-/*
-	 * 0: Before game scene
-	 * 1: Game playing scene
-	 * 2: Game lost scene
-	 * 3: Game winner scene?
-	*/
 
-int gameScene = 0;
-int highscore = -1;
-int previousHighScore = -1;
-int score = 0;
-
-// Bools
-bool paused = false;
-
-// Create pointer for events
-SDL_Event events;
-// Game Music
-Mix_Music* sMusic = NULL;
 
 // Create player hitting pong sound effect
 Mix_Chunk* sPongPlayer = NULL;
@@ -112,7 +94,7 @@ void initSDL(LWindow& mWindow, SDL_Renderer** gRenderer) {
 }
 
 // Load media
-void loadMedia(SDL_Renderer** gRenderer) {
+void loadMedia(SDL_Renderer** gRenderer, Mix_Music** sMusic) {
 
 	// load audio
 	sPongPlayer = Mix_LoadWAV("resource/sounds/pong-player.wav");
@@ -120,7 +102,7 @@ void loadMedia(SDL_Renderer** gRenderer) {
 	sPongScore = Mix_LoadWAV("resource/sounds/pong-score.wav");
 	sPlayerHurt = Mix_LoadWAV("resource/sounds/player-hurt.wav");
 	sShoot = Mix_LoadWAV("resource/sounds/player-shoot.wav");
-	sMusic = Mix_LoadMUS("resource/sounds/music.mp3");
+	*sMusic = Mix_LoadMUS("resource/sounds/music.mp3");
 
 	gOrangeBG.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_08_1920 x 1080.png");
 	gSunClouds.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_07_1920 x 1080.png");
@@ -154,7 +136,7 @@ void loadMedia(SDL_Renderer** gRenderer) {
 }
 
 // Free SDL
-void freeSDL(LWindow& mWindow) {
+void freeSDL(LWindow& mWindow, Mix_Music** sMusic) {
 	// Free texture
 	SDL_DestroyTexture(texture1);
 
@@ -175,7 +157,7 @@ void freeSDL(LWindow& mWindow) {
 	Mix_FreeChunk(sPongScore);
 	Mix_FreeChunk(sPlayerHurt);
 	Mix_FreeChunk(sShoot);
-	Mix_FreeMusic(sMusic);
+	Mix_FreeMusic(*sMusic);
 
 	// Close upon exit
 	//SDL_DestroyRenderer(gRenderer);
@@ -192,7 +174,7 @@ int count_digit(int number) {
    return int(log10(number) + 1);
 }
 
-void SaveHighScore() {
+void SaveHighScore(const int& score) {
 	bool saveHighscore = false;
 
 	// Open highscore first to check value
@@ -215,7 +197,7 @@ void SaveHighScore() {
 	}
 }
 
-void LoadHighScore() {
+void LoadHighScore(int& previousHighScore) {
 	std::fstream fileTileDataL("data/highscore.txt");
 	fileTileDataL >> previousHighScore;
 	fileTileDataL.close();
@@ -243,7 +225,7 @@ struct SDL_RectM
     float w, h;
 };
 
-void ContinueGame(Player &p1) {
+void ContinueGame(Player &p1, int& gameScene, int& previousHighScore, int& score) {
 
 	// Before game play scene, start game
 	if (gameScene == 0)
@@ -251,7 +233,7 @@ void ContinueGame(Player &p1) {
 		// Set gamemode to play game
 		gameScene = 1;
 
-		LoadHighScore();
+		LoadHighScore(previousHighScore);
 
 		// Play SFX
 		Mix_PlayChannel(-1, sPongScore, false);
@@ -269,9 +251,9 @@ void ContinueGame(Player &p1) {
 	else if (gameScene == 2)
 	{
 		// Save highscore
-		SaveHighScore();
+		SaveHighScore(previousHighScore);
 
-		LoadHighScore();
+		LoadHighScore(previousHighScore);
 
 		// Play SFX
 		Mix_PlayChannel(-1, sPlayerHurt, false);
@@ -289,7 +271,7 @@ void ContinueGame(Player &p1) {
 	}
 }
 
-void setup(LWindow& mWindow, SDL_Renderer** gRenderer)
+void setup(LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore, Mix_Music** sMusic)
 {
 
 	// Make random actually random
@@ -299,13 +281,13 @@ void setup(LWindow& mWindow, SDL_Renderer** gRenderer)
 	initSDL(mWindow, gRenderer);
 
 	// Load media
-	loadMedia(gRenderer);
+	loadMedia(gRenderer, sMusic);
 
 	// Load high score
-	LoadHighScore();
+	LoadHighScore(previousHighScore);
 }
 
-void handleInput(Player& p1)
+void handleInput(Player& p1, int& gameScene, int& previousHighScore, int& score, bool& paused, SDL_Event& events)
 {
 	// Key Pressed
 	if (events.type == SDL_KEYDOWN && events.key.repeat == 0) {
@@ -328,7 +310,7 @@ void handleInput(Player& p1)
 				paused = (!paused);
 				break;
 			case SDLK_SPACE:			// start game
-				ContinueGame(p1);
+				ContinueGame(p1, gameScene, previousHighScore, score);
 				break;
 		}
 	}
@@ -403,13 +385,34 @@ bool checkCollision(float x, float y, int w, int h, float x2, float y2, int w2, 
 
 int main(int, char**) 
 {
+	// Replace this with enum
+	/*
+		 * 0: Before game scene
+		 * 1: Game playing scene
+		 * 2: Game lost scene
+		 * 3: Game winner scene?
+		*/
+	// TODO: extract score into class
+
 	LWindow window{};
 	SDL_Renderer* renderer{};
+	int gameScene = 0;
+	int highscore = -1;
+	int previousHighScore = -1;
+	int score = 0;
+	Mix_Music* sMusic{ nullptr };
 
 	setup(
 		window,
-		&renderer
+		&renderer,
+		previousHighScore,
+		&sMusic
 	);
+
+	bool paused = false;
+
+	// Create pointer for events
+	SDL_Event events;
 
 	// Game loop
 	bool quit = false;
@@ -490,7 +493,7 @@ int main(int, char**)
 			// Handle window input events
 			else
 			{
-				handleInput(p1);
+				handleInput(p1, gameScene, previousHighScore, score, paused, events);
 			}
 		}
 
@@ -930,7 +933,7 @@ int main(int, char**)
 
 	// Free resources
 	part.free();
-	freeSDL(window);
+	freeSDL(window, &sMusic);
 
 	return 0;
 }
