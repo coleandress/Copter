@@ -12,6 +12,7 @@
 #include "LWindow.h"
 #include "Particle.h"
 #include "Player.h"
+#include "Enemy.h"
 
 
 // Scores
@@ -271,159 +272,6 @@ struct Gun {
 //----------------------------------------------------------------------------------------------------------------------------------//
 int enemyCount = 0;
 const int enemyMax = 64;
-struct Enemy {
-	float x, y;
-	float w, h;
-	/*
-	 * 0: Trooper
-	 * 1: Medium Trooper
-	 * 2: Heavy Trooper
-	 */
-	int type;
-	int health;
-	float shootRate;
-	float shootTimer;
-	Uint8 alpha;
-	int flashTimer;
-	bool flash;
-	bool alive;
-};
-
-void initEnemy(Enemy enemy[]) {
-	enemyCount = 0;
-	for (int i=0; i<enemyMax; i++) {
-		enemy[i].x = -100;
-		enemy[i].y = -100;
-		enemy[i].w = 32;
-		enemy[i].h = 32;
-		enemy[i].shootRate = 0;
-		enemy[i].shootTimer = 0;
-		enemy[i].type = 0;
-		enemy[i].alpha = 255;
-		enemy[i].flashTimer = 0;
-		enemy[i].flash = false;
-		enemy[i].alive = false;
-	}
-}
-
-void spawnEnemy(Enemy enemy[], float x, float y, float w, float h, int type) {
-	for (int i=0; i<enemyMax; i++) {
-		if (!enemy[i].alive) {
-			enemy[i].x = x;
-			enemy[i].y = y;
-			enemy[i].w = w;
-			enemy[i].h = h;
-			enemy[i].type = type;
-			if (type == 0) {
-				enemy[i].health = 100;
-				enemy[i].shootRate = 1.09f;
-				enemy[i].shootTimer = 0;
-			}
-			else if (type == 1) {
-				enemy[i].health = 175;
-				enemy[i].shootRate = 0.89f;
-				enemy[i].shootTimer = 0;
-			}
-			else if (type == 2) {
-				enemy[i].health = 300;
-				enemy[i].shootRate = 0.66f;
-				enemy[i].shootTimer = 0;
-			}
-			enemy[i].alpha = 255;
-			enemy[i].flashTimer = 0;
-			enemy[i].flash = false;
-			enemy[i].alive = true;
-			enemyCount++;
-			break;
-		}
-	}
-}
-
-void updateEnemy(Enemy enemy[]) {
-	for (int i=0; i<enemyMax; i++) {
-		if (enemy[i].alive) {
-
-			// enemy constantly moving left
-			if (enemy[i].type == 0) {
-				enemy[i].x -= 2.77f;
-			}
-			else if (enemy[i].type == 1) {
-				enemy[i].x -= 2.89f;
-			}
-			else if (enemy[i].type == 2) {
-				enemy[i].x -= 3.34f;
-			}
-
-			// Flash enemy
-			if (enemy[i].flash) {
-
-				enemy[i].flashTimer += 3;
-
-				if (enemy[i].flashTimer < 15) {
-					enemy[i].alpha = 90;
-				}
-
-				else if (enemy[i].flashTimer >= 15 && enemy[i].flashTimer < 30) {
-					enemy[i].alpha = 170;
-				}
-
-				else if (enemy[i].flashTimer >= 30 && enemy[i].flashTimer < 45) {
-					enemy[i].alpha = 90;
-				}
-
-				else if (enemy[i].flashTimer >= 45 && enemy[i].flashTimer < 60) {
-					enemy[i].alpha = 170;
-				} else {
-					enemy[i].alpha = 255;
-					enemy[i].flashTimer = 0;
-					enemy[i].flash = false;
-				}
-			}
-
-			// enemy death by health
-			if (enemy[i].health <= 0) {
-
-				// Add player score
-				if (enemy[i].type == 0) {
-					score += 10;
-				}
-				else if (enemy[i].type == 1) {
-					score += 20;
-				}
-				else if (enemy[i].type == 2) {
-					score += 30;
-				}
-
-				// Remove enemy
-				enemy[i].alive = false;
-				enemyCount--;
-			}
-
-			// enemy death by border
-			if (enemy[i].x < 0 - enemy[i].w) {
-				enemy[i].alive = false;
-				enemyCount--;
-			}
-		}
-	}
-}
-
-void renderEnemy(Enemy enemy[], float camx, float camy) {
-	for (int i=0; i<enemyMax; i++) {
-		if (enemy[i].alive) {
-			if (enemy[i].flash) {
-				gTanks.setAlpha(enemy[i].alpha);
-				gTanks.render(gRenderer, (int)enemy[i].x - (int)camx, (int)enemy[i].y - (int)camy,  (int)enemy[i].w, (int)enemy[i].h, &rTanks[enemy[i].type]);
-			} else {
-				gTanks.setAlpha(enemy[i].alpha);
-				gTanks.render(gRenderer, (int)enemy[i].x - (int)camx, (int)enemy[i].y - (int)camy,  (int)enemy[i].w, (int)enemy[i].h, &rTanks[enemy[i].type]);
-			}
-			/*SDL_Rect playerPower = {enemy[i].x-camx, enemy[i].y-camy,  enemy[i].w, enemy[i].h};
-			SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
-			SDL_RenderDrawRect(gRenderer, &playerPower);*/
-		}
-	}
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -714,7 +562,7 @@ int main(int, char**)
 
 	// Enemy
 	Enemy enemy[enemyMax];
-	initEnemy(enemy);
+	Enemy::initEnemy(enemy, enemyCount, enemyMax);
 
 	// Create Guns
 	Gun M16(12.5);
@@ -957,7 +805,7 @@ int main(int, char**)
 			}	// end gameScene 1
 
 			// Update Enemies
-			updateEnemy(enemy);
+			Enemy::updateEnemy(enemy, enemyCount, enemyMax, score);
 
 			// Spawn Enemies
 			enemySpawnTimer += 0.22f;
@@ -966,8 +814,16 @@ int main(int, char**)
 
 				// Spawn a random enemy a few pixels to the right of the scree
 				//spawnEnemy(enemy, 1280 + rand() % 100, ground - 64 - 32 + 5, 64, // I changed this need to indicate the height is the ground CA 2022-11-10
-				spawnEnemy(enemy, 1280.0f + rand() % 100, mWindow.getHeight() - 64.0f - 32.0f + 5.0f, 64,
-						64, rand() % 3);
+				Enemy::spawnEnemy(
+					enemy, 
+					1280.0f + rand() % 100, 
+					mWindow.getHeight() - 64.0f - 32.0f + 5.0f, 
+					64,
+					64, 
+					rand() % 3, 
+					enemyCount, 
+					enemyMax
+				);
 			}
 
 			// enemy shoot
@@ -1070,7 +926,7 @@ int main(int, char**)
 			}
 
 			// Render enemy
-			renderEnemy(enemy, 0, 0);
+			Enemy::renderEnemy(enemy, 0, 0, *gRenderer, gTanks, rTanks, enemyMax);
 
 			////// Render Text //////
 

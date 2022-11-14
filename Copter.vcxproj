@@ -124,6 +124,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Helper.cpp" />
     <ClCompile Include="src\LTexture.cpp" />
     <ClCompile Include="src\LWindow.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="src\Timers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="include\sdl2\begin_code.h" />
     <ClInclude Include="include\sdl2\close_code.h" />
     <ClInclude Include="include\sdl2\SDL.h" />
