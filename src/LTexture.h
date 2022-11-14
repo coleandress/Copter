@@ -26,11 +26,11 @@ public:
 	~LTexture();
 
 	//Loads image at specified path
-	bool loadFromFile(SDL_Renderer *gRenderer, std::string path, bool itsAFont = false, bool save = false);
+	bool loadFromFile(SDL_Renderer **gRenderer, std::string path, bool itsAFont = false, bool save = false);
 
 //#ifdef _SDL_TTF_H
 	//Creates image from font string
-	bool loadFromRenderedText(SDL_Renderer *gRenderer, std::string textureText, SDL_Color textColor,
+	bool loadFromRenderedText(SDL_Renderer* gRenderer, std::string textureText, SDL_Color textColor,
 							TTF_Font *fontname, Uint32 wrapLength = 1280);
 //#endif
 

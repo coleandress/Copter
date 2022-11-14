@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////// ENEMY BULLETS //////////////////////////////////////////////////////////
 //-------------------------------------------------------------------------------------------------------------------------------//
 
-void Particle::load(SDL_Renderer* gRenderer){
+void Particle::load(SDL_Renderer** gRenderer){
 	setClips(mCParticles[0], 0, 0, 8, 8);
 	setClips(mCParticles[1], 8, 0, 8, 8 );
 	mGParticles.loadFromFile(gRenderer, "resource/gfx/particles.png");

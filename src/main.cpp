@@ -16,15 +16,13 @@
 #include "Player.h"
 #include "Enemy.h"
 
+/*
+	 * 0: Before game scene
+	 * 1: Game playing scene
+	 * 2: Game lost scene
+	 * 3: Game winner scene?
+	*/
 
-// Scores
-
-/* 0: Before game scene
- * 1: Game playing scene
- * 2: Game lost scene
- * 3: Game winner scene?
- *
- */
 int gameScene = 0;
 int highscore = -1;
 int previousHighScore = -1;
@@ -35,30 +33,23 @@ bool paused = false;
 
 // Create pointer for events
 SDL_Event events;
-
-// Create window
-//SDL_Window *mWindow = NULL;
-
-// Create renderer
-SDL_Renderer *gRenderer;
-
 // Game Music
-Mix_Music *sMusic 	= NULL;
+Mix_Music* sMusic = NULL;
 
 // Create player hitting pong sound effect
-Mix_Chunk *sPongPlayer = NULL;
+Mix_Chunk* sPongPlayer = NULL;
 
 // Create pong hitting screen sound effect
-Mix_Chunk *sPongScreen = NULL;
+Mix_Chunk* sPongScreen = NULL;
 
 // Create pong scoring
-Mix_Chunk *sPongScore = NULL;
+Mix_Chunk* sPongScore = NULL;
 
 // Create player hurt
-Mix_Chunk *sPlayerHurt = NULL;
+Mix_Chunk* sPlayerHurt = NULL;
 
 // Create shoot audio
-Mix_Chunk *sShoot = NULL;
+Mix_Chunk* sShoot = NULL;
 
 // Create font variable
 TTF_Font* viga = NULL;
@@ -72,10 +63,10 @@ SDL_Color white = { 255, 255, 255, 255 };
 SDL_Color orange = { 180, 90, 20, 255 };
 
 // Create Surface to put font text on
-SDL_Surface *surface1 = NULL;
+SDL_Surface* surface1 = NULL;
 
 // Create Texture from a Surface
-SDL_Texture *texture1 = NULL;
+SDL_Texture* texture1 = NULL;
 
 LTexture gText;
 
@@ -94,31 +85,9 @@ SDL_Rect rTanks[6];
 LTexture gCopter;
 SDL_Rect rCopter[5];
 
-// Generate a random double number
-double randDouble(double fMin, double fMax)
-{
-	double f = (double)rand() / RAND_MAX;
-	return fMin + f * (fMax - fMin);
-}
-
-float randFloat(float fMin, float fMax)
-{
-	float f = (float)rand() / RAND_MAX;
-	return fMin + f * (fMax - fMin);
-}
-
-bool checkCollision(float x, float y, int w, int h, float x2, float y2, int w2, int h2) {
-	if (x+w > x2 && x < x2+w2 && y+h > y2 && y < y2+h2) {
-		return true;
-	}else {
-		return false;
-	}
-}
-
-LWindow mWindow;
 
 // Initialize SDL
-void initSDL() {
+void initSDL(LWindow& mWindow, SDL_Renderer** gRenderer) {
 	// Initialize Video
 	SDL_Init( SDL_INIT_VIDEO ); // initializes the subsystems specified, in this video
 
@@ -139,11 +108,11 @@ void initSDL() {
 
 	// Declare renderer
 	//gRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	gRenderer = mWindow.createRenderer();
+	*gRenderer = mWindow.createRenderer();
 }
 
 // Load media
-void loadMedia() {
+void loadMedia(SDL_Renderer** gRenderer) {
 
 	// load audio
 	sPongPlayer = Mix_LoadWAV("resource/sounds/pong-player.wav");
@@ -185,7 +154,7 @@ void loadMedia() {
 }
 
 // Free SDL
-void freeSDL() {
+void freeSDL(LWindow& mWindow) {
 	// Free texture
 	SDL_DestroyTexture(texture1);
 
@@ -268,12 +237,6 @@ struct Gun {
 	}
 };
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////// ENEMY ////////////////////////////////////////////////////////////////
-//----------------------------------------------------------------------------------------------------------------------------------//
-
-
 struct SDL_RectM
 {
     float x, y;
@@ -326,17 +289,17 @@ void ContinueGame(Player &p1) {
 	}
 }
 
-void setup()
+void setup(LWindow& mWindow, SDL_Renderer** gRenderer)
 {
 
 	// Make random actually random
 	srand((unsigned int)time(NULL));
 
 	// Initialize SDL
-	initSDL();
+	initSDL(mWindow, gRenderer);
 
 	// Load media
-	loadMedia();
+	loadMedia(gRenderer);
 
 	// Load high score
 	LoadHighScore();
@@ -416,9 +379,37 @@ void handleInput(Player& p1)
 	}
 }
 
+// Generate a random double number
+double randDouble(double fMin, double fMax)
+{
+	double f = (double)rand() / RAND_MAX;
+	return fMin + f * (fMax - fMin);
+}
+
+float randFloat(float fMin, float fMax)
+{
+	float f = (float)rand() / RAND_MAX;
+	return fMin + f * (fMax - fMin);
+}
+
+bool checkCollision(float x, float y, int w, int h, float x2, float y2, int w2, int h2) {
+	if (x + w > x2 && x < x2 + w2 && y + h > y2 && y < y2 + h2) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 int main(int, char**) 
 {
-	setup();
+	LWindow window{};
+	SDL_Renderer* renderer{};
+
+	setup(
+		window,
+		&renderer
+	);
 
 	// Game loop
 	bool quit = false;
@@ -427,7 +418,7 @@ int main(int, char**)
 	Particle part;
 	Particle particles[1000];
 	part.init(particles);
-	part.load(gRenderer);
+	part.load(&renderer);
 
 	// Create Guns
 	Gun M16(12.5);
@@ -463,7 +454,7 @@ int main(int, char**)
 
 	// World
 	//SDL_Rect floor = {0, mHeight-28, mWidth, 28};
-	SDL_Rect floor = {0, mWindow.getHeight() - 28, mWindow.getWidth(), 28};
+	SDL_Rect floor = {0, window.getHeight() - 28, window.getWidth(), 28};
 	SDL_RectM rSunClouds = {0, 0, 640, 360};
 	SDL_RectM rCity3 = {0, 0, 640, 360};
 	SDL_RectM rCity2 = {0, 0, 640, 360};
@@ -685,7 +676,7 @@ int main(int, char**)
 				Enemy::spawnEnemy(
 					enemy, 
 					1280.0f + rand() % 100, 
-					mWindow.getHeight() - 64.0f - 32.0f + 5.0f, 
+					window.getHeight() - 64.0f - 32.0f + 5.0f, 
 					64,
 					64, 
 					rand() % 3, 
@@ -740,39 +731,39 @@ int main(int, char**)
 
 		// Update Particles
 		//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
-		Particle::ParticleUpdate(part, particles, 0, 0, mWindow.getWidth(), mWindow.getHeight(), 0, 0, mWindow, sPongScore);
+		Particle::ParticleUpdate(part, particles, 0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sPongScore);
 		//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
-		part.updateStarParticles(particles, 0, 0, mWindow.getWidth(), mWindow.getHeight());
-		part.updateBulletParticles(particles, 0, 0, mWindow.getWidth(), mWindow.getHeight());
+		part.updateStarParticles(particles, 0, 0, window.getWidth(), window.getHeight());
+		part.updateBulletParticles(particles, 0, 0, window.getWidth(), window.getHeight());
 
 		// Clear render screen
-		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
-		SDL_RenderClear(gRenderer);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
 
 			// Layer 0, Orange Background
-			gOrangeBG.render(gRenderer, 0, 0, mWindow.getWidth(), mWindow.getHeight());
+			gOrangeBG.render(renderer, 0, 0, window.getWidth(), window.getHeight());
 
 			// Layer 1, Sun and Clouds
-			gSunClouds.render(gRenderer, (int)rSunClouds.x, (int)rSunClouds.y, mWindow.getWidth(), mWindow.getHeight());
+			gSunClouds.render(renderer, (int)rSunClouds.x, (int)rSunClouds.y, window.getWidth(), window.getHeight());
 
 			// Layer 2, City
-			gCity3.render(gRenderer, (int)rCity3.x+1280, (int)rCity3.y, mWindow.getWidth(), mWindow.getHeight());
-			gCity3.render(gRenderer, (int)rCity3.x, (int)rCity3.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity3.render(renderer, (int)rCity3.x+1280, (int)rCity3.y, window.getWidth(), window.getHeight());
+			gCity3.render(renderer, (int)rCity3.x, (int)rCity3.y, window.getWidth(), window.getHeight());
 
 			// Layer 3, City
-			gCity2.render(gRenderer, (int)rCity2.x, (int)rCity2.y, mWindow.getWidth(), mWindow.getHeight());
-			gCity2.render(gRenderer, (int)rCity2.x+1280, (int)rCity2.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity2.render(renderer, (int)rCity2.x, (int)rCity2.y, window.getWidth(), window.getHeight());
+			gCity2.render(renderer, (int)rCity2.x+1280, (int)rCity2.y, window.getWidth(), window.getHeight());
 
 			// Layer 4, City
-			gCity1.render(gRenderer, (int)rCity1.x, (int)rCity1.y, mWindow.getWidth(), mWindow.getHeight());
-			gCity1.render(gRenderer, (int)rCity1.x+1280, (int)rCity1.y, mWindow.getWidth(), mWindow.getHeight());
+			gCity1.render(renderer, (int)rCity1.x, (int)rCity1.y, window.getWidth(), window.getHeight());
+			gCity1.render(renderer, (int)rCity1.x+1280, (int)rCity1.y, window.getWidth(), window.getHeight());
 
 			// Render particles
-			part.Render(gRenderer, particles, 0, 0);
+			part.Render(renderer, particles, 0, 0);
 
 			// Render floor
-			SDL_SetRenderDrawColor(gRenderer, 70, 70, 70, 255);
-			SDL_RenderFillRect(gRenderer, &floor);
+			SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
+			SDL_RenderFillRect(renderer, &floor);
 
 			// Render floor
 			SDL_Rect playerPower = { 
@@ -781,20 +772,20 @@ int main(int, char**)
 				(int)p1.xPower*6, 2 
 			};
 
-			SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
-			SDL_RenderFillRect(gRenderer, &playerPower);
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			SDL_RenderFillRect(renderer, &playerPower);
 
 			////// Render game objects //////
 
 			// Render Player 1
 			if (p1.alive) {
 				gCopter.setAlpha(p1.alpha);
-				gCopter.render(gRenderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &rCopter[playerFrame], p1.angle);
-				p1.render(gRenderer);
+				gCopter.render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &rCopter[playerFrame], p1.angle);
+				p1.render(renderer);
 			}
 
 			// Render enemy
-			Enemy::renderEnemy(enemy, 0, 0, *gRenderer, gTanks, rTanks, enemyMax);
+			Enemy::renderEnemy(enemy, 0, 0, *renderer, gTanks, rTanks, enemyMax);
 
 			////// Render Text //////
 
@@ -807,8 +798,8 @@ int main(int, char**)
 				// Render text: To start game
 				tempss.str(std::string());
 				tempss << "Press Space to Start.";
-				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
-				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2, mWindow.getHeight() - gText.getHeight(),
+				gText.loadFromRenderedText(renderer, tempss.str().c_str(), white, viga);
+				gText.render(renderer, window.getWidth()/2 - gText.getWidth()/2, window.getHeight() - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 
 			}
@@ -823,16 +814,16 @@ int main(int, char**)
 			else if (gameScene == 2) {
 				tempss.str(std::string());
 				tempss << "You lose. Boo hoo.";
-				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
-				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2,
-						mWindow.getHeight() - gText.getHeight()-22,
+				gText.loadFromRenderedText(renderer, tempss.str().c_str(), black, viga);
+				gText.render(renderer, window.getWidth()/2 - gText.getWidth()/2,
+						window.getHeight() - gText.getHeight()-22,
 							 gText.getWidth(), gText.getHeight());
 
 				tempss.str(std::string());
 				tempss << "Press Space to Start.";
-				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
-				gText.render(gRenderer, mWindow.getWidth()/2 - gText.getWidth()/2,
-						mWindow.getHeight() - gText.getHeight(),
+				gText.loadFromRenderedText(renderer, tempss.str().c_str(), black, viga);
+				gText.render(renderer, window.getWidth()/2 - gText.getWidth()/2,
+						window.getHeight() - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 			}
 
@@ -840,15 +831,15 @@ int main(int, char**)
 			else if (gameScene == 2) {
 				tempss.str(std::string());
 				tempss << "You win something!";
-				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
-				gText.render(gRenderer, 640/2 - gText.getWidth()/2,
+				gText.loadFromRenderedText(renderer, tempss.str().c_str(), black, viga);
+				gText.render(renderer, 640/2 - gText.getWidth()/2,
 						 360 - gText.getHeight()-22,
 							 gText.getWidth(), gText.getHeight());
 
 				tempss.str(std::string());
 				tempss << "Press Space to Start again.";
-				gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), black, viga);
-				gText.render(gRenderer, 640/2 - gText.getWidth()/2,
+				gText.loadFromRenderedText(renderer, tempss.str().c_str(), black, viga);
+				gText.render(renderer, 640/2 - gText.getWidth()/2,
 						 360 - gText.getHeight(),
 							 gText.getWidth(), gText.getHeight());
 			}
@@ -858,8 +849,8 @@ int main(int, char**)
 
 				tempss.str(std::string());
 				gText.setAlpha(255);
-				gText.loadFromRenderedText(gRenderer, "Paused", {255,255,255}, viga);
-				gText.render(gRenderer, 640/2-gText.getWidth()/2, 360 - gText.getHeight() - 20,
+				gText.loadFromRenderedText(renderer, "Paused", {255,255,255}, viga);
+				gText.render(renderer, 640/2-gText.getWidth()/2, 360 - gText.getHeight() - 20,
 										gText.getWidth(), gText.getHeight());
 			}
 
@@ -888,8 +879,8 @@ int main(int, char**)
 				tempss << "Highscore: 000000" << previousHighScore;
 			}
 
-			gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
-			gText.render(gRenderer, mWindow.getWidth() - gText.getWidth() - 10, 4, gText.getWidth(), gText.getHeight());
+			gText.loadFromRenderedText(renderer, tempss.str().c_str(), white, viga);
+			gText.render(renderer, window.getWidth() - gText.getWidth() - 10, 4, gText.getWidth(), gText.getHeight());
 
 			// Render score text top-right of screen
 			tempss.str(std::string());
@@ -913,8 +904,8 @@ int main(int, char**)
 			} else {
 				tempss << "Score: 000000" << score;
 			}
-			gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
-			gText.render(gRenderer, mWindow.getWidth() - gText.getWidth() - 10, 28, gText.getWidth(), gText.getHeight());
+			gText.loadFromRenderedText(renderer, tempss.str().c_str(), white, viga);
+			gText.render(renderer, window.getWidth() - gText.getWidth() - 10, 28, gText.getWidth(), gText.getHeight());
 
 			//////// Debug ///////
 
@@ -922,14 +913,14 @@ int main(int, char**)
 			// Render text: To start game
 			tempss.str(std::string());
 			tempss << "gameScene: " << gameScene;
-			gText.loadFromRenderedText(gRenderer, tempss.str().c_str(), white, viga);
-			gText.render(gRenderer, 0, 0,
+			gText.loadFromRenderedText(renderer, tempss.str().c_str(), white, viga);
+			gText.render(renderer, 0, 0,
 						 gText.getWidth(), gText.getHeight());
 #endif
 
 
 		// Update screen
-		SDL_RenderPresent(gRenderer);
+		SDL_RenderPresent(renderer);
 
 		// fps
 		frame++;
@@ -939,7 +930,7 @@ int main(int, char**)
 
 	// Free resources
 	part.free();
-	freeSDL();
+	freeSDL(window);
 
 	return 0;
 }

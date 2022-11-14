@@ -89,7 +89,7 @@ public:	// basic functions
 	void init(Particle particle[]);
 	void Remove(Particle particle[], int i);
 	void RemoveAll(Particle particle[]);
-	void load(SDL_Renderer* gRenderer);
+	void load(SDL_Renderer** gRenderer);
 	void free();
 
 public:	// functions
