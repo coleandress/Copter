@@ -18,9 +18,11 @@
 #include "Sound.h"
 #include "Font.h"
 
-void setup(LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore);
-void initSDL(LWindow& mWindow, SDL_Renderer** gRenderer);
-void loadMedia(SDL_Renderer** gRenderer);
+#include "Message.h"
+
+void setup(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore);
+void initSDL(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer);
+void loadMedia(Message& msg, SDL_Renderer** gRenderer);
 void LoadHighScore(int& previousHighScore);
 void handleInput(Player& p1, int& gameScene, int& previousHighScore, int& score, bool& paused, SDL_Event& events, Sound& sound);
 void ContinueGame(Player& p1, int& gameScene, int& previousHighScore, int& score, Sound& sound);
@@ -45,7 +47,7 @@ SDL_Rect rTanks[6];
 LTexture gCopter;
 SDL_Rect rCopter[5];
 
-int main(int, char**) 
+int main(int, char**)
 {
 	// Replace this with enum
 	/*
@@ -54,7 +56,7 @@ int main(int, char**)
 		 * 2: Game lost scene
 		 * 3: Game winner scene?
 		*/
-	// TODO: extract score into class
+		// TODO: extract score into class
 
 	LWindow window{};
 	SDL_Renderer* renderer{};
@@ -65,13 +67,17 @@ int main(int, char**)
 	Sound sound;
 	Font font;
 
-	setup(window, &renderer, previousHighScore);
+	Message msg;
+
+	msg.log("In main(), calling: setup ...");
+
+	setup(msg, window, &renderer, previousHighScore);
 
 	bool paused = false;
 
 	// Create pointer for events
-	SDL_Event events; 
-	
+	SDL_Event events;
+
 	// Colors
 	SDL_Color black = { 0, 0, 0, 255 };
 	SDL_Color blue = { 0, 0, 255, 255 };
@@ -94,13 +100,13 @@ int main(int, char**)
 	p1.init();
 
 	// Timer
-    Timer fps;
-    bool cap 					= true;
-	int frame 					= 0;
-    const int FRAMES_PER_SECOND = 60;
+	Timer fps;
+	bool cap = true;
+	int frame = 0;
+	const int FRAMES_PER_SECOND = 60;
 
 	// Set Player 1 position
-	p1.setPosition(64, 360/2-112/2);
+	p1.setPosition(64, 360 / 2 - 112 / 2);
 
 	// game booleans
 	float fireTimer = 0;
@@ -109,7 +115,7 @@ int main(int, char**)
 	// Enemy Variables
 	int enemyCount = 0;
 	const int enemyMax = 64;
-	float enemySpawnTimer = 0.0; 
+	float enemySpawnTimer = 0.0;
 	Enemy enemy[enemyMax];
 	Enemy::initEnemy(enemy, enemyCount, enemyMax);
 
@@ -120,11 +126,11 @@ int main(int, char**)
 
 	// World
 	//SDL_Rect floor = {0, mHeight-28, mWidth, 28};
-	SDL_Rect floor = {0, window.getHeight() - 28, window.getWidth(), 28};
-	SDL_FRect rSunClouds = {0, 0, 640, 360};
-	SDL_FRect rCity3 = {0, 0, 640, 360};
-	SDL_FRect rCity2 = {0, 0, 640, 360};
-	SDL_FRect rCity1 = {0, 0, 640, 360};
+	SDL_Rect floor = { 0, window.getHeight() - 28, window.getWidth(), 28 };
+	SDL_FRect rSunClouds = { 0, 0, 640, 360 };
+	SDL_FRect rCity3 = { 0, 0, 640, 360 };
+	SDL_FRect rCity2 = { 0, 0, 640, 360 };
+	SDL_FRect rCity1 = { 0, 0, 640, 360 };
 
 	// Call before loop
 	fireTimer = 0;
@@ -134,8 +140,10 @@ int main(int, char**)
 	//Mix_FadeInMusic(sMusic, -1, 2000);
 	sound.playMusic();
 
+	msg.log("Entering main game loop ...");
+
 	// Game loop
-	while (!quit) 
+	while (!quit)
 	{
 		// Start FPS cap
 		fps.start();
@@ -159,17 +167,17 @@ int main(int, char**)
 		}
 
 		// If game paused
-		if (!paused == 1) 
+		if (!paused == 1)
 		{
-			if (gameScene == 1) 
+			if (gameScene == 1)
 			{
 				// particle test for particles
-				for (int i = 0; i < part.mMax; i++) 
+				for (int i = 0; i < part.mMax; i++)
 				{
-					if (particles[i].mAlive) 
+					if (particles[i].mAlive)
 					{
 						// Star particles
-						if (particles[i].mType == 4) 
+						if (particles[i].mType == 4)
 						{
 							// pong particle effects
 							fireTimer += 60;
@@ -189,18 +197,18 @@ int main(int, char**)
 
 				// Do Player frames
 				playerFrameTimer += playerFrameRate;
-				if (playerFrameTimer > 60) 
+				if (playerFrameTimer > 60)
 				{
 					playerFrameTimer = 0;
 					playerFrame++;
-					if (playerFrame > 4) 
+					if (playerFrame > 4)
 					{
 						playerFrame = 0;
 					}
 				}
 
 				// Update Player's, manually
-				if (p1.shoot) 
+				if (p1.shoot)
 				{
 					p1.shoot = false;
 					float centerX = p1.getCenterX();
@@ -242,10 +250,10 @@ int main(int, char**)
 					newAngle = newAngle * 180 / (float)M_PI;
 
 					part.spawnParticleAngle(particles, "slow", 4, barrelX, barrelY,
-							particleW, particleH, newAngle, 11, 0.0f,
-							{ 200, 200, 100 }, 1, 0, 0, 255, 0, 60, 0, false, 0.11f,
-							false, 0.11f, false, 0.0f, white, 0.0f, 0.0f, 0.0f, false,
-							0.0f, 0.0f, false, 0, 0.0f);
+						particleW, particleH, newAngle, 11, 0.0f,
+						{ 200, 200, 100 }, 1, 0, 0, 255, 0, 60, 0, false, 0.11f,
+						false, 0.11f, false, 0.0f, white, 0.0f, 0.0f, 0.0f, false,
+						0.0f, 0.0f, false, 0, 0.0f);
 					// play sfx
 					sound.playSound(SHOOT);
 				}
@@ -254,9 +262,9 @@ int main(int, char**)
 				////////////////////////////////////////////////// Manual Updates ////////////////////////////////////////////
 
 				// Particle collision with Player
-				if (!p1.flash) 
+				if (!p1.flash)
 				{
-					for (int i = 0; i < 1000; i++) 
+					for (int i = 0; i < 1000; i++)
 					{
 						if (particles[i].mAlive)
 						{
@@ -264,8 +272,8 @@ int main(int, char**)
 							{
 								// Player check
 								if (checkCollision(particles[i].mX, particles[i].mY,
-										particles[i].mW, particles[i].mH, p1.getX(),
-										p1.getY(), p1.getWidth(), p1.getHeight())) 
+									particles[i].mW, particles[i].mH, p1.getX(),
+									p1.getY(), p1.getWidth(), p1.getHeight()))
 								{
 
 									// Hurt player
@@ -279,9 +287,9 @@ int main(int, char**)
 
 									// spawn explosion
 									part.SpawnExplosion(particles,
-											particles[i].mX + particles[i].mW / 2,
-											particles[i].mY + particles[i].mH / 2, { 200,
-													200, 200 });
+										particles[i].mX + particles[i].mW / 2,
+										particles[i].mY + particles[i].mH / 2, { 200,
+												200, 200 });
 
 									// play sound effect
 									sound.playSound(PONG_SCORE);
@@ -292,22 +300,22 @@ int main(int, char**)
 				}
 
 				// Particle collision with Enemies
-				for (int i = 0; i < 1000; i++) 
+				for (int i = 0; i < 1000; i++)
 				{
 					if (particles[i].mAlive)
 					{
-						if (particles[i].mType == 4) 
+						if (particles[i].mType == 4)
 						{
 							// Enemy check
 							for (int j = 0; j < enemyMax; j++)
 							{
-								if (enemy[j].alive) 
+								if (enemy[j].alive)
 								{
 									// ON-HIT Collision Check
 									if (checkCollision(particles[i].mX,
-											particles[i].mY, particles[i].mW,
-											particles[i].mH, enemy[j].x, enemy[j].y,
-											enemy[j].w, enemy[j].h))
+										particles[i].mY, particles[i].mW,
+										particles[i].mH, enemy[j].x, enemy[j].y,
+										enemy[j].w, enemy[j].h))
 									{
 										// Flash enemy
 										enemy[j].flash = true;
@@ -320,9 +328,9 @@ int main(int, char**)
 
 										// spawn explosion
 										part.SpawnExplosion(particles,
-												particles[i].mX + particles[i].mW / 2,
-												particles[i].mY + particles[i].mH / 2,
-												{ 200, 200, 200 });
+											particles[i].mX + particles[i].mW / 2,
+											particles[i].mY + particles[i].mH / 2,
+											{ 200, 200, 200 });
 
 										// Play SFX
 										sound.playSound(PONG_SCORE);
@@ -337,7 +345,7 @@ int main(int, char**)
 				if (gameScene == 1)
 				{
 					// If player died
-					if (!p1.alive) 
+					if (!p1.alive)
 					{
 						// Show losing screen
 						gameScene = 2;
@@ -357,36 +365,36 @@ int main(int, char**)
 				// Spawn a random enemy a few pixels to the right of the scree
 				//spawnEnemy(enemy, 1280 + rand() % 100, ground - 64 - 32 + 5, 64, // I changed this need to indicate the height is the ground CA 2022-11-10
 				Enemy::spawnEnemy(
-					enemy, 
-					1280.0f + rand() % 100, 
-					window.getHeight() - 64.0f - 32.0f + 5.0f, 
+					enemy,
+					1280.0f + rand() % 100,
+					window.getHeight() - 64.0f - 32.0f + 5.0f,
 					64,
-					64, 
-					rand() % 3, 
-					enemyCount, 
+					64,
+					rand() % 3,
+					enemyCount,
 					enemyMax
 				);
 			}
 
 			// enemy shoot
-			for (int i = 0; i < enemyMax; i++) 
+			for (int i = 0; i < enemyMax; i++)
 			{
-				if (enemy[i].alive) 
+				if (enemy[i].alive)
 				{
 					// Handle shoot rate
 					enemy[i].shootTimer += enemy[i].shootRate;
-					if (enemy[i].shootTimer > 60) 
+					if (enemy[i].shootTimer > 60)
 					{
 						enemy[i].shootTimer = 0;
 						// shoot particle
 						float newX = enemy[i].x + enemy[i].w / 2 - 12;
 						float newY = enemy[i].y + enemy[i].h / 2 - 9;
 						part.spawnParticleAngle(particles, "slow", 3, newX,
-								newY, 11, 11, randFloat(200, 225), 9, 0.0f, {
-										200, 200, 200 }, 1, 1, 1, 255, 0, 60, 0,
-								false, 0.11f, false, 0.11f, false, 0.0f, white,
-								0.0f, 0.0f, 0.0f, false, 0.0f, 0.0f, false, 0,
-								0.004f);
+							newY, 11, 11, randFloat(200, 225), 9, 0.0f, {
+									200, 200, 200 }, 1, 1, 1, 255, 0, 60, 0,
+									false, 0.11f, false, 0.11f, false, 0.0f, white,
+									0.0f, 0.0f, 0.0f, false, 0.0f, 0.0f, false, 0,
+									0.004f);
 						// play sfx
 						sound.playSound(SHOOT);
 					}
@@ -400,11 +408,11 @@ int main(int, char**)
 		rCity2.x -= 3;
 		rCity1.x -= 4;
 
-		if (rSunClouds.x < -1280) 
+		if (rSunClouds.x < -1280)
 		{
 			rSunClouds.x = 0;
 		}
-		if (rCity3.x < -1280) 
+		if (rCity3.x < -1280)
 		{
 			rCity3.x = 0;
 		}
@@ -437,16 +445,16 @@ int main(int, char**)
 		gSunClouds.render(renderer, (int)rSunClouds.x, (int)rSunClouds.y, window.getWidth(), window.getHeight());
 
 		// Layer 2, City
-		gCity3.render(renderer, (int)rCity3.x+1280, (int)rCity3.y, window.getWidth(), window.getHeight());
+		gCity3.render(renderer, (int)rCity3.x + 1280, (int)rCity3.y, window.getWidth(), window.getHeight());
 		gCity3.render(renderer, (int)rCity3.x, (int)rCity3.y, window.getWidth(), window.getHeight());
 
 		// Layer 3, City
 		gCity2.render(renderer, (int)rCity2.x, (int)rCity2.y, window.getWidth(), window.getHeight());
-		gCity2.render(renderer, (int)rCity2.x+1280, (int)rCity2.y, window.getWidth(), window.getHeight());
+		gCity2.render(renderer, (int)rCity2.x + 1280, (int)rCity2.y, window.getWidth(), window.getHeight());
 
 		// Layer 4, City
 		gCity1.render(renderer, (int)rCity1.x, (int)rCity1.y, window.getWidth(), window.getHeight());
-		gCity1.render(renderer, (int)rCity1.x+1280, (int)rCity1.y, window.getWidth(), window.getHeight());
+		gCity1.render(renderer, (int)rCity1.x + 1280, (int)rCity1.y, window.getWidth(), window.getHeight());
 
 		// Render particles
 		part.Render(renderer, particles, 0, 0);
@@ -456,11 +464,11 @@ int main(int, char**)
 		SDL_RenderFillRect(renderer, &floor);
 
 		// Render floor
-		SDL_Rect playerPower = 
-		{ 
-			(int)p1.getX() + (int)p1.getWidth(), 
-			(int)p1.getY() + (int)p1.getHeight()/2-1, 
-			(int)p1.xPower*6, 2 
+		SDL_Rect playerPower =
+		{
+			(int)p1.getX() + (int)p1.getWidth(),
+			(int)p1.getY() + (int)p1.getHeight() / 2 - 1,
+			(int)p1.xPower * 6, 2
 		};
 
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -469,7 +477,7 @@ int main(int, char**)
 		////// Render game objects //////
 
 		// Render Player 1
-		if (p1.alive) 
+		if (p1.alive)
 		{
 			gCopter.setAlpha(p1.alpha);
 			gCopter.render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &rCopter[playerFrame], p1.angle);
@@ -485,14 +493,14 @@ int main(int, char**)
 
 		std::stringstream tempss;
 		// Before game start scene
-		if (gameScene == 0) 
+		if (gameScene == 0)
 		{
 			// Render text: To start game
 			tempss.str(std::string());
 			tempss << "Press Space to Start.";
 			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
-			font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2, window.getHeight() - font.getTexture().getHeight(),
-						 font.getTexture().getWidth(), font.getTexture().getHeight());
+			font.getTexture().render(renderer, window.getWidth() / 2 - font.getTexture().getWidth() / 2, window.getHeight() - font.getTexture().getHeight(),
+				font.getTexture().getWidth(), font.getTexture().getHeight());
 
 		}
 
@@ -502,60 +510,60 @@ int main(int, char**)
 		}
 
 		// Lost scene
-		else if (gameScene == 2) 
+		else if (gameScene == 2)
 		{
 			tempss.str(std::string());
 			tempss << "You lose. Boo hoo.";
 			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
-			font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2,
-					window.getHeight() - font.getTexture().getHeight()-22,
-						 font.getTexture().getWidth(), font.getTexture().getHeight());
+			font.getTexture().render(renderer, window.getWidth() / 2 - font.getTexture().getWidth() / 2,
+				window.getHeight() - font.getTexture().getHeight() - 22,
+				font.getTexture().getWidth(), font.getTexture().getHeight());
 
 			tempss.str(std::string());
 			tempss << "Press Space to Start.";
 			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
-			font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2,
-					window.getHeight() - font.getTexture().getHeight(),
-						 font.getTexture().getWidth(), font.getTexture().getHeight());
+			font.getTexture().render(renderer, window.getWidth() / 2 - font.getTexture().getWidth() / 2,
+				window.getHeight() - font.getTexture().getHeight(),
+				font.getTexture().getWidth(), font.getTexture().getHeight());
 		}
 
-			// Winning scene
-		else if (gameScene == 2) 
+		// Winning scene
+		else if (gameScene == 2)
 		{
 			tempss.str(std::string());
 			tempss << "You win something!";
 			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
-			font.getTexture().render(renderer, 640/2 - font.getTexture().getWidth()/2,
-					 360 - font.getTexture().getHeight()-22,
-						 font.getTexture().getWidth(), font.getTexture().getHeight());
+			font.getTexture().render(renderer, 640 / 2 - font.getTexture().getWidth() / 2,
+				360 - font.getTexture().getHeight() - 22,
+				font.getTexture().getWidth(), font.getTexture().getHeight());
 
 			tempss.str(std::string());
 			tempss << "Press Space to Start again.";
 			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
-			font.getTexture().render(renderer, 640/2 - font.getTexture().getWidth()/2,
-					 360 - font.getTexture().getHeight(),
-						 font.getTexture().getWidth(), font.getTexture().getHeight());
+			font.getTexture().render(renderer, 640 / 2 - font.getTexture().getWidth() / 2,
+				360 - font.getTexture().getHeight(),
+				font.getTexture().getWidth(), font.getTexture().getHeight());
 		}
 
 		// Game paused
-		if (paused) 
+		if (paused)
 		{
 			tempss.str(std::string());
 			font.getTexture().setAlpha(255);
-			font.getTexture().loadFromRenderedText(renderer, "Paused", {255,255,255}, font.getFont(VIGA));
-			font.getTexture().render(renderer, 640/2-font.getTexture().getWidth()/2, 360 - font.getTexture().getHeight() - 20,
-									font.getTexture().getWidth(), font.getTexture().getHeight());
+			font.getTexture().loadFromRenderedText(renderer, "Paused", { 255,255,255 }, font.getFont(VIGA));
+			font.getTexture().render(renderer, 640 / 2 - font.getTexture().getWidth() / 2, 360 - font.getTexture().getHeight() - 20,
+				font.getTexture().getWidth(), font.getTexture().getHeight());
 		}
 
 		/////// Render Score Text /////////
 
 		// Render score text top-right of screen
 		tempss.str(std::string());
-		if (count_digit(previousHighScore) == 1) 
+		if (count_digit(previousHighScore) == 1)
 		{
 			tempss << "Highscore: 00000" << previousHighScore;
 		}
-		else if (count_digit(previousHighScore) == 2) 
+		else if (count_digit(previousHighScore) == 2)
 		{
 			tempss << "Highscore: 00000" << previousHighScore;
 		}
@@ -571,10 +579,11 @@ int main(int, char**)
 		{
 			tempss << "Highscore: 00" << previousHighScore;
 		}
-		else if (count_digit(previousHighScore) == 6) 
+		else if (count_digit(previousHighScore) == 6)
 		{
 			tempss << "Highscore: 0" << previousHighScore;
-		} else 
+		}
+		else
 		{
 			tempss << "Highscore: 000000" << previousHighScore;
 		}
@@ -584,30 +593,31 @@ int main(int, char**)
 
 		// Render score text top-right of screen
 		tempss.str(std::string());
-		if (count_digit(score) == 1) 
+		if (count_digit(score) == 1)
 		{
 			tempss << "Score: 000000" << score;
 		}
-		else if (count_digit(score) == 2) 
+		else if (count_digit(score) == 2)
 		{
 			tempss << "Score: 00000" << score;
 		}
-		else if (count_digit(score) == 3) 
+		else if (count_digit(score) == 3)
 		{
 			tempss << "Score: 0000" << score;
 		}
-		else if (count_digit(score) == 4) 
+		else if (count_digit(score) == 4)
 		{
 			tempss << "Score: 000" << score;
 		}
-		else if (count_digit(score) == 5) 
+		else if (count_digit(score) == 5)
 		{
 			tempss << "Score: 00" << score;
 		}
-		else if (count_digit(score) == 6) 
+		else if (count_digit(score) == 6)
 		{
 			tempss << "Score: 0" << score;
-		} else 
+		}
+		else
 		{
 			tempss << "Score: 000000" << score;
 		}
@@ -622,7 +632,7 @@ int main(int, char**)
 		tempss << "gameScene: " << gameScene;
 		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
 		font.getTexture().render(renderer, 0, 0,
-					 font.getTexture().getWidth(), font.getTexture().getHeight());
+			font.getTexture().getWidth(), font.getTexture().getHeight());
 #endif
 
 
@@ -631,8 +641,8 @@ int main(int, char**)
 
 		// fps
 		frame++;
-		if((cap == true ) && (fps.get_ticks() < 1000 / FRAMES_PER_SECOND ))
-			SDL_Delay((1000 / FRAMES_PER_SECOND ) - fps.get_ticks());
+		if ((cap == true) && (fps.get_ticks() < 1000 / FRAMES_PER_SECOND))
+			SDL_Delay((1000 / FRAMES_PER_SECOND) - fps.get_ticks());
 	}
 
 	// Free resources
@@ -642,41 +652,50 @@ int main(int, char**)
 	return 0;
 }
 
-void setup(LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore)
+void setup(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore)
 {
 	// Make random actually random
 	srand((unsigned int)time(NULL));
 
 	// Initialize SDL
-	initSDL(mWindow, gRenderer);
+	initSDL(msg, mWindow, gRenderer);
 
 	// Load media
-	loadMedia(gRenderer);
+	loadMedia(msg, gRenderer);
 
 	// Load high score
 	LoadHighScore(previousHighScore);
 }
 
-void initSDL(LWindow& mWindow, SDL_Renderer** gRenderer) 
+void initSDL(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer)
 {
-	// Initialize Video
-	SDL_Init(SDL_INIT_VIDEO); // initializes the subsystems specified, in this video
+	// Initialize Video, Initializes the subsystems specified, in this video
 
-	mWindow.create("Ping", 2, 1, 1, 0);
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		msg.fatalError("Call to SDL_Init failed (" + string(SDL_GetError()) + ")");
+
+	if (!mWindow.create("Ping", 2, 1, 1, 0))
+		msg.fatalError("Call to 'create' (LWindow) failed");
 
 	*gRenderer = mWindow.createRenderer();
 }
 
-void loadMedia(SDL_Renderer** gRenderer)
+static void doLoadFromFile(Message& msg, LTexture& texture, SDL_Renderer** gRenderer, const string& fileName)
 {
-	gOrangeBG.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_08_1920 x 1080.png");
-	gSunClouds.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_07_1920 x 1080.png");
-	gCity3.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_06_1920 x 1080.png");
-	gCity2.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_05_1920 x 1080.png");
-	gCity1.loadFromFile(gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_04_1920 x 1080.png");
+	if (!texture.loadFromFile(gRenderer, fileName))
+		msg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
+}
 
-	gTanks.loadFromFile(gRenderer, "resource/gfx/tanks.png");
-	gCopter.loadFromFile(gRenderer, "resource/gfx/player-copter.png");
+void loadMedia(Message& msg, SDL_Renderer** gRenderer)
+{
+	doLoadFromFile(msg, gOrangeBG, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_08_1920 x 1080.png");
+	doLoadFromFile(msg, gSunClouds, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_07_1920 x 1080.png");
+	doLoadFromFile(msg, gCity3, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_06_1920 x 1080.png");
+	doLoadFromFile(msg, gCity2, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_05_1920 x 1080.png");
+	doLoadFromFile(msg, gCity1, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_04_1920 x 1080.png");
+
+	doLoadFromFile(msg, gTanks, gRenderer, "resource/gfx/tanks.png");
+	doLoadFromFile(msg, gCopter, gRenderer, "resource/gfx/player-copter.png");
 
 	// Texture clips
 
@@ -696,11 +715,12 @@ void loadMedia(SDL_Renderer** gRenderer)
 	rCopter[4] = { 512,0,128,64 };
 }
 
-void LoadHighScore(int& previousHighScore) 
+void LoadHighScore(int& previousHighScore)
 {
 	std::fstream fileTileDataL("data/highscore.txt");
-	fileTileDataL >> previousHighScore;
-	fileTileDataL.close();
+
+	if (fileTileDataL)
+		fileTileDataL >> previousHighScore;
 }
 
 void handleInput(Player& p1, int& gameScene, int& previousHighScore, int& score, bool& paused, SDL_Event& events, Sound& sound)
@@ -824,7 +844,7 @@ void ContinueGame(Player& p1, int& gameScene, int& previousHighScore, int& score
 	}
 }
 
-void SaveHighScore(const int& score) 
+void SaveHighScore(const int& score)
 {
 	bool saveHighscore = false;
 
@@ -864,7 +884,7 @@ float randFloat(float fMin, float fMax)
 	return fMin + f * (fMax - fMin);
 }
 
-int count_digit(int number) 
+int count_digit(int number)
 {
 	return int(log10(number) + 1);
 }
