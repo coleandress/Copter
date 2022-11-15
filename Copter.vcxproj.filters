@@ -42,6 +42,9 @@
     <ClCompile Include="src\Sound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\sdl2\begin_code.h">
@@ -339,6 +342,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
