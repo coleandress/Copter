@@ -159,17 +159,22 @@ int main(int, char**)
 		}
 
 		// If game paused
-		if (!paused == 1) {
-			if (gameScene == 1) {
-
+		if (!paused == 1) 
+		{
+			if (gameScene == 1) 
+			{
 				// particle test for particles
-				for (int i = 0; i < part.mMax; i++) {
-					if (particles[i].mAlive) {
+				for (int i = 0; i < part.mMax; i++) 
+				{
+					if (particles[i].mAlive) 
+					{
 						// Star particles
-						if (particles[i].mType == 4) {
+						if (particles[i].mType == 4) 
+						{
 							// pong particle effects
 							fireTimer += 60;
-							if (fireTimer > 60) {
+							if (fireTimer > 60)
+							{
 								fireTimer = 0;
 								// spawn explosion
 								// This is a neat effect, but it makes firing rapidly not function - CA 2022-11-14
@@ -184,16 +189,19 @@ int main(int, char**)
 
 				// Do Player frames
 				playerFrameTimer += playerFrameRate;
-				if (playerFrameTimer > 60) {
+				if (playerFrameTimer > 60) 
+				{
 					playerFrameTimer = 0;
 					playerFrame++;
-					if (playerFrame > 4) {
+					if (playerFrame > 4) 
+					{
 						playerFrame = 0;
 					}
 				}
 
 				// Update Player's, manually
-				if (p1.shoot) {
+				if (p1.shoot) 
+				{
 					p1.shoot = false;
 					float centerX = p1.getCenterX();
 					float centerY = p1.getCenterY();
@@ -246,14 +254,19 @@ int main(int, char**)
 				////////////////////////////////////////////////// Manual Updates ////////////////////////////////////////////
 
 				// Particle collision with Player
-				if (!p1.flash) {
-					for (int i = 0; i < 1000; i++) {
-						if (particles[i].mAlive) {
-							if (particles[i].mType == 3) {
+				if (!p1.flash) 
+				{
+					for (int i = 0; i < 1000; i++) 
+					{
+						if (particles[i].mAlive)
+						{
+							if (particles[i].mType == 3)
+							{
 								// Player check
 								if (checkCollision(particles[i].mX, particles[i].mY,
 										particles[i].mW, particles[i].mH, p1.getX(),
-										p1.getY(), p1.getWidth(), p1.getHeight())) {
+										p1.getY(), p1.getWidth(), p1.getHeight())) 
+								{
 
 									// Hurt player
 									p1.Hurt(10);
@@ -279,19 +292,23 @@ int main(int, char**)
 				}
 
 				// Particle collision with Enemies
-				for (int i = 0; i < 1000; i++) {
-					if (particles[i].mAlive) {
-						if (particles[i].mType == 4) {
+				for (int i = 0; i < 1000; i++) 
+				{
+					if (particles[i].mAlive)
+					{
+						if (particles[i].mType == 4) 
+						{
 							// Enemy check
-							for (int j = 0; j < enemyMax; j++) {
-								if (enemy[j].alive) {
-
+							for (int j = 0; j < enemyMax; j++)
+							{
+								if (enemy[j].alive) 
+								{
 									// ON-HIT Collision Check
 									if (checkCollision(particles[i].mX,
 											particles[i].mY, particles[i].mW,
 											particles[i].mH, enemy[j].x, enemy[j].y,
-											enemy[j].w, enemy[j].h)) {
-
+											enemy[j].w, enemy[j].h))
+									{
 										// Flash enemy
 										enemy[j].flash = true;
 
@@ -317,11 +334,11 @@ int main(int, char**)
 				}
 
 				// If in Game playing scene
-				if (gameScene == 1) {
-
+				if (gameScene == 1)
+				{
 					// If player died
-					if (!p1.alive) {
-
+					if (!p1.alive) 
+					{
 						// Show losing screen
 						gameScene = 2;
 					}
@@ -333,7 +350,8 @@ int main(int, char**)
 
 			// Spawn Enemies
 			enemySpawnTimer += 0.22f;
-			if (enemySpawnTimer > 60) {
+			if (enemySpawnTimer > 60)
+			{
 				enemySpawnTimer = 0;
 
 				// Spawn a random enemy a few pixels to the right of the scree
@@ -351,11 +369,14 @@ int main(int, char**)
 			}
 
 			// enemy shoot
-			for (int i = 0; i < enemyMax; i++) {
-				if (enemy[i].alive) {
+			for (int i = 0; i < enemyMax; i++) 
+			{
+				if (enemy[i].alive) 
+				{
 					// Handle shoot rate
 					enemy[i].shootTimer += enemy[i].shootRate;
-					if (enemy[i].shootTimer > 60) {
+					if (enemy[i].shootTimer > 60) 
+					{
 						enemy[i].shootTimer = 0;
 						// shoot particle
 						float newX = enemy[i].x + enemy[i].w / 2 - 12;
@@ -379,18 +400,22 @@ int main(int, char**)
 		rCity2.x -= 3;
 		rCity1.x -= 4;
 
-		if (rSunClouds.x < -1280) {
+		if (rSunClouds.x < -1280) 
+		{
 			rSunClouds.x = 0;
 		}
-		if (rCity3.x < -1280) {
+		if (rCity3.x < -1280) 
+		{
 			rCity3.x = 0;
 		}
 
-		if (rCity2.x < -1280) {
+		if (rCity2.x < -1280)
+		{
 			rCity2.x = 0;
 		}
 
-		if (rCity1.x < -1280) {
+		if (rCity1.x < -1280)
+		{
 			rCity1.x = 0;
 		}
 
@@ -405,182 +430,199 @@ int main(int, char**)
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-			// Layer 0, Orange Background
-			gOrangeBG.render(renderer, 0, 0, window.getWidth(), window.getHeight());
+		// Layer 0, Orange Background
+		gOrangeBG.render(renderer, 0, 0, window.getWidth(), window.getHeight());
 
-			// Layer 1, Sun and Clouds
-			gSunClouds.render(renderer, (int)rSunClouds.x, (int)rSunClouds.y, window.getWidth(), window.getHeight());
+		// Layer 1, Sun and Clouds
+		gSunClouds.render(renderer, (int)rSunClouds.x, (int)rSunClouds.y, window.getWidth(), window.getHeight());
 
-			// Layer 2, City
-			gCity3.render(renderer, (int)rCity3.x+1280, (int)rCity3.y, window.getWidth(), window.getHeight());
-			gCity3.render(renderer, (int)rCity3.x, (int)rCity3.y, window.getWidth(), window.getHeight());
+		// Layer 2, City
+		gCity3.render(renderer, (int)rCity3.x+1280, (int)rCity3.y, window.getWidth(), window.getHeight());
+		gCity3.render(renderer, (int)rCity3.x, (int)rCity3.y, window.getWidth(), window.getHeight());
 
-			// Layer 3, City
-			gCity2.render(renderer, (int)rCity2.x, (int)rCity2.y, window.getWidth(), window.getHeight());
-			gCity2.render(renderer, (int)rCity2.x+1280, (int)rCity2.y, window.getWidth(), window.getHeight());
+		// Layer 3, City
+		gCity2.render(renderer, (int)rCity2.x, (int)rCity2.y, window.getWidth(), window.getHeight());
+		gCity2.render(renderer, (int)rCity2.x+1280, (int)rCity2.y, window.getWidth(), window.getHeight());
 
-			// Layer 4, City
-			gCity1.render(renderer, (int)rCity1.x, (int)rCity1.y, window.getWidth(), window.getHeight());
-			gCity1.render(renderer, (int)rCity1.x+1280, (int)rCity1.y, window.getWidth(), window.getHeight());
+		// Layer 4, City
+		gCity1.render(renderer, (int)rCity1.x, (int)rCity1.y, window.getWidth(), window.getHeight());
+		gCity1.render(renderer, (int)rCity1.x+1280, (int)rCity1.y, window.getWidth(), window.getHeight());
 
-			// Render particles
-			part.Render(renderer, particles, 0, 0);
+		// Render particles
+		part.Render(renderer, particles, 0, 0);
 
-			// Render floor
-			SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
-			SDL_RenderFillRect(renderer, &floor);
+		// Render floor
+		SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
+		SDL_RenderFillRect(renderer, &floor);
 
-			// Render floor
-			SDL_Rect playerPower = { 
-				(int)p1.getX() + (int)p1.getWidth(), 
-				(int)p1.getY() + (int)p1.getHeight()/2-1, 
-				(int)p1.xPower*6, 2 
-			};
+		// Render floor
+		SDL_Rect playerPower = 
+		{ 
+			(int)p1.getX() + (int)p1.getWidth(), 
+			(int)p1.getY() + (int)p1.getHeight()/2-1, 
+			(int)p1.xPower*6, 2 
+		};
 
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			SDL_RenderFillRect(renderer, &playerPower);
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderFillRect(renderer, &playerPower);
 
-			////// Render game objects //////
+		////// Render game objects //////
 
-			// Render Player 1
-			if (p1.alive) {
-				gCopter.setAlpha(p1.alpha);
-				gCopter.render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &rCopter[playerFrame], p1.angle);
-				p1.render(renderer);
-			}
+		// Render Player 1
+		if (p1.alive) 
+		{
+			gCopter.setAlpha(p1.alpha);
+			gCopter.render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &rCopter[playerFrame], p1.angle);
+			p1.render(renderer);
+		}
 
-			// Render enemy
-			Enemy::renderEnemy(enemy, 0, 0, *renderer, gTanks, rTanks, enemyMax);
+		// Render enemy
+		Enemy::renderEnemy(enemy, 0, 0, *renderer, gTanks, rTanks, enemyMax);
 
-			////// Render Text //////
+		////// Render Text //////
 
-			////// Game Scenes /////
+		////// Game Scenes /////
 
-			std::stringstream tempss;
-			// Before game start scene
-			if (gameScene == 0) {
-
-				// Render text: To start game
-				tempss.str(std::string());
-				tempss << "Press Space to Start.";
-				font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
-				font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2, window.getHeight() - font.getTexture().getHeight(),
-							 font.getTexture().getWidth(), font.getTexture().getHeight());
-
-			}
-
-			// Playing game scene
-			else if (gameScene == 1)
-			{
-
-			}
-
-			// Lost scene
-			else if (gameScene == 2) {
-				tempss.str(std::string());
-				tempss << "You lose. Boo hoo.";
-				font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
-				font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2,
-						window.getHeight() - font.getTexture().getHeight()-22,
-							 font.getTexture().getWidth(), font.getTexture().getHeight());
-
-				tempss.str(std::string());
-				tempss << "Press Space to Start.";
-				font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
-				font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2,
-						window.getHeight() - font.getTexture().getHeight(),
-							 font.getTexture().getWidth(), font.getTexture().getHeight());
-			}
-
-			// Winning scene
-			else if (gameScene == 2) {
-				tempss.str(std::string());
-				tempss << "You win something!";
-				font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
-				font.getTexture().render(renderer, 640/2 - font.getTexture().getWidth()/2,
-						 360 - font.getTexture().getHeight()-22,
-							 font.getTexture().getWidth(), font.getTexture().getHeight());
-
-				tempss.str(std::string());
-				tempss << "Press Space to Start again.";
-				font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
-				font.getTexture().render(renderer, 640/2 - font.getTexture().getWidth()/2,
-						 360 - font.getTexture().getHeight(),
-							 font.getTexture().getWidth(), font.getTexture().getHeight());
-			}
-
-			// Game paused
-			if (paused) {
-
-				tempss.str(std::string());
-				font.getTexture().setAlpha(255);
-				font.getTexture().loadFromRenderedText(renderer, "Paused", {255,255,255}, font.getFont(VIGA));
-				font.getTexture().render(renderer, 640/2-font.getTexture().getWidth()/2, 360 - font.getTexture().getHeight() - 20,
-										font.getTexture().getWidth(), font.getTexture().getHeight());
-			}
-
-			/////// Render Score Text /////////
-
-			// Render score text top-right of screen
-			tempss.str(std::string());
-			if (count_digit(previousHighScore) == 1) {
-				tempss << "Highscore: 00000" << previousHighScore;
-			}
-			else if (count_digit(previousHighScore) == 2) {
-				tempss << "Highscore: 00000" << previousHighScore;
-			}
-			else if (count_digit(previousHighScore) == 3) {
-				tempss << "Highscore: 0000" << previousHighScore;
-			}
-			else if (count_digit(previousHighScore) == 4) {
-				tempss << "Highscore: 000" << previousHighScore;
-			}
-			else if (count_digit(previousHighScore) == 5) {
-				tempss << "Highscore: 00" << previousHighScore;
-			}
-			else if (count_digit(previousHighScore) == 6) {
-				tempss << "Highscore: 0" << previousHighScore;
-			} else {
-				tempss << "Highscore: 000000" << previousHighScore;
-			}
-
-			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
-			font.getTexture().render(renderer, window.getWidth() - font.getTexture().getWidth() - 10, 4, font.getTexture().getWidth(), font.getTexture().getHeight());
-
-			// Render score text top-right of screen
-			tempss.str(std::string());
-			if (count_digit(score) == 1) {
-				tempss << "Score: 000000" << score;
-			}
-			else if (count_digit(score) == 2) {
-				tempss << "Score: 00000" << score;
-			}
-			else if (count_digit(score) == 3) {
-				tempss << "Score: 0000" << score;
-			}
-			else if (count_digit(score) == 4) {
-				tempss << "Score: 000" << score;
-			}
-			else if (count_digit(score) == 5) {
-				tempss << "Score: 00" << score;
-			}
-			else if (count_digit(score) == 6) {
-				tempss << "Score: 0" << score;
-			} else {
-				tempss << "Score: 000000" << score;
-			}
-			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
-			font.getTexture().render(renderer, window.getWidth() - font.getTexture().getWidth() - 10, 28, font.getTexture().getWidth(), font.getTexture().getHeight());
-
-			//////// Debug ///////
-
-#if DEBUG
+		std::stringstream tempss;
+		// Before game start scene
+		if (gameScene == 0) 
+		{
 			// Render text: To start game
 			tempss.str(std::string());
-			tempss << "gameScene: " << gameScene;
+			tempss << "Press Space to Start.";
 			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
-			font.getTexture().render(renderer, 0, 0,
+			font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2, window.getHeight() - font.getTexture().getHeight(),
 						 font.getTexture().getWidth(), font.getTexture().getHeight());
+
+		}
+
+		// Playing game scene
+		else if (gameScene == 1)
+		{
+		}
+
+		// Lost scene
+		else if (gameScene == 2) 
+		{
+			tempss.str(std::string());
+			tempss << "You lose. Boo hoo.";
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
+			font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2,
+					window.getHeight() - font.getTexture().getHeight()-22,
+						 font.getTexture().getWidth(), font.getTexture().getHeight());
+
+			tempss.str(std::string());
+			tempss << "Press Space to Start.";
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
+			font.getTexture().render(renderer, window.getWidth()/2 - font.getTexture().getWidth()/2,
+					window.getHeight() - font.getTexture().getHeight(),
+						 font.getTexture().getWidth(), font.getTexture().getHeight());
+		}
+
+			// Winning scene
+		else if (gameScene == 2) 
+		{
+			tempss.str(std::string());
+			tempss << "You win something!";
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
+			font.getTexture().render(renderer, 640/2 - font.getTexture().getWidth()/2,
+					 360 - font.getTexture().getHeight()-22,
+						 font.getTexture().getWidth(), font.getTexture().getHeight());
+
+			tempss.str(std::string());
+			tempss << "Press Space to Start again.";
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
+			font.getTexture().render(renderer, 640/2 - font.getTexture().getWidth()/2,
+					 360 - font.getTexture().getHeight(),
+						 font.getTexture().getWidth(), font.getTexture().getHeight());
+		}
+
+		// Game paused
+		if (paused) 
+		{
+			tempss.str(std::string());
+			font.getTexture().setAlpha(255);
+			font.getTexture().loadFromRenderedText(renderer, "Paused", {255,255,255}, font.getFont(VIGA));
+			font.getTexture().render(renderer, 640/2-font.getTexture().getWidth()/2, 360 - font.getTexture().getHeight() - 20,
+									font.getTexture().getWidth(), font.getTexture().getHeight());
+		}
+
+		/////// Render Score Text /////////
+
+		// Render score text top-right of screen
+		tempss.str(std::string());
+		if (count_digit(previousHighScore) == 1) 
+		{
+			tempss << "Highscore: 00000" << previousHighScore;
+		}
+		else if (count_digit(previousHighScore) == 2) 
+		{
+			tempss << "Highscore: 00000" << previousHighScore;
+		}
+		else if (count_digit(previousHighScore) == 3)
+		{
+			tempss << "Highscore: 0000" << previousHighScore;
+		}
+		else if (count_digit(previousHighScore) == 4)
+		{
+			tempss << "Highscore: 000" << previousHighScore;
+		}
+		else if (count_digit(previousHighScore) == 5)
+		{
+			tempss << "Highscore: 00" << previousHighScore;
+		}
+		else if (count_digit(previousHighScore) == 6) 
+		{
+			tempss << "Highscore: 0" << previousHighScore;
+		} else 
+		{
+			tempss << "Highscore: 000000" << previousHighScore;
+		}
+
+		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
+		font.getTexture().render(renderer, window.getWidth() - font.getTexture().getWidth() - 10, 4, font.getTexture().getWidth(), font.getTexture().getHeight());
+
+		// Render score text top-right of screen
+		tempss.str(std::string());
+		if (count_digit(score) == 1) 
+		{
+			tempss << "Score: 000000" << score;
+		}
+		else if (count_digit(score) == 2) 
+		{
+			tempss << "Score: 00000" << score;
+		}
+		else if (count_digit(score) == 3) 
+		{
+			tempss << "Score: 0000" << score;
+		}
+		else if (count_digit(score) == 4) 
+		{
+			tempss << "Score: 000" << score;
+		}
+		else if (count_digit(score) == 5) 
+		{
+			tempss << "Score: 00" << score;
+		}
+		else if (count_digit(score) == 6) 
+		{
+			tempss << "Score: 0" << score;
+		} else 
+		{
+			tempss << "Score: 000000" << score;
+		}
+		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
+		font.getTexture().render(renderer, window.getWidth() - font.getTexture().getWidth() - 10, 28, font.getTexture().getWidth(), font.getTexture().getHeight());
+
+		//////// Debug ///////
+
+#if DEBUG
+		// Render text: To start game
+		tempss.str(std::string());
+		tempss << "gameScene: " << gameScene;
+		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
+		font.getTexture().render(renderer, 0, 0,
+					 font.getTexture().getWidth(), font.getTexture().getHeight());
 #endif
 
 
