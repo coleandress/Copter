@@ -28,9 +28,3 @@ private:
 	SDL_Renderer** mRenderer;
 };
 
-// Enemy Variables
-//int enemyCount = 0;
-//const int enemyMax = 64;
-//float enemySpawnTimer = 0.0;
-//Enemy enemy[enemyMax];
-//Enemy::initEnemy(enemy, enemyCount, enemyMax);

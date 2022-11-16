@@ -34,10 +34,6 @@ float randFloat(float fMin, float fMax);
 int count_digit(int number);
 void freeSDL(LWindow& mWindow);
 
-// Enemy
-//LTexture gTanks;
-//SDL_Rect rTanks[6];
-
 // Player
 LTexture gCopter;
 SDL_Rect rCopter[5];
@@ -404,9 +400,6 @@ int main(int, char**)
 			p1.render(renderer);
 		}
 
-		// TODO: extract into EnemyManager
-		// Render enemy
-		//Enemy::renderEnemy(enemyManager.getEnemies(), 0, 0, *renderer, gTanks, rTanks, enemyManager.ENEMY_MAX);
 		enemyManager.renderEnemies();
 
 		////// Render Text //////
@@ -610,18 +603,9 @@ static void doLoadFromFile(Message& msg, LTexture& texture, SDL_Renderer** gRend
 
 void loadMedia(Message& msg, SDL_Renderer** gRenderer)
 {
-	//doLoadFromFile(msg, gTanks, gRenderer, "resource/gfx/tanks.png");
 	doLoadFromFile(msg, gCopter, gRenderer, "resource/gfx/player-copter.png");
 
 	// Texture clips
-
-	// Tanks
-	//rTanks[0] = { 0,0,32,32 };
-	//rTanks[1] = { 32,0,32,32 };
-	//rTanks[2] = { 64,0,32,32 };
-	//rTanks[3] = { 0,32,32,32 };
-	//rTanks[4] = { 32,32,32,32 };
-	//rTanks[5] = { 64,32,32,32 };
 
 	// Copter
 	rCopter[0] = { 0,0,128,64 };
@@ -807,7 +791,6 @@ int count_digit(int number)
 
 void freeSDL(LWindow& mWindow)
 {
-	//gTanks.free();
 	gCopter.free();
 
 	mWindow.free();

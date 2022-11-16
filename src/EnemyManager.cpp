@@ -114,27 +114,12 @@ void EnemyManager::updateEnemies(int& score)
 	if (mEnemySpawnTimer > 60)
 	{
 		mEnemySpawnTimer = 0;
-
-		// Spawn a random enemy a few pixels to the right of the scree
-		//spawnEnemy(enemy, 1280 + rand() % 100, ground - 64 - 32 + 5, 64, // I changed this need to indicate the height is the ground CA 2022-11-10
 		spawnEnemies();
-
-		/*Enemy::spawnEnemy(
-			enemy,
-			1280.0f + rand() % 100,
-			window.getHeight() - 64.0f - 32.0f + 5.0f,
-			64,
-			64,
-			rand() % 3,
-			enemyCount,
-			enemyMax
-		);*/
 	}
 
 	enemiesShoot();
 }
 
-//void Enemy::spawnEnemy(Enemy enemy[], float x, float y, float w, float h, int type, int& enemyCount, const int& enemyMax) {
 void EnemyManager::spawnEnemies()
 {
 	float x = 1280.0f + rand() % 100; // TODO: Study and adjust this, need to replace 1280 with window width
