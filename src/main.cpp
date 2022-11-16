@@ -20,6 +20,7 @@
 
 #include "Message.h"
 #include "Background.h"
+#include "EnemyManager.h"
 
 void setup(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore);
 void initSDL(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer);
@@ -106,11 +107,12 @@ int main(int, char**)
 	float fireRate = 15;
 
 	// Enemy Variables
-	int enemyCount = 0;
-	const int enemyMax = 64;
-	float enemySpawnTimer = 0.0;
-	Enemy enemy[enemyMax];
-	Enemy::initEnemy(enemy, enemyCount, enemyMax);
+	//int enemyCount = 0;
+	//const int enemyMax = 64;
+	//float enemySpawnTimer = 0.0;
+	//Enemy enemy[enemyMax];
+	//Enemy::initEnemy(enemy, enemyCount, enemyMax);
+	EnemyManager enemyManager{};
 
 	// Player Variables
 	const float playerFrameRate = 15;
@@ -291,21 +293,21 @@ int main(int, char**)
 						if (particles[i].mType == 4)
 						{
 							// Enemy check
-							for (int j = 0; j < enemyMax; j++)
+							for (int j = 0; j < enemyManager.ENEMY_MAX; j++)
 							{
-								if (enemy[j].alive)
+								if (enemyManager.getEnemies()[j].alive)
 								{
 									// ON-HIT Collision Check
 									if (checkCollision(particles[i].mX,
 										particles[i].mY, particles[i].mW,
-										particles[i].mH, enemy[j].x, enemy[j].y,
-										enemy[j].w, enemy[j].h))
+										particles[i].mH, enemyManager.getEnemies()[j].x, enemyManager.getEnemies()[j].y,
+										enemyManager.getEnemies()[j].w, enemyManager.getEnemies()[j].h))
 									{
 										// Flash enemy
-										enemy[j].flash = true;
+										enemyManager.getEnemies()[j].flash = true;
 
 										// Remove enemy
-										enemy[j].health -= 25;
+										enemyManager.getEnemies()[j].health -= 25;
 
 										// remove particle
 										part.Remove(particles, i);
@@ -338,10 +340,11 @@ int main(int, char**)
 			}	// end gameScene 1
 
 			// Update Enemies
-			Enemy::updateEnemy(enemy, enemyCount, enemyMax, score);
+			//Enemy::updateEnemy(enemy, enemyCount, enemyMax, score);
+			enemyManager.updateEnemies(score);
 
 			// Spawn Enemies
-			enemySpawnTimer += 0.22f;
+			/*enemySpawnTimer += 0.22f;
 			if (enemySpawnTimer > 60)
 			{
 				enemySpawnTimer = 0;
@@ -358,21 +361,22 @@ int main(int, char**)
 					enemyCount,
 					enemyMax
 				);
-			}
+			}*/
 
+			//TODO: Extract into EnemyManager once I figure out how I want to handle particles.
 			// enemy shoot
-			for (int i = 0; i < enemyMax; i++)
+			for (int i = 0; i < enemyManager.ENEMY_MAX; i++)
 			{
-				if (enemy[i].alive)
+				if (enemyManager.getEnemies()[i].alive)
 				{
 					// Handle shoot rate
-					enemy[i].shootTimer += enemy[i].shootRate;
-					if (enemy[i].shootTimer > 60)
+					enemyManager.getEnemies()[i].shootTimer += enemyManager.getEnemies()[i].shootRate;
+					if (enemyManager.getEnemies()[i].shootTimer > 60)
 					{
-						enemy[i].shootTimer = 0;
+						enemyManager.getEnemies()[i].shootTimer = 0;
 						// shoot particle
-						float newX = enemy[i].x + enemy[i].w / 2 - 12;
-						float newY = enemy[i].y + enemy[i].h / 2 - 9;
+						float newX = enemyManager.getEnemies()[i].x + enemyManager.getEnemies()[i].w / 2 - 12;
+						float newY = enemyManager.getEnemies()[i].y + enemyManager.getEnemies()[i].h / 2 - 9;
 						part.spawnParticleAngle(particles, "slow", 3, newX,
 							newY, 11, 11, randFloat(200, 225), 9, 0.0f, {
 									200, 200, 200 }, 1, 1, 1, 255, 0, 60, 0,
@@ -429,8 +433,9 @@ int main(int, char**)
 			p1.render(renderer);
 		}
 
+		// TODO: extract into EnemyManager
 		// Render enemy
-		Enemy::renderEnemy(enemy, 0, 0, *renderer, gTanks, rTanks, enemyMax);
+		Enemy::renderEnemy(enemyManager.getEnemies(), 0, 0, *renderer, gTanks, rTanks, enemyManager.ENEMY_MAX);
 
 		////// Render Text //////
 

@@ -8,7 +8,7 @@
 class Enemy
 {
 public:
-	static void initEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax);
+	//static void initEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax);
 	static void spawnEnemy(Enemy enemy[], float x, float y, float w, float h, int type, int& enemyCount, const int& enemyMax);
 	static void updateEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax, int& score);
 	static void renderEnemy(Enemy enemy[], float camx, float camy, SDL_Renderer& gRenderer, LTexture& gTanks, SDL_Rect rTanks[], const int& enemyMax);

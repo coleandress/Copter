@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-void Enemy::initEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax) 
+/*void Enemy::initEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax)
 {
 	enemyCount = 0;
 	for (int i = 0; i < enemyMax; i++) {
@@ -16,9 +16,9 @@ void Enemy::initEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax)
 		enemy[i].flash = false;
 		enemy[i].alive = false;
 	}
-}
+}*/
 
-void Enemy::spawnEnemy(Enemy enemy[], float x, float y, float w, float h, int type, int& enemyCount, const int& enemyMax) {
+/*void Enemy::spawnEnemy(Enemy enemy[], float x, float y, float w, float h, int type, int& enemyCount, const int& enemyMax) {
 	for (int i = 0; i < enemyMax; i++) {
 		if (!enemy[i].alive) {
 			enemy[i].x = x;
@@ -49,9 +49,9 @@ void Enemy::spawnEnemy(Enemy enemy[], float x, float y, float w, float h, int ty
 			break;
 		}
 	}
-}
+}*/
 
-void Enemy::updateEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax, int& score) {
+/*void Enemy::updateEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax, int& score) {
 	for (int i = 0; i < enemyMax; i++) {
 		if (enemy[i].alive) {
 
@@ -119,7 +119,7 @@ void Enemy::updateEnemy(Enemy enemy[], int& enemyCount, const int& enemyMax, int
 			}
 		}
 	}
-}
+}*/
 
 void Enemy::renderEnemy(Enemy enemy[], float camx, float camy, SDL_Renderer& gRenderer, LTexture& gTanks, SDL_Rect rTanks[], const int& enemyMax) {
 	for (int i = 0; i < enemyMax; i++) {
