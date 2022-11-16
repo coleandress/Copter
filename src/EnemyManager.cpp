@@ -1,7 +1,24 @@
 #include "EnemyManager.h"
 
-EnemyManager::EnemyManager()
+EnemyManager::EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer)
+	: mMsg{ msg },
+	  mWindow{ window },
+	  mRenderer{ renderer }
 {
+	std::string fileName = "resource/gfx/tanks.png";
+	if (!mTankTexture.loadFromFile(mRenderer, fileName))
+		msg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");	
+	
+	// Texture clips
+	
+	mTankRects[0] = { 0,0,32,32 };
+	mTankRects[1] = { 32,0,32,32 };
+	mTankRects[2] = { 64,0,32,32 };
+	mTankRects[3] = { 0,32,32,32 };
+	mTankRects[4] = { 32,32,32,32 };
+	mTankRects[5] = { 64,32,32,32 };
+
+
 	for (int i = 0; i < ENEMY_MAX; i++) {
 		mEnemies[i].x = -100;
 		mEnemies[i].y = -100;
@@ -20,6 +37,7 @@ EnemyManager::EnemyManager()
 
 EnemyManager::~EnemyManager()
 {
+	mTankTexture.free();
 }
 
 void EnemyManager::updateEnemies(int& score)
@@ -112,6 +130,8 @@ void EnemyManager::updateEnemies(int& score)
 			enemyMax
 		);*/
 	}
+
+	enemiesShoot();
 }
 
 //void Enemy::spawnEnemy(Enemy enemy[], float x, float y, float w, float h, int type, int& enemyCount, const int& enemyMax) {
@@ -151,6 +171,32 @@ void EnemyManager::spawnEnemies()
 			mEnemies[i].alive = true;
 			mEnemyCount++;
 			break;
+		}
+	}
+}
+
+void EnemyManager::enemiesShoot()
+{
+}
+
+void EnemyManager::renderEnemies()
+{
+	float camx = 0;
+	float camy = 0;
+
+	for (int i = 0; i < ENEMY_MAX; i++) {
+		if (mEnemies[i].alive) {
+			if (mEnemies[i].flash) {
+				mTankTexture.setAlpha(mEnemies[i].alpha);
+				mTankTexture.render(*mRenderer, (int)mEnemies[i].x - (int)camx, (int)mEnemies[i].y - (int)camy, (int)mEnemies[i].w, (int)mEnemies[i].h, &mTankRects[mEnemies[i].type]);
+			}
+			else {
+				mTankTexture.setAlpha(mEnemies[i].alpha);
+				mTankTexture.render(*mRenderer, (int)mEnemies[i].x - (int)camx, (int)mEnemies[i].y - (int)camy, (int)mEnemies[i].w, (int)mEnemies[i].h, &mTankRects[mEnemies[i].type]);
+			}
+			/*SDL_Rect playerPower = {enemy[i].x-camx, enemy[i].y-camy,  enemy[i].w, enemy[i].h};
+			SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
+			SDL_RenderDrawRect(gRenderer, &playerPower);*/
 		}
 	}
 }

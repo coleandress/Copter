@@ -35,8 +35,8 @@ int count_digit(int number);
 void freeSDL(LWindow& mWindow);
 
 // Enemy
-LTexture gTanks;
-SDL_Rect rTanks[6];
+//LTexture gTanks;
+//SDL_Rect rTanks[6];
 
 // Player
 LTexture gCopter;
@@ -59,6 +59,7 @@ int main(int, char**)
 	int previousHighScore{ -1 };
 	setup(msg, window, &renderer, previousHighScore);
 	Background background(msg, window, &renderer);
+	EnemyManager enemyManager{ msg, window, &renderer };
 	int gameScene{ 0 };
 	//int highscore{ -1 };
 	int score{ 0 };
@@ -105,14 +106,6 @@ int main(int, char**)
 	// game booleans
 	float fireTimer = 0;
 	float fireRate = 15;
-
-	// Enemy Variables
-	//int enemyCount = 0;
-	//const int enemyMax = 64;
-	//float enemySpawnTimer = 0.0;
-	//Enemy enemy[enemyMax];
-	//Enemy::initEnemy(enemy, enemyCount, enemyMax);
-	EnemyManager enemyManager{};
 
 	// Player Variables
 	const float playerFrameRate = 15;
@@ -339,29 +332,7 @@ int main(int, char**)
 				}
 			}	// end gameScene 1
 
-			// Update Enemies
-			//Enemy::updateEnemy(enemy, enemyCount, enemyMax, score);
 			enemyManager.updateEnemies(score);
-
-			// Spawn Enemies
-			/*enemySpawnTimer += 0.22f;
-			if (enemySpawnTimer > 60)
-			{
-				enemySpawnTimer = 0;
-
-				// Spawn a random enemy a few pixels to the right of the scree
-				//spawnEnemy(enemy, 1280 + rand() % 100, ground - 64 - 32 + 5, 64, // I changed this need to indicate the height is the ground CA 2022-11-10
-				Enemy::spawnEnemy(
-					enemy,
-					1280.0f + rand() % 100,
-					window.getHeight() - 64.0f - 32.0f + 5.0f,
-					64,
-					64,
-					rand() % 3,
-					enemyCount,
-					enemyMax
-				);
-			}*/
 
 			//TODO: Extract into EnemyManager once I figure out how I want to handle particles.
 			// enemy shoot
@@ -435,7 +406,8 @@ int main(int, char**)
 
 		// TODO: extract into EnemyManager
 		// Render enemy
-		Enemy::renderEnemy(enemyManager.getEnemies(), 0, 0, *renderer, gTanks, rTanks, enemyManager.ENEMY_MAX);
+		//Enemy::renderEnemy(enemyManager.getEnemies(), 0, 0, *renderer, gTanks, rTanks, enemyManager.ENEMY_MAX);
+		enemyManager.renderEnemies();
 
 		////// Render Text //////
 
@@ -638,18 +610,18 @@ static void doLoadFromFile(Message& msg, LTexture& texture, SDL_Renderer** gRend
 
 void loadMedia(Message& msg, SDL_Renderer** gRenderer)
 {
-	doLoadFromFile(msg, gTanks, gRenderer, "resource/gfx/tanks.png");
+	//doLoadFromFile(msg, gTanks, gRenderer, "resource/gfx/tanks.png");
 	doLoadFromFile(msg, gCopter, gRenderer, "resource/gfx/player-copter.png");
 
 	// Texture clips
 
 	// Tanks
-	rTanks[0] = { 0,0,32,32 };
-	rTanks[1] = { 32,0,32,32 };
-	rTanks[2] = { 64,0,32,32 };
-	rTanks[3] = { 0,32,32,32 };
-	rTanks[4] = { 32,32,32,32 };
-	rTanks[5] = { 64,32,32,32 };
+	//rTanks[0] = { 0,0,32,32 };
+	//rTanks[1] = { 32,0,32,32 };
+	//rTanks[2] = { 64,0,32,32 };
+	//rTanks[3] = { 0,32,32,32 };
+	//rTanks[4] = { 32,32,32,32 };
+	//rTanks[5] = { 64,32,32,32 };
 
 	// Copter
 	rCopter[0] = { 0,0,128,64 };
@@ -835,7 +807,7 @@ int count_digit(int number)
 
 void freeSDL(LWindow& mWindow)
 {
-	gTanks.free();
+	//gTanks.free();
 	gCopter.free();
 
 	mWindow.free();
