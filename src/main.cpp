@@ -19,6 +19,7 @@
 #include "Font.h"
 
 #include "Message.h"
+#include "Background.h"
 
 void setup(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore);
 void initSDL(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer);
@@ -31,13 +32,6 @@ bool checkCollision(float x, float y, float w, float h, float x2, float y2, floa
 float randFloat(float fMin, float fMax);
 int count_digit(int number);
 void freeSDL(LWindow& mWindow);
-
-/// Backgrounds ///
-LTexture gOrangeBG;
-LTexture gSunClouds;
-LTexture gCity3;
-LTexture gCity2;
-LTexture gCity1;
 
 // Enemy
 LTexture gTanks;
@@ -59,19 +53,18 @@ int main(int, char**)
 		// TODO: extract score into class
 
 	LWindow window{};
-	SDL_Renderer* renderer{};
+	SDL_Renderer* renderer;
+	Message msg{};
+	int previousHighScore{ -1 };
+	setup(msg, window, &renderer, previousHighScore);
+	Background background(msg, window, &renderer);
 	int gameScene{ 0 };
 	//int highscore{ -1 };
-	int previousHighScore{ -1 };
 	int score{ 0 };
 	Sound sound;
 	Font font;
 
-	Message msg;
-
 	msg.log("In main(), calling: setup ...");
-
-	setup(msg, window, &renderer, previousHighScore);
 
 	bool paused = false;
 
@@ -124,20 +117,11 @@ int main(int, char**)
 	float playerFrameTimer = 0;
 	int playerFrame = 0;
 
-	// World
-	//SDL_Rect floor = {0, mHeight-28, mWidth, 28};
-	SDL_Rect floor = { 0, window.getHeight() - 28, window.getWidth(), 28 };
-	SDL_FRect rSunClouds = { 0, 0, 640, 360 };
-	SDL_FRect rCity3 = { 0, 0, 640, 360 };
-	SDL_FRect rCity2 = { 0, 0, 640, 360 };
-	SDL_FRect rCity1 = { 0, 0, 640, 360 };
-
 	// Call before loop
 	fireTimer = 0;
 	fireRate = 15;
 	playerFrame = 0;
 
-	//Mix_FadeInMusic(sMusic, -1, 2000);
 	sound.playMusic();
 
 	msg.log("Entering main game loop ...");
@@ -402,30 +386,7 @@ int main(int, char**)
 			}
 		}		// end !paused
 
-		// Move backgrounds
-		rSunClouds.x -= 0.05f;
-		rCity3.x -= 2;
-		rCity2.x -= 3;
-		rCity1.x -= 4;
-
-		if (rSunClouds.x < -1280)
-		{
-			rSunClouds.x = 0;
-		}
-		if (rCity3.x < -1280)
-		{
-			rCity3.x = 0;
-		}
-
-		if (rCity2.x < -1280)
-		{
-			rCity2.x = 0;
-		}
-
-		if (rCity1.x < -1280)
-		{
-			rCity1.x = 0;
-		}
+		background.moveBackgrounds();
 
 		// Update Particles
 		//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
@@ -438,30 +399,14 @@ int main(int, char**)
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		// Layer 0, Orange Background
-		gOrangeBG.render(renderer, 0, 0, window.getWidth(), window.getHeight());
-
-		// Layer 1, Sun and Clouds
-		gSunClouds.render(renderer, (int)rSunClouds.x, (int)rSunClouds.y, window.getWidth(), window.getHeight());
-
-		// Layer 2, City
-		gCity3.render(renderer, (int)rCity3.x + 1280, (int)rCity3.y, window.getWidth(), window.getHeight());
-		gCity3.render(renderer, (int)rCity3.x, (int)rCity3.y, window.getWidth(), window.getHeight());
-
-		// Layer 3, City
-		gCity2.render(renderer, (int)rCity2.x, (int)rCity2.y, window.getWidth(), window.getHeight());
-		gCity2.render(renderer, (int)rCity2.x + 1280, (int)rCity2.y, window.getWidth(), window.getHeight());
-
-		// Layer 4, City
-		gCity1.render(renderer, (int)rCity1.x, (int)rCity1.y, window.getWidth(), window.getHeight());
-		gCity1.render(renderer, (int)rCity1.x + 1280, (int)rCity1.y, window.getWidth(), window.getHeight());
+		background.renderBackgrounds();
 
 		// Render particles
 		part.Render(renderer, particles, 0, 0);
 
 		// Render floor
 		SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
-		SDL_RenderFillRect(renderer, &floor);
+		SDL_RenderFillRect(renderer, &background.getFloorRect());
 
 		// Render floor
 		SDL_Rect playerPower =
@@ -688,12 +633,6 @@ static void doLoadFromFile(Message& msg, LTexture& texture, SDL_Renderer** gRend
 
 void loadMedia(Message& msg, SDL_Renderer** gRenderer)
 {
-	doLoadFromFile(msg, gOrangeBG, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_08_1920 x 1080.png");
-	doLoadFromFile(msg, gSunClouds, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_07_1920 x 1080.png");
-	doLoadFromFile(msg, gCity3, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_06_1920 x 1080.png");
-	doLoadFromFile(msg, gCity2, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_05_1920 x 1080.png");
-	doLoadFromFile(msg, gCity1, gRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_04_1920 x 1080.png");
-
 	doLoadFromFile(msg, gTanks, gRenderer, "resource/gfx/tanks.png");
 	doLoadFromFile(msg, gCopter, gRenderer, "resource/gfx/player-copter.png");
 
@@ -891,11 +830,6 @@ int count_digit(int number)
 
 void freeSDL(LWindow& mWindow)
 {
-	gOrangeBG.free();
-	gSunClouds.free();
-	gCity3.free();
-	gCity2.free();
-	gCity1.free();
 	gTanks.free();
 	gCopter.free();
 

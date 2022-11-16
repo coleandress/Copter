@@ -124,6 +124,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Background.cpp" />
     <ClCompile Include="src\Datetimeinfo.cpp" />
     <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\Message.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="src\Timers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Background.h" />
     <ClInclude Include="src\Datetimeinfo.h" />
     <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\Message.h" />
