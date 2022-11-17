@@ -35,8 +35,8 @@ int count_digit(int number);
 void freeSDL(LWindow& mWindow);
 
 // Player
-LTexture gCopter;
-SDL_Rect rCopter[5];
+//LTexture gCopter;
+//SDL_Rect rCopter[5];
 
 int main(int, char**)
 {
@@ -77,8 +77,8 @@ int main(int, char**)
 	bool quit = false;
 
 	// Create Player 1
-	Player p1;
-	p1.init();
+	Player p1{ msg, &renderer };
+	//p1.init();
 
 	// Timer
 	Timer fps;
@@ -360,8 +360,8 @@ int main(int, char**)
 		// Render Player 1
 		if (p1.alive)
 		{
-			gCopter.setAlpha(p1.alpha);
-			gCopter.render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &rCopter[playerFrame], p1.angle);
+			p1.getTexture().setAlpha(p1.alpha);
+			p1.getTexture().render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &p1.getRects()[playerFrame], p1.angle);
 			p1.render(renderer);
 		}
 
@@ -568,16 +568,16 @@ static void doLoadFromFile(Message& msg, LTexture& texture, SDL_Renderer** gRend
 
 void loadMedia(Message& msg, SDL_Renderer** gRenderer)
 {
-	doLoadFromFile(msg, gCopter, gRenderer, "resource/gfx/player-copter.png");
+	//doLoadFromFile(msg, gCopter, gRenderer, "resource/gfx/player-copter.png");
 
 	// Texture clips
 
 	// Copter
-	rCopter[0] = { 0,0,128,64 };
-	rCopter[1] = { 128,0,128,64 };
-	rCopter[2] = { 256,0,128,64 };
-	rCopter[3] = { 384,0,128,64 };
-	rCopter[4] = { 512,0,128,64 };
+	//rCopter[0] = { 0,0,128,64 };
+	//rCopter[1] = { 128,0,128,64 };
+	//rCopter[2] = { 256,0,128,64 };
+	//rCopter[3] = { 384,0,128,64 };
+	//rCopter[4] = { 512,0,128,64 };
 }
 
 void LoadHighScore(int& previousHighScore)
@@ -750,7 +750,7 @@ int count_digit(int number)
 
 void freeSDL(LWindow& mWindow)
 {
-	gCopter.free();
+	//gCopter.free();
 
 	mWindow.free();
 

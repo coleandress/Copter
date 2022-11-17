@@ -8,6 +8,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "Particle.h"
 #include "Sound.h"
+#include "Message.h"
 
 // Player class
 class Player {
@@ -19,9 +20,8 @@ public:
 	const float grav{ 0.09f };
 
 	// Default constructor
-	Player();
-
-	void init();
+	Player(Message& message, SDL_Renderer** renderer);
+	~Player();
 
 	void reset();
 
@@ -76,6 +76,10 @@ public:
 	// Get Player y speed
 	float getSpeedY();
 
+	LTexture& getTexture();
+
+	SDL_Rect* getRects();
+
 	// Update Player
 	void update(Particle &part, Particle particles[], Sound& sound);
 
@@ -120,4 +124,8 @@ private:
 	float w;
 	float h;
 	float health;
+	Message& mMsg;
+	SDL_Renderer** mRenderer;
+	LTexture mCopterTexture;
+	SDL_Rect mCopterRects[5];
 };

@@ -9,7 +9,10 @@
 #include "Player.h"
 
 // Default constructor
-Player::Player() {
+Player::Player(Message& message, SDL_Renderer** renderer)
+	: mMsg{ message },
+	  mRenderer{ renderer }
+{
 	setPosition(64, 360/2-112/2);
 	w = 128;
 	h = 64;
@@ -31,7 +34,24 @@ Player::Player() {
 	alpha = 255;
 	flashTimer = 0;
 	flash = false;
-	alive = true;
+	alive = true;	
+	
+	std::string fileName{ "resource/gfx/player-copter.png" };
+
+	if (!mCopterTexture.loadFromFile(mRenderer, fileName))
+		mMsg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
+
+	mCopterRects[0] = { 0,0,128,64 };
+	mCopterRects[1] = { 128,0,128,64 };
+	mCopterRects[2] = { 256,0,128,64 };
+	mCopterRects[3] = { 384,0,128,64 };
+	mCopterRects[4] = { 512,0,128,64 };
+
+}
+
+Player::~Player()
+{
+	mCopterTexture.free();
 }
 
 void Player::reset() {
@@ -56,11 +76,6 @@ void Player::reset() {
 	flashTimer = 0;
 	flash = false;
 	alive = true;
-}
-
-// Set Player position
-void Player::init() {
-	//mPongScore = PongScore;
 }
 
 // Set Player position
@@ -149,6 +164,16 @@ float Player::getCenterY() {
 // Return Player y speed
 float Player::getSpeedY() {
 	return speedY;
+}
+
+LTexture& Player::getTexture()
+{
+	return mCopterTexture;
+}
+
+SDL_Rect* Player::getRects()
+{
+	return mCopterRects;
 }
 
 // Update Player
