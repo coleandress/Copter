@@ -7,6 +7,7 @@ class Util
 {
 public:
 	static float randFloat(float fMin, float fMax);	// Colors
+	static bool checkCollision(float x, float y, float w, float h, float x2, float y2, float w2, float h2);
 	static const SDL_Color BLACK;
 	static const SDL_Color BLUE;
 	static const SDL_Color GREEN;

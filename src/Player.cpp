@@ -9,9 +9,12 @@
 #include "Player.h"
 
 // Default constructor
-Player::Player(Message& message, SDL_Renderer** renderer)
+Player::Player(Message& message, SDL_Renderer** renderer, Particle &part, Particle* particles, Sound& sound)
 	: mMsg{ message },
-	  mRenderer{ renderer }
+	  mRenderer{ renderer },
+	  mPart{ part },
+	  mParticles{ particles },
+	  mSound{ sound }
 {
 	setPosition(64, 360/2-112/2);
 	w = 128;
@@ -176,11 +179,15 @@ SDL_Rect* Player::getRects()
 	return mCopterRects;
 }
 
-// Update Player
-//TODO: Store a reference to the sound object as a member variable
-void Player::update(Particle &part, Particle particles[], Sound& sound) {
-	const int screenWidth = 1280;
-	const int screenHeight = 720;
+int& Player::getPlayerFrame()
+{
+	return mPlayerFrame;
+}
+
+void Player::update(int& mx, int& my) 
+{
+	const int screenWidth = 1280; // TODO: Get this from window CA 2022-11-16
+	const int screenHeight = 720; // TODO: Get this from window CA 2022-11-16
 
 	if (moveLeft) {
 		if (angle > -20) {
@@ -263,10 +270,10 @@ void Player::update(Particle &part, Particle particles[], Sound& sound) {
 
 			// Play SFX
 			//Mix_PlayChannel(-1, mPongScore, 0);
-			sound.playSound(PONG_SCORE);
+			mSound.playSound(PONG_SCORE);
 
 			// Spawn explosion
-			part.SpawnExplosion(particles,
+			mPart.SpawnExplosion(mParticles,
 					(float)(this->x + this->w) / 2,
 					(float)(this->y + this->h) / 2, { 200,
 							200, 200 });
@@ -309,6 +316,114 @@ void Player::update(Particle &part, Particle particles[], Sound& sound) {
 			alpha = 255;
 			flashTimer = 0;
 			flash = false;
+		}
+	}
+
+	// -------------------------------------------------------
+	// from main() after p1.update() call
+	// -------------------------------------------------------
+
+	// Do Player frames
+	mPlayerFrameTimer += mPlayerFrameRate;
+	if (mPlayerFrameTimer > 60)
+	{
+		mPlayerFrameTimer = 0;
+		mPlayerFrame++;
+		if (mPlayerFrame > 4)
+		{
+			mPlayerFrame = 0;
+		}
+	}
+
+	// Update Player's, manually
+	if (shoot)
+	{
+		shoot = false;
+		float centerX = getCenterX();
+		float centerY = getCenterY();
+
+		///////////////////////////////////////////////////////////////////////
+		//-------------------------------------------------------------------//
+		//---------------------- Handle Basic Shooting ----------------------//
+		/***** Set Turret Position *****/
+		float turret1w = 128;
+		float turret1h = 64;
+		float frigateAngle = angle;
+		float radians = (3.1415926536f / 180) * (angle);
+		//float Cos 		= floor(cos(radians)*100+0.05)/100;
+		//float Sin 		= floor(sin(radians)*100+0.05)/100;
+		float Cos = cos(radians);
+		float Sin = sin(radians);
+		// 1st turret
+		float barrelW = (0 * Cos) - (0 * Sin);
+		float barrelH = (0 * Sin) + (0 * Cos);
+		float barrelX = centerX + barrelW;
+		float barrelY = centerY + barrelH;
+		float turret1x = barrelX - turret1w / 2;
+		float turret1y = barrelY - turret1h / 2;
+		float particleW = 19;
+		float particleH = 4;
+		/***** Set Turret Position *****/
+
+		/***** Get turrets nose angle (get the exact position even when the player rotates) *****/
+		frigateAngle = angle;
+		radians = (3.1415926536f / 180) * (angle);
+		barrelW = (60 * cos(radians)) - (32 * sin(radians));// add this to center of zombie (this will give us the guns barrel position)
+		barrelH = (60 * sin(radians)) + (32 * cos(radians));
+		barrelX = turret1x + turret1w / 2 - particleW / 2 + barrelW;
+		barrelY = turret1y + turret1h / 2 - particleH / 2 + barrelH;
+		/***** Get turrets nose angle *****/
+
+		float newAngle = atan2(my - barrelY, mx - barrelX);
+		newAngle = newAngle * 180 / (float)M_PI;
+
+		mPart.spawnParticleAngle(mParticles, "slow", 4, barrelX, barrelY,
+			particleW, particleH, newAngle, 11, 0.0f,
+			{ 200, 200, 100 }, 1, 0, 0, 255, 0, 60, 0, false, 0.11f,
+			false, 0.11f, false, 0.0f, Util::WHITE, 0.0f, 0.0f, 0.0f, false,
+			0.0f, 0.0f, false, 0, 0.0f);
+		// play sfx
+		mSound.playSound(SHOOT);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////// Manual Updates ////////////////////////////////////////////
+
+	// Particle collision with Player
+	if (!flash)
+	{
+		for (int i = 0; i < 1000; i++)
+		{
+			if (mParticles[i].mAlive)
+			{
+				if (mParticles[i].mType == 3)
+				{
+					// Player check
+					if (Util::checkCollision(mParticles[i].mX, mParticles[i].mY,
+						mParticles[i].mW, mParticles[i].mH, getX(),
+						getY(), getWidth(), getHeight()))
+					{
+
+						// Hurt player
+						Hurt(10);
+
+						// Flash player
+						flash = true;
+
+						// remove particle
+						mPart.Remove(mParticles, i);
+
+						// spawn explosion
+						mPart.SpawnExplosion(mParticles,
+							mParticles[i].mX + mParticles[i].mW / 2,
+							mParticles[i].mY + mParticles[i].mH / 2, { 200,
+									200, 200 });
+
+						// play sound effect
+						mSound.playSound(PONG_SCORE);
+					}
+				}
+			}
 		}
 	}
 }

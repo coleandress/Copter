@@ -9,6 +9,7 @@
 #include "Particle.h"
 #include "Sound.h"
 #include "Message.h"
+#include "Util.h"
 
 // Player class
 class Player {
@@ -20,7 +21,7 @@ public:
 	const float grav{ 0.09f };
 
 	// Default constructor
-	Player(Message& message, SDL_Renderer** renderer);
+	Player(Message& message, SDL_Renderer** renderer, Particle &part, Particle* particles, Sound& sound);
 	~Player();
 
 	void reset();
@@ -80,8 +81,10 @@ public:
 
 	SDL_Rect* getRects();
 
+	int& getPlayerFrame();
+
 	// Update Player
-	void update(Particle &part, Particle particles[], Sound& sound);
+	void update(int& mx, int& my);
 
 	// Draw Player
 	void render(SDL_Renderer *gRenderer);
@@ -126,6 +129,12 @@ private:
 	float health;
 	Message& mMsg;
 	SDL_Renderer** mRenderer;
+	Particle& mPart;
+	Particle* mParticles;
+	Sound& mSound;
 	LTexture mCopterTexture;
 	SDL_Rect mCopterRects[5];
+	const float mPlayerFrameRate{ 15 };
+	float mPlayerFrameTimer{ 0 };
+	int mPlayerFrame{ 0 };
 };

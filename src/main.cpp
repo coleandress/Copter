@@ -24,19 +24,13 @@
 
 void setup(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore);
 void initSDL(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer);
-void loadMedia(Message& msg, SDL_Renderer** gRenderer);
 void LoadHighScore(int& previousHighScore);
 void handleInput(Player& p1, int& gameScene, int& previousHighScore, int& score, bool& paused, SDL_Event& events, Sound& sound);
 void ContinueGame(Player& p1, int& gameScene, int& previousHighScore, int& score, Sound& sound);
 void SaveHighScore(const int& score);
-bool checkCollision(float x, float y, float w, float h, float x2, float y2, float w2, float h2);
-float randFloat(float fMin, float fMax);
 int count_digit(int number);
 void freeSDL(LWindow& mWindow);
 
-// Player
-//LTexture gCopter;
-//SDL_Rect rCopter[5];
 
 int main(int, char**)
 {
@@ -77,7 +71,7 @@ int main(int, char**)
 	bool quit = false;
 
 	// Create Player 1
-	Player p1{ msg, &renderer };
+	Player p1{ msg, &renderer, part, particles, sound };
 	//p1.init();
 
 	// Timer
@@ -94,14 +88,13 @@ int main(int, char**)
 	float fireRate = 15;
 
 	// Player Variables
-	const float playerFrameRate = 15;
-	float playerFrameTimer = 0;
-	int playerFrame = 0;
+	//const float playerFrameRate = 15;
+	//float playerFrameTimer = 0;
+	//int playerFrame = 0;
 
 	// Call before loop
 	fireTimer = 0;
 	fireRate = 15;
-	playerFrame = 0;
 
 	sound.playMusic();
 
@@ -158,111 +151,7 @@ int main(int, char**)
 				}
 
 				// Update Players
-				p1.update(part, particles, sound);
-
-				// Do Player frames
-				playerFrameTimer += playerFrameRate;
-				if (playerFrameTimer > 60)
-				{
-					playerFrameTimer = 0;
-					playerFrame++;
-					if (playerFrame > 4)
-					{
-						playerFrame = 0;
-					}
-				}
-
-				// Update Player's, manually
-				if (p1.shoot)
-				{
-					p1.shoot = false;
-					float centerX = p1.getCenterX();
-					float centerY = p1.getCenterY();
-
-					///////////////////////////////////////////////////////////////////////
-					//-------------------------------------------------------------------//
-					//---------------------- Handle Basic Shooting ----------------------//
-					/***** Set Turret Position *****/
-					float turret1w = 128;
-					float turret1h = 64;
-					float frigateAngle = p1.angle;
-					float radians = (3.1415926536f / 180) * (p1.angle);
-					//float Cos 		= floor(cos(radians)*100+0.05)/100;
-					//float Sin 		= floor(sin(radians)*100+0.05)/100;
-					float Cos = cos(radians);
-					float Sin = sin(radians);
-					// 1st turret
-					float barrelW = (0 * Cos) - (0 * Sin);
-					float barrelH = (0 * Sin) + (0 * Cos);
-					float barrelX = centerX + barrelW;
-					float barrelY = centerY + barrelH;
-					float turret1x = barrelX - turret1w / 2;
-					float turret1y = barrelY - turret1h / 2;
-					float particleW = 19;
-					float particleH = 4;
-					/***** Set Turret Position *****/
-
-					/***** Get turrets nose angle (get the exact position even when the player rotates) *****/
-					frigateAngle = p1.angle;
-					radians = (3.1415926536f / 180) * (p1.angle);
-					barrelW = (60 * cos(radians)) - (32 * sin(radians));// add this to center of zombie (this will give us the guns barrel position)
-					barrelH = (60 * sin(radians)) + (32 * cos(radians));
-					barrelX = turret1x + turret1w / 2 - particleW / 2 + barrelW;
-					barrelY = turret1y + turret1h / 2 - particleH / 2 + barrelH;
-					/***** Get turrets nose angle *****/
-
-					float newAngle = atan2(my - barrelY, mx - barrelX);
-					newAngle = newAngle * 180 / (float)M_PI;
-
-					part.spawnParticleAngle(particles, "slow", 4, barrelX, barrelY,
-						particleW, particleH, newAngle, 11, 0.0f,
-						{ 200, 200, 100 }, 1, 0, 0, 255, 0, 60, 0, false, 0.11f,
-						false, 0.11f, false, 0.0f, Util::WHITE, 0.0f, 0.0f, 0.0f, false,
-						0.0f, 0.0f, false, 0, 0.0f);
-					// play sfx
-					sound.playSound(SHOOT);
-				}
-
-				//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				////////////////////////////////////////////////// Manual Updates ////////////////////////////////////////////
-
-				// Particle collision with Player
-				if (!p1.flash)
-				{
-					for (int i = 0; i < 1000; i++)
-					{
-						if (particles[i].mAlive)
-						{
-							if (particles[i].mType == 3)
-							{
-								// Player check
-								if (checkCollision(particles[i].mX, particles[i].mY,
-									particles[i].mW, particles[i].mH, p1.getX(),
-									p1.getY(), p1.getWidth(), p1.getHeight()))
-								{
-
-									// Hurt player
-									p1.Hurt(10);
-
-									// Flash player
-									p1.flash = true;
-
-									// remove particle
-									part.Remove(particles, i);
-
-									// spawn explosion
-									part.SpawnExplosion(particles,
-										particles[i].mX + particles[i].mW / 2,
-										particles[i].mY + particles[i].mH / 2, { 200,
-												200, 200 });
-
-									// play sound effect
-									sound.playSound(PONG_SCORE);
-								}
-							}
-						}
-					}
-				}
+				p1.update(mx, my);
 
 				// Particle collision with Enemies
 				for (int i = 0; i < 1000; i++)
@@ -277,7 +166,7 @@ int main(int, char**)
 								if (enemyManager.getEnemies()[j].alive)
 								{
 									// ON-HIT Collision Check
-									if (checkCollision(particles[i].mX,
+									if (Util::checkCollision(particles[i].mX,
 										particles[i].mY, particles[i].mW,
 										particles[i].mH, enemyManager.getEnemies()[j].x, enemyManager.getEnemies()[j].y,
 										enemyManager.getEnemies()[j].w, enemyManager.getEnemies()[j].h))
@@ -361,7 +250,7 @@ int main(int, char**)
 		if (p1.alive)
 		{
 			p1.getTexture().setAlpha(p1.alpha);
-			p1.getTexture().render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &p1.getRects()[playerFrame], p1.angle);
+			p1.getTexture().render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &p1.getRects()[p1.getPlayerFrame()], p1.angle);
 			p1.render(renderer);
 		}
 
@@ -540,9 +429,6 @@ void setup(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer, int& previo
 	// Initialize SDL
 	initSDL(msg, mWindow, gRenderer);
 
-	// Load media
-	loadMedia(msg, gRenderer);
-
 	// Load high score
 	LoadHighScore(previousHighScore);
 }
@@ -558,26 +444,6 @@ void initSDL(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer)
 		msg.fatalError("Call to 'create' (LWindow) failed");
 
 	*gRenderer = mWindow.createRenderer();
-}
-
-static void doLoadFromFile(Message& msg, LTexture& texture, SDL_Renderer** gRenderer, const string& fileName)
-{
-	if (!texture.loadFromFile(gRenderer, fileName))
-		msg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
-}
-
-void loadMedia(Message& msg, SDL_Renderer** gRenderer)
-{
-	//doLoadFromFile(msg, gCopter, gRenderer, "resource/gfx/player-copter.png");
-
-	// Texture clips
-
-	// Copter
-	//rCopter[0] = { 0,0,128,64 };
-	//rCopter[1] = { 128,0,128,64 };
-	//rCopter[2] = { 256,0,128,64 };
-	//rCopter[3] = { 384,0,128,64 };
-	//rCopter[4] = { 512,0,128,64 };
 }
 
 void LoadHighScore(int& previousHighScore)
@@ -730,16 +596,6 @@ void SaveHighScore(const int& score)
 		fileSave.open("data/highscore.txt");
 		fileSave << score;
 		fileSave.close();
-	}
-}
-
-bool checkCollision(float x, float y, float w, float h, float x2, float y2, float w2, float h2)
-{
-	if (x + w > x2 && x < x2 + w2 && y + h > y2 && y < y2 + h2) {
-		return true;
-	}
-	else {
-		return false;
 	}
 }
 
