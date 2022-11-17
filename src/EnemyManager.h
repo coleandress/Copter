@@ -2,11 +2,13 @@
 #include "Enemy.h"
 #include "LWindow.h"
 #include "Message.h"
+#include "Particle.h"
+#include "Util.h"
 
 class EnemyManager
 {
 public:
-	EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer);
+	EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer, Particle& part, Particle particles[], Sound& sound);
 	~EnemyManager();
 	void updateEnemies(int& score);
 	void spawnEnemies();
@@ -26,5 +28,8 @@ private:
 	Message& mMsg;
 	LWindow& mWindow;
 	SDL_Renderer** mRenderer;
+	Particle mPart;
+	Particle* mParticles;
+	Sound& mSound;
 };
 

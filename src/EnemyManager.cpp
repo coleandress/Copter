@@ -1,9 +1,12 @@
 #include "EnemyManager.h"
 
-EnemyManager::EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer)
+EnemyManager::EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer, Particle& part, Particle particles[], Sound& sound)
 	: mMsg{ msg },
 	  mWindow{ window },
-	  mRenderer{ renderer }
+	  mRenderer{ renderer },
+	  mPart{ part },
+	  mParticles { particles },
+	  mSound { sound }
 {
 	std::string fileName = "resource/gfx/tanks.png";
 	if (!mTankTexture.loadFromFile(mRenderer, fileName))
@@ -124,8 +127,8 @@ void EnemyManager::spawnEnemies()
 {
 	float x = 1280.0f + rand() % 100; // TODO: Study and adjust this, need to replace 1280 with window width
 	float y = 720.0f - 64.0f - 32.0f + 5.0f;  // TODO: pass in window and replace 720 with getHeight.  This is the ground I believe.
-	int w = 64;
-	int h = 64;
+	float w = 64.0f;
+	float h = 64.0f;
 	int type = rand() % 3;
 
 	for (int i = 0; i < ENEMY_MAX; i++) {
@@ -162,6 +165,30 @@ void EnemyManager::spawnEnemies()
 
 void EnemyManager::enemiesShoot()
 {
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (mEnemies[i].alive)
+		{
+			// Handle shoot rate
+			mEnemies[i].shootTimer += mEnemies[i].shootRate;
+			if (mEnemies[i].shootTimer > 60)
+			{
+				mEnemies[i].shootTimer = 0;
+				// shoot particle
+				float newX = mEnemies[i].x + mEnemies[i].w / 2 - 12;
+				float newY = mEnemies[i].y + mEnemies[i].h / 2 - 9;
+				mPart.spawnParticleAngle(mParticles, "slow", 3, newX,
+					newY, 11, 11, Util::randFloat(200, 225), 9, 0.0f, {
+							200, 200, 200 }, 1, 1, 1, 255, 0, 60, 0,
+							false, 0.11f, false, 0.11f, false, 0.0f, Util::WHITE,
+							0.0f, 0.0f, 0.0f, false, 0.0f, 0.0f, false, 0,
+							0.004f);
+				// play sfx
+				mSound.playSound(SHOOT);
+			}
+		}
+	}
+
 }
 
 void EnemyManager::renderEnemies()

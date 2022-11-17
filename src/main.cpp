@@ -55,11 +55,15 @@ int main(int, char**)
 	int previousHighScore{ -1 };
 	setup(msg, window, &renderer, previousHighScore);
 	Background background(msg, window, &renderer);
-	EnemyManager enemyManager{ msg, window, &renderer };
+	Particle part;
+	Particle particles[1000];
+	part.init(particles);
+	part.load(&renderer); 
+	Sound sound;
+	EnemyManager enemyManager{ msg, window, &renderer, part, particles, sound };
 	int gameScene{ 0 };
 	//int highscore{ -1 };
 	int score{ 0 };
-	Sound sound;
 	Font font;
 
 	msg.log("In main(), calling: setup ...");
@@ -69,22 +73,10 @@ int main(int, char**)
 	// Create pointer for events
 	SDL_Event events;
 
-	// Colors
-	SDL_Color black = { 0, 0, 0, 255 };
-	SDL_Color blue = { 0, 0, 255, 255 };
-	SDL_Color green = { 0, 255, 0, 255 };
-	SDL_Color red = { 255, 0, 0, 255 };
-	SDL_Color white = { 255, 255, 255, 255 };
-	SDL_Color orange = { 180, 90, 20, 255 };
 
 	// Game loop
 	bool quit = false;
 
-	// Particles
-	Particle part;
-	Particle particles[1000];
-	part.init(particles);
-	part.load(&renderer);
 
 	// Create Player 1
 	Player p1;
@@ -227,7 +219,7 @@ int main(int, char**)
 					part.spawnParticleAngle(particles, "slow", 4, barrelX, barrelY,
 						particleW, particleH, newAngle, 11, 0.0f,
 						{ 200, 200, 100 }, 1, 0, 0, 255, 0, 60, 0, false, 0.11f,
-						false, 0.11f, false, 0.0f, white, 0.0f, 0.0f, 0.0f, false,
+						false, 0.11f, false, 0.0f, Util::WHITE, 0.0f, 0.0f, 0.0f, false,
 						0.0f, 0.0f, false, 0, 0.0f);
 					// play sfx
 					sound.playSound(SHOOT);
@@ -332,7 +324,9 @@ int main(int, char**)
 
 			//TODO: Extract into EnemyManager once I figure out how I want to handle particles.
 			// enemy shoot
-			for (int i = 0; i < enemyManager.ENEMY_MAX; i++)
+			//enemyManager.enemiesShoot();
+
+			/*for (int i = 0; i < enemyManager.ENEMY_MAX; i++)
 			{
 				if (enemyManager.getEnemies()[i].alive)
 				{
@@ -354,7 +348,7 @@ int main(int, char**)
 						sound.playSound(SHOOT);
 					}
 				}
-			}
+			}*/
 		}		// end !paused
 
 		background.moveBackgrounds();
@@ -413,7 +407,7 @@ int main(int, char**)
 			// Render text: To start game
 			tempss.str(std::string());
 			tempss << "Press Space to Start.";
-			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), Util::WHITE, font.getFont(VIGA));
 			font.getTexture().render(renderer, window.getWidth() / 2 - font.getTexture().getWidth() / 2, window.getHeight() - font.getTexture().getHeight(),
 				font.getTexture().getWidth(), font.getTexture().getHeight());
 
@@ -429,14 +423,14 @@ int main(int, char**)
 		{
 			tempss.str(std::string());
 			tempss << "You lose. Boo hoo.";
-			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), Util::BLACK, font.getFont(VIGA));
 			font.getTexture().render(renderer, window.getWidth() / 2 - font.getTexture().getWidth() / 2,
 				window.getHeight() - font.getTexture().getHeight() - 22,
 				font.getTexture().getWidth(), font.getTexture().getHeight());
 
 			tempss.str(std::string());
 			tempss << "Press Space to Start.";
-			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), Util::BLACK, font.getFont(VIGA));
 			font.getTexture().render(renderer, window.getWidth() / 2 - font.getTexture().getWidth() / 2,
 				window.getHeight() - font.getTexture().getHeight(),
 				font.getTexture().getWidth(), font.getTexture().getHeight());
@@ -447,14 +441,14 @@ int main(int, char**)
 		{
 			tempss.str(std::string());
 			tempss << "You win something!";
-			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), Util::BLACK, font.getFont(VIGA));
 			font.getTexture().render(renderer, 640 / 2 - font.getTexture().getWidth() / 2,
 				360 - font.getTexture().getHeight() - 22,
 				font.getTexture().getWidth(), font.getTexture().getHeight());
 
 			tempss.str(std::string());
 			tempss << "Press Space to Start again.";
-			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), black, font.getFont(VIGA));
+			font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), Util::BLACK, font.getFont(VIGA));
 			font.getTexture().render(renderer, 640 / 2 - font.getTexture().getWidth() / 2,
 				360 - font.getTexture().getHeight(),
 				font.getTexture().getWidth(), font.getTexture().getHeight());
@@ -503,7 +497,7 @@ int main(int, char**)
 			tempss << "Highscore: 000000" << previousHighScore;
 		}
 
-		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
+		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), Util::WHITE, font.getFont(VIGA));
 		font.getTexture().render(renderer, window.getWidth() - font.getTexture().getWidth() - 10, 4, font.getTexture().getWidth(), font.getTexture().getHeight());
 
 		// Render score text top-right of screen
@@ -536,7 +530,7 @@ int main(int, char**)
 		{
 			tempss << "Score: 000000" << score;
 		}
-		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
+		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), Util::WHITE, font.getFont(VIGA));
 		font.getTexture().render(renderer, window.getWidth() - font.getTexture().getWidth() - 10, 28, font.getTexture().getWidth(), font.getTexture().getHeight());
 
 		//////// Debug ///////
@@ -545,7 +539,7 @@ int main(int, char**)
 		// Render text: To start game
 		tempss.str(std::string());
 		tempss << "gameScene: " << gameScene;
-		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), white, font.getFont(VIGA));
+		font.getTexture().loadFromRenderedText(renderer, tempss.str().c_str(), Util::WHITE, font.getFont(VIGA));
 		font.getTexture().render(renderer, 0, 0,
 			font.getTexture().getWidth(), font.getTexture().getHeight());
 #endif
@@ -778,11 +772,11 @@ bool checkCollision(float x, float y, float w, float h, float x2, float y2, floa
 	}
 }
 
-float randFloat(float fMin, float fMax)
+/*float randFloat(float fMin, float fMax)
 {
 	float f = (float)rand() / RAND_MAX;
 	return fMin + f * (fMax - fMin);
-}
+}*/
 
 int count_digit(int number)
 {
