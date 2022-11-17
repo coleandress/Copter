@@ -73,10 +73,8 @@ int main(int, char**)
 	// Create pointer for events
 	SDL_Event events;
 
-
 	// Game loop
 	bool quit = false;
-
 
 	// Create Player 1
 	Player p1;
@@ -322,33 +320,6 @@ int main(int, char**)
 
 			enemyManager.updateEnemies(score);
 
-			//TODO: Extract into EnemyManager once I figure out how I want to handle particles.
-			// enemy shoot
-			//enemyManager.enemiesShoot();
-
-			/*for (int i = 0; i < enemyManager.ENEMY_MAX; i++)
-			{
-				if (enemyManager.getEnemies()[i].alive)
-				{
-					// Handle shoot rate
-					enemyManager.getEnemies()[i].shootTimer += enemyManager.getEnemies()[i].shootRate;
-					if (enemyManager.getEnemies()[i].shootTimer > 60)
-					{
-						enemyManager.getEnemies()[i].shootTimer = 0;
-						// shoot particle
-						float newX = enemyManager.getEnemies()[i].x + enemyManager.getEnemies()[i].w / 2 - 12;
-						float newY = enemyManager.getEnemies()[i].y + enemyManager.getEnemies()[i].h / 2 - 9;
-						part.spawnParticleAngle(particles, "slow", 3, newX,
-							newY, 11, 11, randFloat(200, 225), 9, 0.0f, {
-									200, 200, 200 }, 1, 1, 1, 255, 0, 60, 0,
-									false, 0.11f, false, 0.11f, false, 0.0f, white,
-									0.0f, 0.0f, 0.0f, false, 0.0f, 0.0f, false, 0,
-									0.004f);
-						// play sfx
-						sound.playSound(SHOOT);
-					}
-				}
-			}*/
 		}		// end !paused
 
 		background.moveBackgrounds();
@@ -771,12 +742,6 @@ bool checkCollision(float x, float y, float w, float h, float x2, float y2, floa
 		return false;
 	}
 }
-
-/*float randFloat(float fMin, float fMax)
-{
-	float f = (float)rand() / RAND_MAX;
-	return fMin + f * (fMax - fMin);
-}*/
 
 int count_digit(int number)
 {
