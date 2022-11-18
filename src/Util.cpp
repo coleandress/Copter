@@ -1,6 +1,6 @@
 #include "Util.h"
 
-void Util::loadTextureFromFile(Message& msg, LTexture& texture, SDL_Renderer** renderer, std::string& fileName)
+void Util::loadTextureFromFile(Message& msg, LTexture& texture, SDL_Renderer** renderer, const std::string& fileName)
 {
 	if (!texture.loadFromFile(renderer, fileName))
 		msg.fatalError("Call to 'Util::loadTextureFromFile' failed (" + fileName + ")");

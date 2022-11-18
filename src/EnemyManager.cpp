@@ -8,9 +8,7 @@ EnemyManager::EnemyManager(Message& msg, LWindow& window, SDL_Renderer** rendere
 	  mParticles { particles },
 	  mSound { sound }
 {
-	std::string fileName = "resource/gfx/tanks.png";
-	if (!mTankTexture.loadFromFile(mRenderer, fileName))
-		msg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");	
+	Util::loadTextureFromFile(mMsg, mTankTexture, mRenderer, "resource/gfx/tanks.png");
 	
 	// Texture clips
 	

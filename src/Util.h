@@ -10,7 +10,7 @@
 class Util
 {
 public:
-	static void loadTextureFromFile(Message& msg, LTexture& texture, SDL_Renderer** renderer, std::string& fileName);
+	static void loadTextureFromFile(Message& msg, LTexture& texture, SDL_Renderer** renderer, const std::string& fileName);
 	static void loadSoundFromFile(Message& msg, Mix_Music** music, const std::string& fileName);
 	static void loadSoundFromFile(Message& msg, Mix_Chunk** sound, const std::string& fileName);
 	static float randFloat(float fMin, float fMax);	// Colors
