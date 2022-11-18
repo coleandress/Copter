@@ -3,6 +3,7 @@
 #include "Message.h"
 #include "LWindow.h"
 #include "LTexture.h"
+#include "Util.h"
 
 class Background
 {

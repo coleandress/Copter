@@ -24,25 +24,11 @@ Background::~Background()
 
 void Background::loadBackgrounds()
 {
-	std::string fileName = "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_08_1920 x 1080.png";
-	if (!mOrangeBG.loadFromFile(mRenderer, fileName))
-		mMsg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
-
-	fileName = "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_07_1920 x 1080.png";
-	if (!mSunClouds.loadFromFile(mRenderer, fileName))
-		mMsg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
-
-	fileName = "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_06_1920 x 1080.png";
-	if (!mCity3.loadFromFile(mRenderer, fileName))
-		mMsg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
-
-	fileName = "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_05_1920 x 1080.png";
-	if (!mCity2.loadFromFile(mRenderer, fileName))
-		mMsg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
-
-	fileName = "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_04_1920 x 1080.png";
-	if (!mCity1.loadFromFile(mRenderer, fileName))
-		mMsg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
+	Util::loadTextureFromFile(mMsg, mOrangeBG, mRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_08_1920 x 1080.png");
+	Util::loadTextureFromFile(mMsg, mSunClouds, mRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_07_1920 x 1080.png");
+	Util::loadTextureFromFile(mMsg, mCity3, mRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_06_1920 x 1080.png");
+	Util::loadTextureFromFile(mMsg, mCity2, mRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_05_1920 x 1080.png");
+	Util::loadTextureFromFile(mMsg, mCity1, mRenderer, "resource/gfx/Backgrounds - FREE/Background 07/PARALLAX/layer_04_1920 x 1080.png");
 }
 
 void Background::renderBackgrounds()

@@ -602,8 +602,6 @@ int count_digit(int number)
 
 void freeSDL(LWindow& mWindow)
 {
-	//gCopter.free();
-
 	mWindow.free();
 
 	//Quit SDL subsystems
