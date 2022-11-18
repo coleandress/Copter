@@ -41,15 +41,13 @@ Player::Player(Message& message, SDL_Renderer** renderer, Particle &part, Partic
 	
 	std::string fileName{ "resource/gfx/player-copter.png" };
 
-	if (!mCopterTexture.loadFromFile(mRenderer, fileName))
-		mMsg.fatalError("Call to 'loadFromFile' failed (" + fileName + ")");
+	Util::loadTextureFromFile(mMsg, mCopterTexture, mRenderer, fileName);
 
 	mCopterRects[0] = { 0,0,128,64 };
 	mCopterRects[1] = { 128,0,128,64 };
 	mCopterRects[2] = { 256,0,128,64 };
 	mCopterRects[3] = { 384,0,128,64 };
 	mCopterRects[4] = { 512,0,128,64 };
-
 }
 
 Player::~Player()

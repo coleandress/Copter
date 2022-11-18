@@ -1,20 +1,16 @@
 #include "Sound.h"
 #include <iostream>
 
-Sound::Sound()
+Sound::Sound(Message& message)
+	: mMsg(message)
 {
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
-	mMusic = Mix_LoadMUS("resource/sounds/music.mp3");
-	//mMusic = Mix_LoadMUS("C:\\dev\\Copter\\resource\\sounds\\pong_player.wav");
-	if (!mMusic)
-		std::cout << SDL_GetError();
-	mSounds[PONG_PLAYER] = Mix_LoadWAV("resource/sounds/pong-player.wav");
-	if (!mSounds[PONG_PLAYER])
-		std::cout << SDL_GetError();
-	mSounds[PONG_SCREEN] = Mix_LoadWAV("resource/sounds/pong-screen.wav");
-	mSounds[PONG_SCORE] = Mix_LoadWAV("resource/sounds/pong-score.wav");
-	mSounds[PLAYER_HURT] = Mix_LoadWAV("resource/sounds/player-hurt.wav");
-	mSounds[SHOOT] = Mix_LoadWAV("resource/sounds/player-shoot.wav");
+	Util::loadSoundFromFile(mMsg, &mMusic, "resource/sounds/music.mp3");
+	Util::loadSoundFromFile(mMsg, &mSounds[PONG_PLAYER], "resource/sounds/pong-player.wav");
+	Util::loadSoundFromFile(mMsg, &mSounds[PONG_SCREEN], "resource/sounds/pong-screen.wav");
+	Util::loadSoundFromFile(mMsg, &mSounds[PONG_SCORE], "resource/sounds/pong-score.wav");
+	Util::loadSoundFromFile(mMsg, &mSounds[PLAYER_HURT], "resource/sounds/player-hurt.wav");
+	Util::loadSoundFromFile(mMsg, &mSounds[SHOOT], "resource/sounds/player-shoot.wav");
 }
 
 Sound::~Sound()

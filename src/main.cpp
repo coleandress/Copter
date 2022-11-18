@@ -50,10 +50,10 @@ int main(int, char**)
 	setup(msg, window, &renderer, previousHighScore);
 	Background background(msg, window, &renderer);
 	Particle part;
-	Particle particles[1000];
+	Particle particles[1000]; // TODO: This conflicts somewhere else in the code, extract to Util
 	part.init(particles);
 	part.load(&renderer); 
-	Sound sound;
+	Sound sound{ msg };
 	EnemyManager enemyManager{ msg, window, &renderer, part, particles, sound };
 	int gameScene{ 0 };
 	//int highscore{ -1 };
@@ -92,10 +92,6 @@ int main(int, char**)
 	//float playerFrameTimer = 0;
 	//int playerFrame = 0;
 
-	// Call before loop
-	fireTimer = 0;
-	fireRate = 15;
-
 	sound.playMusic();
 
 	msg.log("Entering main game loop ...");
@@ -125,9 +121,9 @@ int main(int, char**)
 		}
 
 		// If game paused
-		if (!paused == 1)
+		if (!paused)
 		{
-			if (gameScene == 1)
+			if (gameScene)
 			{
 				// particle test for particles
 				for (int i = 0; i < part.mMax; i++)
@@ -154,7 +150,7 @@ int main(int, char**)
 				p1.update(mx, my);
 
 				// Particle collision with Enemies
-				for (int i = 0; i < 1000; i++)
+				for (int i = 0; i < 1000; i++) // TODO: change 1000 to constant from Util
 				{
 					if (particles[i].mAlive)
 					{

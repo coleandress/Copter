@@ -1,5 +1,25 @@
 #include "Util.h"
 
+void Util::loadTextureFromFile(Message& msg, LTexture& texture, SDL_Renderer** renderer, std::string& fileName)
+{
+	if (!texture.loadFromFile(renderer, fileName))
+		msg.fatalError("Call to 'Util::loadTextureFromFile' failed (" + fileName + ")");
+}
+
+void Util::loadSoundFromFile(Message& msg, Mix_Music** music, const std::string& fileName)
+{
+	*music = Mix_LoadMUS(fileName.c_str());
+	if (!*music)
+		msg.fatalError("Call to 'Util::loadSoundFromFile' failed (" + fileName + ")");
+}
+
+void Util::loadSoundFromFile(Message& msg, Mix_Chunk** sound, const std::string& fileName)
+{
+	*sound = Mix_LoadWAV(fileName.c_str());
+	if (!*sound)
+		msg.fatalError("Call to 'Util::loadSoundFromFile' failed (" + fileName + ")");
+}
+
 float Util::randFloat(float fMin, float fMax)
 {
 	float f = (float)rand() / RAND_MAX;
