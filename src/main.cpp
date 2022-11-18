@@ -57,7 +57,7 @@ int main(int, char**)
 	int gameScene{ 0 };
 	//int highscore{ -1 };
 	int score{ 0 };
-	Font font;
+	Font font{ msg };
 
 	msg.log("In main(), calling: setup ...");
 

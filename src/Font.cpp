@@ -1,9 +1,10 @@
 #include "Font.h"
 
-Font::Font()
+Font::Font(Message& msg)
+	: mMsg{ msg }
 {
 	TTF_Init();
-	mFonts[VIGA] = TTF_OpenFont("resource/fonts/Viga-Regular.ttf", 24); //this opens a font style and sets a size
+	Util::loadFontFromFile(mMsg, &mFonts[VIGA], "resource/fonts/Viga-Regular.ttf", 24);
 }
 
 Font::~Font()

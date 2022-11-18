@@ -20,6 +20,13 @@ void Util::loadSoundFromFile(Message& msg, Mix_Chunk** sound, const std::string&
 		msg.fatalError("Call to 'Util::loadSoundFromFile' failed (" + fileName + ")");
 }
 
+void Util::loadFontFromFile(Message& msg, TTF_Font** font, const std::string& fileName, const int& size)
+{
+	*font = TTF_OpenFont(fileName.c_str(), size);
+	if (!*font)
+		msg.fatalError("Call to 'Util::loadFontFromFile' failed (" + fileName + ")");
+}
+
 float Util::randFloat(float fMin, float fMax)
 {
 	float f = (float)rand() / RAND_MAX;

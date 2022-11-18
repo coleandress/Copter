@@ -13,6 +13,7 @@ public:
 	static void loadTextureFromFile(Message& msg, LTexture& texture, SDL_Renderer** renderer, const std::string& fileName);
 	static void loadSoundFromFile(Message& msg, Mix_Music** music, const std::string& fileName);
 	static void loadSoundFromFile(Message& msg, Mix_Chunk** sound, const std::string& fileName);
+	static void loadFontFromFile(Message& msg, TTF_Font** font, const std::string& fileName, const int& size);
 	static float randFloat(float fMin, float fMax);	// Colors
 	static bool checkCollision(float x, float y, float w, float h, float x2, float y2, float w2, float h2);
 	static const SDL_Color BLACK;
