@@ -1,9 +1,27 @@
 #pragma once
-#include "Enemy.h"
 #include "LWindow.h"
 #include "Message.h"
 #include "Particle.h"
 #include "Util.h"
+
+struct Enemy
+{
+	float x, y;
+	float w, h;
+	/*
+	 * 0: Trooper
+	 * 1: Medium Trooper
+	 * 2: Heavy Trooper
+	 */
+	int type;
+	int health;
+	float shootRate;
+	float shootTimer;
+	Uint8 alpha;
+	int flashTimer;
+	bool flash;
+	bool alive;
+};
 
 class EnemyManager
 {

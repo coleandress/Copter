@@ -14,7 +14,6 @@
 #include "LWindow.h"
 #include "Particle.h"
 #include "Player.h"
-#include "Enemy.h"
 #include "Sound.h"
 #include "Font.h"
 

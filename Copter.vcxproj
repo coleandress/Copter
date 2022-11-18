@@ -130,7 +130,6 @@
     <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\Message.cpp" />
     <ClCompile Include="src\Sound.cpp" />
-    <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Helper.cpp" />
     <ClCompile Include="src\LTexture.cpp" />
     <ClCompile Include="src\LWindow.cpp" />
@@ -147,7 +146,6 @@
     <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\Message.h" />
     <ClInclude Include="src\Sound.h" />
-    <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="include\sdl2\begin_code.h" />
     <ClInclude Include="include\sdl2\close_code.h" />
     <ClInclude Include="include\sdl2\SDL.h" />
