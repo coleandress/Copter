@@ -12,7 +12,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "LWindow.h"
-#include "Particle.h"
+#include "ParticleManager.h"
 #include "Player.h"
 #include "Sound.h"
 #include "Font.h"
@@ -48,7 +48,7 @@ int main(int, char**)
 	int previousHighScore{ -1 };
 	setup(msg, window, &renderer, previousHighScore);
 	Background background(msg, window, &renderer);
-	Particle part;
+	ParticleManager part;
 	Particle particles[1000]; // TODO: This conflicts somewhere else in the code, extract to Util
 	part.init(particles);
 	part.load(&renderer); 
@@ -210,7 +210,7 @@ int main(int, char**)
 
 		// Update Particles
 		//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
-		Particle::ParticleUpdate(part, particles, 0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
+		ParticleManager::ParticleUpdate(part, particles, 0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
 		//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
 		part.updateStarParticles(particles, 0, 0, window.getWidth(), window.getHeight());
 		part.updateBulletParticles(particles, 0, 0, window.getWidth(), window.getHeight());

@@ -17,24 +17,24 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mouse.h>
 
-#include "Particle.h"
+#include "ParticleManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////// ENEMY BULLETS //////////////////////////////////////////////////////////
 //-------------------------------------------------------------------------------------------------------------------------------//
 
-void Particle::load(SDL_Renderer** gRenderer){
+void ParticleManager::load(SDL_Renderer** gRenderer){
 	setClips(mCParticles[0], 0, 0, 8, 8);
 	setClips(mCParticles[1], 8, 0, 8, 8 );
 	mGParticles.loadFromFile(gRenderer, "resource/gfx/particles.png");
 	mGParticles.setBlendMode(SDL_BLENDMODE_ADD);
 }
 
-void Particle::free(){
+void ParticleManager::free(){
 	mGParticles.free();
 }
 
-void Particle::init(Particle particle[]) {
+void ParticleManager::init(Particle particle[]) {
 	mCount = 0;
 	for (int i = 0; i < mMax; i++) {
 		particle[i].mX 				= 0;
@@ -72,19 +72,19 @@ void Particle::init(Particle particle[]) {
 	}
 }
 
-void Particle::Remove(Particle particle[], int i) {
+void ParticleManager::Remove(Particle particle[], int i) {
 	particle[i].mAlive = false;
 	mCount--;;
 }
 
-void Particle::RemoveAll(Particle particle[]) {
+void ParticleManager::RemoveAll(Particle particle[]) {
 	mCount = 0;
 	for (int i = 0; i < mMax; i++) {
 		particle[i].mAlive 			= false;
 	}
 }
 
-void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type,
+void ParticleManager::spawnParticleAngle(Particle particle[], std::string tag, int type,
 		float spawnX, float spawnY,
 		float spawnW, float spawnH,
 		float angle, float speed,
@@ -249,7 +249,7 @@ void Particle::spawnParticleAngle(Particle particle[], std::string tag, int type
 }*/
 
 // Generate Stars
-void Particle::genStars(Particle particle[], int startX, int startY, int /*endW*/, int /*endH*/) {
+void ParticleManager::genStars(Particle particle[], int startX, int startY, int /*endW*/, int /*endH*/) {
 	//this->ptimer += 1;
 	//if (this->ptimer > 10){
 	//	this->ptimer = 0;
@@ -343,7 +343,7 @@ void Particle::genStars(Particle particle[], int startX, int startY, int /*endW*
 }*/
 
 
-void Particle::updateBulletParticles(Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/) {
+void ParticleManager::updateBulletParticles(Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/) {
 	for (int i = 0; i < mMax; i++) {
 		if (particle[i].mAlive)
 		{
@@ -448,7 +448,7 @@ void Particle::updateBulletParticles(Particle particle[], int /*mapX*/, int /*ma
 }
 
 // Update Particles
-void Particle::updateStarParticles(Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/) {
+void ParticleManager::updateStarParticles(Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/) {
 	for (int i = 0; i < mMax; i++) {
 		if (particle[i].mAlive)
 		{
@@ -460,7 +460,7 @@ void Particle::updateStarParticles(Particle particle[], int /*mapX*/, int /*mapY
 		}
 	}
 }
-void Particle::Render(SDL_Renderer* gRenderer, Particle particle[], int camX, int camY) {
+void ParticleManager::Render(SDL_Renderer* gRenderer, Particle particle[], int camX, int camY) {
 	for (int i = 0; i < mMax; i++) {
 		if (particle[i].mAlive) {
 			mGParticles.setAlpha((Uint8)particle[i].mAlpha);
@@ -477,7 +477,7 @@ void Particle::Render(SDL_Renderer* gRenderer, Particle particle[], int camX, in
 }
 
 // Render stars
-void Particle::renderStarParticle(Particle particle[], int camx, int camy, float /*playerZ*/, SDL_Renderer* gRenderer) {
+void ParticleManager::renderStarParticle(Particle particle[], int camx, int camy, float /*playerZ*/, SDL_Renderer* gRenderer) {
 	for (int i = 0; i < mMax; i++) {
 		if (particle[i].mAlive) {
 
@@ -533,7 +533,7 @@ void Particle::renderStarParticle(Particle particle[], int camx, int camy, float
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------ Function Extensions-----------------------------------------------------//
 
-void Particle::SpawnExplosion(Particle particle[], float x, float y, SDL_Color explosionColor) {
+void ParticleManager::SpawnExplosion(Particle particle[], float x, float y, SDL_Color explosionColor) {
 	for (double j=0.0; j< 360.0; j+=rand() % 10 + 10){
 		int rands = rand() % 4 + 2;
 		spawnParticleAngle(particle,
@@ -561,7 +561,7 @@ void Particle::SpawnExplosion(Particle particle[], float x, float y, SDL_Color e
 	}
 }
 
-void Particle::SpawnFireExplosion(Particle particle[], float x, float y, SDL_Color explosionColor) {
+void ParticleManager::SpawnFireExplosion(Particle particle[], float x, float y, SDL_Color explosionColor) {
 	for (double j=0.0; j< 360.0; j+=rand() % 10 + 10){
 		int rands = rand() % 4 + 2;
 		spawnParticleAngle(particle, "none", 4,
@@ -592,7 +592,7 @@ void Particle::SpawnFireExplosion(Particle particle[], float x, float y, SDL_Col
 	}
 }
 
-void Particle::SpawnTrail(Particle particle[], float x, float y, SDL_Color explosionColor) {
+void ParticleManager::SpawnTrail(Particle particle[], float x, float y, SDL_Color explosionColor) {
 	int rands = rand() % 4 + 2;
 	spawnParticleAngle(particle, "none", 4,
 						x-rands/2,
@@ -608,7 +608,7 @@ void Particle::SpawnTrail(Particle particle[], float x, float y, SDL_Color explo
 					   true, 0.11f);
 }
 
-void Particle::SpawnFireTrail(Particle particle[], float x, float y, SDL_Color explosionColor) {
+void ParticleManager::SpawnFireTrail(Particle particle[], float x, float y, SDL_Color explosionColor) {
 	int rands = rand() % 4 + 2;
 	spawnParticleAngle(particle, "none", 4,
 						x-rands/2-2,
@@ -636,7 +636,7 @@ void Particle::SpawnFireTrail(Particle particle[], float x, float y, SDL_Color e
 					   true, 0.11f);
 }
 
-void Particle::ParticleUpdate(Particle& part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
+void ParticleManager::ParticleUpdate(ParticleManager& part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
 	float camx, float camy, LWindow& mWindow, Sound& sound) {
 	for (int i = 0; i < 1000; i++) {
 		if (particle[i].mAlive)

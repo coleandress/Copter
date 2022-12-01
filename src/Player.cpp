@@ -9,7 +9,7 @@
 #include "Player.h"
 
 // Default constructor
-Player::Player(Message& message, SDL_Renderer** renderer, Particle &part, Particle* particles, Sound& sound)
+Player::Player(Message& message, SDL_Renderer** renderer, ParticleManager &part, Particle* particles, Sound& sound)
 	: mMsg{ message },
 	  mRenderer{ renderer },
 	  mPart{ part },

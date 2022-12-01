@@ -5,8 +5,6 @@
  *      Author: Carl
  */
 
-
-
 #ifndef LOCAL_PARTICLE_H_
 #define LOCAL_PARTICLE_H_
 
@@ -17,13 +15,9 @@
 #include "LWindow.h"
 #include "Sound.h"
 
-class Particle: public Helper {
-public:	// other variables
-	int mPTimer{};
-	int mCount{};
-	const int mMax{ 1000 };
-	LTexture mGParticles{};					// Particle Textures
-	SDL_Rect mCParticles[ 2 ];				// [0: Blue], [1: Green], [2: Orange], [3: Red], [4: White], [5: Yellow] Particle
+
+struct Particle: Helper
+{
 
 public:	// variables
 	float mX2{}, mY2{};							// particle center
@@ -85,6 +79,17 @@ public:
 	bool mDecay{};				// decay particle speed?
 	float mDecaySpeed{};		// how much decay are we doing?
 	int mTimeri{};				// timer that may be used for anything SPECIFICALLY for something (i.e.: this particle spawns out more particles such as a smoke)
+};
+
+
+class ParticleManager: Helper
+{
+public:	// other variables
+	int mPTimer{};
+	int mCount{};
+	const int mMax{ 1000 };
+	LTexture mGParticles{};					// Particle Textures
+	SDL_Rect mCParticles[2];				// [0: Blue], [1: Green], [2: Orange], [3: Red], [4: White], [5: Yellow] Particle
 
 public:	// basic functions
 	void init(Particle particle[]);
@@ -132,7 +137,7 @@ public:	// Star
 	void renderStarParticle(Particle particle[], int camX, int camY, float playerZ, SDL_Renderer* gRenderer);
 
 
-	static void ParticleUpdate(Particle& part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
+	static void ParticleUpdate(ParticleManager& part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
 		float camx, float camy, LWindow& mWindow, Sound& sound);
 };
 

@@ -6,7 +6,7 @@
  */
 
 #include <SDL2/SDL_mixer.h>
-#include "Particle.h"
+#include "ParticleManager.h"
 #include "Sound.h"
 #include "Message.h"
 #include "Util.h"
@@ -21,7 +21,7 @@ public:
 	const float grav{ 0.09f };
 
 	// Default constructor
-	Player(Message& message, SDL_Renderer** renderer, Particle &part, Particle* particles, Sound& sound);
+	Player(Message& message, SDL_Renderer** renderer, ParticleManager &part, Particle* particles, Sound& sound);
 	~Player();
 
 	void reset();
@@ -129,7 +129,7 @@ private:
 	float health;
 	Message& mMsg;
 	SDL_Renderer** mRenderer;
-	Particle& mPart;
+	ParticleManager& mPart;
 	Particle* mParticles;
 	Sound& mSound;
 	LTexture mCopterTexture;

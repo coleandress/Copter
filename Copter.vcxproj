@@ -134,7 +134,7 @@
     <ClCompile Include="src\LTexture.cpp" />
     <ClCompile Include="src\LWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\ParticleManager.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Timers.cpp" />
     <ClCompile Include="src\Util.cpp" />
@@ -240,7 +240,7 @@
     <ClInclude Include="src\Helper.h" />
     <ClInclude Include="src\LTexture.h" />
     <ClInclude Include="src\LWindow.h" />
-    <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\ParticleManager.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Timers.h" />
     <ClInclude Include="src\Util.h" />

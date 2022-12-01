@@ -17,8 +17,8 @@ public:
 	TTF_Font* getFont(FONTS name);
 
 private:
-	Message mMsg;
-	LTexture mTexture;
+	Message& mMsg;
+	LTexture mTexture{};
 	TTF_Font* mFonts[TOTAL_FONTS]{ nullptr };
 };
 

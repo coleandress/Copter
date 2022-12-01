@@ -1,6 +1,6 @@
 #include "EnemyManager.h"
 
-EnemyManager::EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer, Particle& part, Particle particles[], Sound& sound)
+EnemyManager::EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer, ParticleManager& part, Particle particles[], Sound& sound)
 	: mMsg{ msg },
 	  mWindow{ window },
 	  mRenderer{ renderer },
