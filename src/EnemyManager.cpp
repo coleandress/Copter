@@ -1,11 +1,10 @@
 #include "EnemyManager.h"
 
-EnemyManager::EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer, ParticleManager& part, Particle particles[], Sound& sound)
+EnemyManager::EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer, ParticleManager& part, Sound& sound)
 	: mMsg{ msg },
 	  mWindow{ window },
 	  mRenderer{ renderer },
 	  mPart{ part },
-	  mParticles { particles },
 	  mSound { sound }
 {
 	Util::loadTextureFromFile(mMsg, mTankTexture, mRenderer, "resource/gfx/tanks.png");
@@ -175,7 +174,7 @@ void EnemyManager::enemiesShoot()
 				// shoot particle
 				float newX = mEnemies[i].x + mEnemies[i].w / 2 - 12;
 				float newY = mEnemies[i].y + mEnemies[i].h / 2 - 9;
-				mPart.spawnParticleAngle(mParticles, "slow", 3, newX,
+				mPart.spawnParticleAngle("slow", 3, newX,
 					newY, 11, 11, Util::randFloat(200, 225), 9, 0.0f, {
 							200, 200, 200 }, 1, 1, 1, 255, 0, 60, 0,
 							false, 0.11f, false, 0.11f, false, 0.0f, Util::WHITE,

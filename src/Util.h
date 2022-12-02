@@ -22,4 +22,5 @@ public:
 	static const SDL_Color RED;
 	static const SDL_Color WHITE;
 	static const SDL_Color ORANGE;
+	static const int MAX_PARTICLES;
 };

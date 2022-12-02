@@ -14,11 +14,11 @@
 #include "LTexture.h"
 #include "LWindow.h"
 #include "Sound.h"
+#include <vector>
 
 
 struct Particle: Helper
 {
-
 public:	// variables
 	float mX2{}, mY2{};							// particle center
 	float mRadius{};								// particle radius
@@ -73,7 +73,7 @@ public:	// SAT theorem for collision during rotation's
 	 * C: Top Left
 	 * D: Bottom Left
 	 * */
-	Point A{}, B{}, C{}, D{};
+	Point A{}, B{}, C{}, D{}; // These aren't doing anything
 
 public:
 	bool mDecay{};				// decay particle speed?
@@ -84,22 +84,23 @@ public:
 
 class ParticleManager: Helper
 {
+public:
+	ParticleManager(Message& msg, SDL_Renderer** renderer, int numberOfParticles);
+	~ParticleManager();
+
 public:	// other variables
 	int mPTimer{};
-	int mCount{};
-	const int mMax{ 1000 };
+	int mNumberOfAliveParticles{};
 	LTexture mGParticles{};					// Particle Textures
 	SDL_Rect mCParticles[2];				// [0: Blue], [1: Green], [2: Orange], [3: Red], [4: White], [5: Yellow] Particle
 
 public:	// basic functions
-	void init(Particle particle[]);
-	void Remove(Particle particle[], int i);
-	void RemoveAll(Particle particle[]);
-	void load(SDL_Renderer** gRenderer);
-	void free();
+	//void init(Particle particle[]);
+	void Remove(int i);
+	void RemoveAll();
 
 public:	// functions
-	void spawnParticleAngle(Particle particle[], std::string tag, int type,
+	void spawnParticleAngle(std::string tag, int type,
 			float spawnX, float spawnY,
 			float spawnW, float spawnH,
 			float angle, float speed,
@@ -118,27 +119,36 @@ public:	// functions
 			float grav = 0.0);
 
 	// Update Bullet Particles
-	void updateBulletParticles(Particle particle[], int mapX, int mapY, int mapW, int mapH);
+	void updateBulletParticles(int mapX, int mapY, int mapW, int mapH);
 
 	// Render Particles
-	void Render(SDL_Renderer* gRenderer, Particle particle[], int camX, int camY);
+	void Render(int camX, int camY);
 
 public:	// Function extensions
 
 	// Spawn an explosion
-	void SpawnExplosion(Particle particle[], float x, float y, SDL_Color explosionColor);
-	void SpawnFireExplosion(Particle particle[], float x, float y, SDL_Color explosionColor);
-	void SpawnTrail(Particle particle[], float x, float y, SDL_Color explosionColor);
-	void SpawnFireTrail(Particle particle[], float x, float y, SDL_Color explosionColor);
+	void SpawnExplosion(float x, float y, SDL_Color explosionColor);
+	void SpawnFireExplosion(float x, float y, SDL_Color explosionColor);
+	void SpawnTrail(float x, float y, SDL_Color explosionColor);
+	void SpawnFireTrail(float x, float y, SDL_Color explosionColor);
 
 public:	// Star
-	void genStars(Particle particle[], int startX, int startYy, int endW, int endH);
-	void updateStarParticles(Particle particle[], int mapX, int mapY, int mapW, int mapH);
-	void renderStarParticle(Particle particle[], int camX, int camY, float playerZ, SDL_Renderer* gRenderer);
+	void genStars(int startX, int startYy, int endW, int endH);
+	void updateStarParticles(int mapX, int mapY, int mapW, int mapH);
+	void renderStarParticle(int camX, int camY, float playerZ);
+
+	// TODO: This is temporary until I can reverse the dependencies on Player and Enemy
+	std::vector<Particle>& getParticles();
 
 
-	static void ParticleUpdate(ParticleManager& part, Particle particle[], int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
+	static void ParticleUpdate(ParticleManager& part, int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
 		float camx, float camy, LWindow& mWindow, Sound& sound);
+
+private:
+	Message& mMsg;
+	SDL_Renderer** mRenderer;
+
+	std::vector<Particle> mParticles;
 };
 
 #endif /* LOCAL_PARTICLE_H_ */

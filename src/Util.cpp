@@ -49,3 +49,5 @@ const SDL_Color Util::GREEN{ 0, 255, 0, 255 };
 const SDL_Color Util::RED{ 255, 0, 0, 255 };
 const SDL_Color Util::WHITE{ 255, 255, 255, 255 };
 const SDL_Color Util::ORANGE{ 180, 90, 20, 255 };
+
+const int Util::MAX_PARTICLES{ 1000 };

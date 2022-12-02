@@ -21,7 +21,7 @@ public:
 	const float grav{ 0.09f };
 
 	// Default constructor
-	Player(Message& message, SDL_Renderer** renderer, ParticleManager &part, Particle* particles, Sound& sound);
+	Player(Message& message, SDL_Renderer** renderer, ParticleManager &part, Sound& sound);
 	~Player();
 
 	void reset();
@@ -130,7 +130,6 @@ private:
 	Message& mMsg;
 	SDL_Renderer** mRenderer;
 	ParticleManager& mPart;
-	Particle* mParticles;
 	Sound& mSound;
 	LTexture mCopterTexture;
 	SDL_Rect mCopterRects[5];

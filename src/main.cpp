@@ -48,12 +48,10 @@ int main(int, char**)
 	int previousHighScore{ -1 };
 	setup(msg, window, &renderer, previousHighScore);
 	Background background(msg, window, &renderer);
-	ParticleManager part;
-	Particle particles[1000]; // TODO: This conflicts somewhere else in the code, extract to Util
-	part.init(particles);
-	part.load(&renderer); 
+	ParticleManager part(msg, &renderer, Util::MAX_PARTICLES);
+
 	Sound sound{ msg };
-	EnemyManager enemyManager{ msg, window, &renderer, part, particles, sound };
+	EnemyManager enemyManager{ msg, window, &renderer, part, sound };
 	int gameScene{ 0 };
 	//int highscore{ -1 };
 	int score{ 0 };
@@ -70,7 +68,7 @@ int main(int, char**)
 	bool quit = false;
 
 	// Create Player 1
-	Player p1{ msg, &renderer, part, particles, sound };
+	Player p1{ msg, &renderer, part, sound };
 	//p1.init();
 
 	// Timer
@@ -124,8 +122,10 @@ int main(int, char**)
 		{
 			if (gameScene)
 			{
+				// TODO: Mess with this later
+				/*
 				// particle test for particles
-				for (int i = 0; i < part.mMax; i++)
+				for (int i = 0; i < part.MAX_PARTICLES; i++)
 				{
 					if (particles[i].mAlive)
 					{
@@ -143,17 +143,17 @@ int main(int, char**)
 							}
 						}
 					}
-				}
+				}*/
 
 				// Update Players
 				p1.update(mx, my);
 
 				// Particle collision with Enemies
-				for (int i = 0; i < 1000; i++) // TODO: change 1000 to constant from Util
+				for (int i = 0; i < part.getParticles().size(); i++)
 				{
-					if (particles[i].mAlive)
+					if (part.getParticles()[i].mAlive)
 					{
-						if (particles[i].mType == 4)
+						if (part.getParticles()[i].mType == 4)
 						{
 							// Enemy check
 							for (int j = 0; j < enemyManager.ENEMY_MAX; j++)
@@ -161,9 +161,9 @@ int main(int, char**)
 								if (enemyManager.getEnemies()[j].alive)
 								{
 									// ON-HIT Collision Check
-									if (Util::checkCollision(particles[i].mX,
-										particles[i].mY, particles[i].mW,
-										particles[i].mH, enemyManager.getEnemies()[j].x, enemyManager.getEnemies()[j].y,
+									if (Util::checkCollision(part.getParticles()[i].mX,
+										part.getParticles()[i].mY, part.getParticles()[i].mW,
+										part.getParticles()[i].mH, enemyManager.getEnemies()[j].x, enemyManager.getEnemies()[j].y,
 										enemyManager.getEnemies()[j].w, enemyManager.getEnemies()[j].h))
 									{
 										// Flash enemy
@@ -173,12 +173,12 @@ int main(int, char**)
 										enemyManager.getEnemies()[j].health -= 25;
 
 										// remove particle
-										part.Remove(particles, i);
+										part.Remove(i);
 
 										// spawn explosion
-										part.SpawnExplosion(particles,
-											particles[i].mX + particles[i].mW / 2,
-											particles[i].mY + particles[i].mH / 2,
+										part.SpawnExplosion(
+											part.getParticles()[i].mX + part.getParticles()[i].mW / 2,
+											part.getParticles()[i].mY + part.getParticles()[i].mH / 2,
 											{ 200, 200, 200 });
 
 										// Play SFX
@@ -210,10 +210,10 @@ int main(int, char**)
 
 		// Update Particles
 		//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
-		ParticleManager::ParticleUpdate(part, particles, 0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
+		ParticleManager::ParticleUpdate(part, 0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
 		//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
-		part.updateStarParticles(particles, 0, 0, window.getWidth(), window.getHeight());
-		part.updateBulletParticles(particles, 0, 0, window.getWidth(), window.getHeight());
+		part.updateStarParticles(0, 0, window.getWidth(), window.getHeight());
+		part.updateBulletParticles(0, 0, window.getWidth(), window.getHeight());
 
 		// Clear render screen
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -222,7 +222,7 @@ int main(int, char**)
 		background.renderBackgrounds();
 
 		// Render particles
-		part.Render(renderer, particles, 0, 0);
+		part.Render(0, 0);
 
 		// Render floor
 		SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
@@ -410,7 +410,6 @@ int main(int, char**)
 	}
 
 	// Free resources
-	part.free();
 	freeSDL(window);
 
 	return 0;
