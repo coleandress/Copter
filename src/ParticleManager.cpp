@@ -77,45 +77,6 @@ ParticleManager::~ParticleManager()
 	mGParticles.free();
 }
 
-/*
-void ParticleManager::init(Particle particle[]) {
-	mCount = 0;
-	for (int i = 0; i < mParticles.size(); i++) {
-		particle[i].mX 				= 0;
-		particle[i].mY 				= 0;
-		particle[i].mW 				= 4;
-		particle[i].mH 				= 4;
-		particle[i].mAlpha 			= 255;
-		particle[i].mTime 			= 0;
-		particle[i].mTimeri 			= 0;
-		particle[i].mAlphaspeed 		= 0;
-		particle[i].mDeathTimer 		= 100;
-		particle[i].mDeathTimerSpeed = 1;
-		particle[i].mSpeed 			= 0.00;
-		particle[i].mVX 				= 0.00;
-		particle[i].mVY 				= 0.00;
-		particle[i].mSpeed 			= 0.00;
-		particle[i].mAngle 			= 0.00;
-		particle[i].mAngleSpe 		= 0;
-		particle[i].mAngleDir 		= 0;
-		particle[i].mOnScreen 		= false;
-		particle[i].mCollide 		= false;
-		particle[i].mDecay 			= false;
-		particle[i].mDecaySpeed 		= 0.0;
-		particle[i].mAlive 			= false;
-		particle[i].mSizeDeath 		= false;
-		particle[i].mDeathSpe 		= 0;
-		particle[i].mTrail 			= false;
-		particle[i].mTrailRate 		= 0;
-		particle[i].side 			= "";
-		particle[i].mType 			= 0;
-		particle[i].mDamage 			= 0;
-		particle[i].mColor 			= { 255, 255, 255, 255 };
-		particle[i].mGoTowardsTarget 	= false;
-		particle[i].mPlaySFXBeforeMoving 	= false;
-	}
-}*/
-
 void ParticleManager::Remove(int i) 
 {
 	mParticles[i].mAlive = false;

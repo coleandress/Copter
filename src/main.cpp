@@ -123,14 +123,14 @@ int main(int, char**)
 			if (gameScene)
 			{
 				// TODO: Mess with this later
-				/*
+				
 				// particle test for particles
-				for (int i = 0; i < part.MAX_PARTICLES; i++)
+				for (int i = 0; i < part.getParticles().size(); i++)
 				{
-					if (particles[i].mAlive)
+					if (part.getParticles()[i].mAlive)
 					{
 						// Star particles
-						if (particles[i].mType == 4)
+						if (part.getParticles()[i].mType == 4)
 						{
 							// pong particle effects
 							fireTimer += 60;
@@ -139,11 +139,11 @@ int main(int, char**)
 								fireTimer = 0;
 								// spawn explosion
 								// This is a neat effect, but it makes firing rapidly not function - CA 2022-11-14
-								//part.SpawnExplosion(particles, particles[i].mX+particles[i].mW/2, particles[i].mY+particles[i].mH/2, {244,144,20});
+								//part.SpawnExplosion(part.getParticles()[i].mX+part.getParticles()[i].mW/2, part.getParticles()[i].mY+part.getParticles()[i].mH/2, {244,144,20});
 							}
 						}
 					}
-				}*/
+				}
 
 				// Update Players
 				p1.update(mx, my);
@@ -189,76 +189,73 @@ int main(int, char**)
 						}
 					}
 				}
+				enemyManager.updateEnemies(score);
 
-				// If in Game playing scene
-				if (gameScene == 1)
+				background.moveBackgrounds();
+
+				// Update Particles
+				//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
+				ParticleManager::ParticleUpdate(part, 0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
+				//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
+				part.updateStarParticles(0, 0, window.getWidth(), window.getHeight());
+				part.updateBulletParticles(0, 0, window.getWidth(), window.getHeight());
+
+				// Clear render screen
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+				SDL_RenderClear(renderer);
+
+				background.renderBackgrounds();
+
+				// Render particles
+				part.Render(0, 0);
+
+				// Render floor
+				SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
+				SDL_RenderFillRect(renderer, &background.getFloorRect());
+
+				// Render floor
+				SDL_Rect playerPower =
 				{
-					// If player died
-					if (!p1.alive)
-					{
-						// Show losing screen
-						gameScene = 2;
-					}
+					(int)p1.getX() + (int)p1.getWidth(),
+					(int)p1.getY() + (int)p1.getHeight() / 2 - 1,
+					(int)p1.xPower * 6, 2
+				};
+
+				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+				SDL_RenderFillRect(renderer, &playerPower);
+
+				////// Render game objects //////
+
+				// Render Player 1
+				if (p1.alive)
+				{
+					p1.getTexture().setAlpha(p1.alpha);
+					p1.getTexture().render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &p1.getRects()[p1.getPlayerFrame()], p1.angle);
+					p1.render(renderer);
 				}
+
+				enemyManager.renderEnemies();
+
+				if (!p1.alive)
+					gameScene = 2;
 			}	// end gameScene 1
 
-			enemyManager.updateEnemies(score);
-
-			// end !paused - former
-
-			background.moveBackgrounds();
-
-			// Update Particles
-			//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
-			ParticleManager::ParticleUpdate(part, 0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
-			//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
-			part.updateStarParticles(0, 0, window.getWidth(), window.getHeight());
-			part.updateBulletParticles(0, 0, window.getWidth(), window.getHeight());
-
-			// Clear render screen
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-			SDL_RenderClear(renderer);
-
-			background.renderBackgrounds();
-
-			// Render particles
-			part.Render(0, 0);
-
-			// Render floor
-			SDL_SetRenderDrawColor(renderer, 70, 70, 70, 255);
-			SDL_RenderFillRect(renderer, &background.getFloorRect());
-
-			// Render floor
-			SDL_Rect playerPower =
-			{
-				(int)p1.getX() + (int)p1.getWidth(),
-				(int)p1.getY() + (int)p1.getHeight() / 2 - 1,
-				(int)p1.xPower * 6, 2
-			};
-
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			SDL_RenderFillRect(renderer, &playerPower);
-
-			////// Render game objects //////
-
-			// Render Player 1
-			if (p1.alive)
-			{
-				p1.getTexture().setAlpha(p1.alpha);
-				p1.getTexture().render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &p1.getRects()[p1.getPlayerFrame()], p1.angle);
-				p1.render(renderer);
-			}
-
-			enemyManager.renderEnemies();
 
 			////// Render Text //////
-
 			////// Game Scenes /////
-
 			std::stringstream tempss;
 			// Before game start scene
 			if (gameScene == 0)
 			{
+				background.moveBackgrounds();
+				background.renderBackgrounds();
+
+				// TODO: duplicate code that needs to be extracted
+				p1.getTexture().setAlpha(p1.alpha);
+				p1.getTexture().render(renderer, (int)p1.getX(), (int)p1.getY(), (int)p1.getWidth(), (int)p1.getHeight(), &p1.getRects()[p1.getPlayerFrame()], p1.angle);
+				p1.render(renderer);
+
+
 				// Render text: To start game
 				tempss.str(std::string());
 				tempss << "Press Space to Start.";

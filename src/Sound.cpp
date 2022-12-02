@@ -11,6 +11,11 @@ Sound::Sound(Message& message)
 	Util::loadSoundFromFile(mMsg, &mSounds[PONG_SCORE], "resource/sounds/pong-score.wav");
 	Util::loadSoundFromFile(mMsg, &mSounds[PLAYER_HURT], "resource/sounds/player-hurt.wav");
 	Util::loadSoundFromFile(mMsg, &mSounds[SHOOT], "resource/sounds/player-shoot.wav");
+
+#if 1
+	Mix_VolumeMusic(0);
+	Mix_Volume(-1, 0);
+#endif
 }
 
 Sound::~Sound()
