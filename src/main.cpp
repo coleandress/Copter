@@ -195,10 +195,10 @@ int main(int, char**)
 
 				// Update Particles
 				//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
-				ParticleManager::ParticleUpdate(part, 0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
+				part.updateParticles(0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
 				//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
-				part.updateStarParticles(0, 0, window.getWidth(), window.getHeight());
-				part.updateBulletParticles(0, 0, window.getWidth(), window.getHeight());
+				//part.updateStarParticles(0, 0, window.getWidth(), window.getHeight());
+				//part.updateBulletParticles(0, 0, window.getWidth(), window.getHeight());
 
 				// Clear render screen
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

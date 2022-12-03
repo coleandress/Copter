@@ -141,7 +141,7 @@ public:	// Star
 	std::vector<Particle>& getParticles();
 
 
-	static void ParticleUpdate(ParticleManager& part, int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
+	void updateParticles(int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
 		float camx, float camy, LWindow& mWindow, Sound& sound);
 
 private:
