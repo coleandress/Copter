@@ -651,7 +651,8 @@ void ParticleManager::SpawnFireTrail(float x, float y, SDL_Color explosionColor)
 }
 
 void ParticleManager::updateParticles(int /*mapX*/, int /*mapY*/, int /*mapW*/, int /*mapH*/,
-	float camx, float camy, LWindow& mWindow, Sound& sound) {
+	float camx, float camy, LWindow& mWindow, Sound& sound) 
+{
 	for (int i = 0; i < mParticles.size(); i++) {
 		if (mParticles[i].mAlive)
 		{

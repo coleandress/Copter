@@ -19,3 +19,8 @@ void BulletSpawner::shoot(std::string tag, int type, float spawnX, float spawnY,
 		trailMaxSize, timerBeforeMoving, goTowardsTarget, targetX, targetY,
 		playSFXBeforeMoving, bounces, grav);
 }
+
+void BulletSpawner::spawnExplosion(float x, float y, SDL_Color explosionColor)
+{
+	mParticleManager.SpawnExplosion(x, y, explosionColor);
+}

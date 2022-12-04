@@ -124,6 +124,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CollisionChecker.cpp" />
     <ClCompile Include="src\BulletSpawner.cpp" />
     <ClCompile Include="src\EnemyManager.cpp" />
     <ClCompile Include="src\Background.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="src\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CollisionChecker.h" />
     <ClInclude Include="src\BulletSpawner.h" />
     <ClInclude Include="src\EnemyManager.h" />
     <ClInclude Include="src\Background.h" />

@@ -4,9 +4,9 @@
  *  Created on: May 8, 2017
  *      Author: Carl
  */
-
+#pragma once
 #include <SDL2/SDL_mixer.h>
-#include "ParticleManager.h"
+#include "BulletSpawner.h"
 #include "Sound.h"
 #include "Message.h"
 #include "Util.h"
@@ -21,7 +21,7 @@ public:
 	const float grav{ 0.09f };
 
 	// Default constructor
-	Player(Message& message, SDL_Renderer** renderer, ParticleManager &part, Sound& sound);
+	Player(Message& message, SDL_Renderer** renderer, BulletSpawner &gun, Sound& sound);
 	~Player();
 
 	void reset();
@@ -129,7 +129,7 @@ private:
 	float health;
 	Message& mMsg;
 	SDL_Renderer** mRenderer;
-	ParticleManager& mPart;
+	BulletSpawner& mGun;
 	Sound& mSound;
 	LTexture mCopterTexture;
 	SDL_Rect mCopterRects[5];

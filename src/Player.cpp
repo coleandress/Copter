@@ -9,10 +9,10 @@
 #include "Player.h"
 
 // Default constructor
-Player::Player(Message& message, SDL_Renderer** renderer, ParticleManager &part, Sound& sound)
+Player::Player(Message& message, SDL_Renderer** renderer, BulletSpawner& gun, Sound& sound)
 	: mMsg{ message },
 	  mRenderer{ renderer },
-	  mPart{ part },
+	  mGun{ gun },
 	  mSound{ sound }
 {
 	setPosition(64, 360/2-112/2);
@@ -270,7 +270,9 @@ void Player::update(int& mx, int& my)
 			mSound.playSound(PONG_SCORE);
 
 			// Spawn explosion
-			mPart.SpawnExplosion(
+			// TODO: This isn't spawning an explosion in the correct place
+			// in middle of screen when should be on helicopter CA 2022-12-03
+			mGun.spawnExplosion(
 					(float)(this->x + this->w) / 2,
 					(float)(this->y + this->h) / 2, { 200,
 							200, 200 });
@@ -374,7 +376,7 @@ void Player::update(int& mx, int& my)
 		float newAngle = atan2(my - barrelY, mx - barrelX);
 		newAngle = newAngle * 180 / (float)M_PI;
 
-		mPart.spawnParticleAngle("slow", 4, barrelX, barrelY,
+		mGun.shoot("slow", 4, barrelX, barrelY,
 			particleW, particleH, newAngle, 11, 0.0f,
 			{ 200, 200, 100 }, 1, 0, 0, 255, 0, 60, 0, false, 0.11f,
 			false, 0.11f, false, 0.0f, Util::WHITE, 0.0f, 0.0f, 0.0f, false,
@@ -386,43 +388,6 @@ void Player::update(int& mx, int& my)
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////// Manual Updates ////////////////////////////////////////////
 
-	// Particle collision with Player
-	if (!flash)
-	{
-		for (int i = 0; i < mPart.getParticles().size(); i++)
-		{
-			if (mPart.getParticles()[i].mAlive)
-			{
-				if (mPart.getParticles()[i].mType == 3)
-				{
-					// Player check
-					if (Util::checkCollision(mPart.getParticles()[i].mX, mPart.getParticles()[i].mY,
-						mPart.getParticles()[i].mW, mPart.getParticles()[i].mH, getX(),
-						getY(), getWidth(), getHeight()))
-					{
-
-						// Hurt player
-						Hurt(10);
-
-						// Flash player
-						flash = true;
-
-						// remove particle
-						mPart.Remove(i);
-
-						// spawn explosion
-						mPart.SpawnExplosion(
-							mPart.getParticles()[i].mX + mPart.getParticles()[i].mW / 2,
-							mPart.getParticles()[i].mY + mPart.getParticles()[i].mH / 2, { 200,
-									200, 200 });
-
-						// play sound effect
-						mSound.playSound(PONG_SCORE);
-					}
-				}
-			}
-		}
-	}
 }
 
 // Draw Player

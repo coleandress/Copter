@@ -26,6 +26,11 @@ public:
 		bool playSFXBeforeMoving, int bounces,
 		float grav);
 
+	// TODO: This should probably be somewhere else or this class should be called
+	// ParticleBridge
+
+	void spawnExplosion(float x, float y, SDL_Color explosionColor);
+
 private:
 	ParticleManager& mParticleManager;
 };

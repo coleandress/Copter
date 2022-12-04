@@ -21,6 +21,7 @@
 #include "Background.h"
 #include "EnemyManager.h"
 #include "BulletSpawner.h"
+#include "CollisionChecker.h"
 
 void setup(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore);
 void initSDL(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer);
@@ -70,8 +71,10 @@ int main(int, char**)
 	bool quit = false;
 
 	// Create Player 1
-	Player p1{ msg, &renderer, part, sound };
+	Player p1{ msg, &renderer, gun, sound };
 	//p1.init();
+
+	CollisionChecker collisionChecker{ part, p1, enemyManager, sound };
 
 	// Timer
 	Timer fps;
@@ -150,48 +153,10 @@ int main(int, char**)
 				// Update Players
 				p1.update(mx, my);
 
-				// Particle collision with Enemies
-				for (int i = 0; i < part.getParticles().size(); i++)
-				{
-					if (part.getParticles()[i].mAlive)
-					{
-						if (part.getParticles()[i].mType == 4)
-						{
-							// Enemy check
-							for (int j = 0; j < enemyManager.ENEMY_MAX; j++)
-							{
-								if (enemyManager.getEnemies()[j].alive)
-								{
-									// ON-HIT Collision Check
-									if (Util::checkCollision(part.getParticles()[i].mX,
-										part.getParticles()[i].mY, part.getParticles()[i].mW,
-										part.getParticles()[i].mH, enemyManager.getEnemies()[j].x, enemyManager.getEnemies()[j].y,
-										enemyManager.getEnemies()[j].w, enemyManager.getEnemies()[j].h))
-									{
-										// Flash enemy
-										enemyManager.getEnemies()[j].flash = true;
-
-										// Remove enemy
-										enemyManager.getEnemies()[j].health -= 25;
-
-										// remove particle
-										part.Remove(i);
-
-										// spawn explosion
-										part.SpawnExplosion(
-											part.getParticles()[i].mX + part.getParticles()[i].mW / 2,
-											part.getParticles()[i].mY + part.getParticles()[i].mH / 2,
-											{ 200, 200, 200 });
-
-										// Play SFX
-										sound.playSound(PONG_SCORE);
-									}
-								}
-							}
-						}
-					}
-				}
+				
 				enemyManager.updateEnemies(score);
+
+				collisionChecker.update();
 
 				background.moveBackgrounds();
 
