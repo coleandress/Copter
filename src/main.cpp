@@ -20,6 +20,7 @@
 #include "Message.h"
 #include "Background.h"
 #include "EnemyManager.h"
+#include "BulletSpawner.h"
 
 void setup(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer, int& previousHighScore);
 void initSDL(Message& msg, LWindow& mWindow, SDL_Renderer** gRenderer);
@@ -49,9 +50,10 @@ int main(int, char**)
 	setup(msg, window, &renderer, previousHighScore);
 	Background background(msg, window, &renderer);
 	ParticleManager part(msg, &renderer, Util::MAX_PARTICLES);
+	BulletSpawner gun{ part };
 
 	Sound sound{ msg };
-	EnemyManager enemyManager{ msg, window, &renderer, part, sound };
+	EnemyManager enemyManager{ msg, window, &renderer, gun, sound };
 	int gameScene{ 0 };
 	//int highscore{ -1 };
 	int score{ 0 };

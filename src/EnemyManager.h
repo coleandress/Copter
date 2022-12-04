@@ -1,7 +1,7 @@
 #pragma once
 #include "LWindow.h"
 #include "Message.h"
-#include "ParticleManager.h"
+#include "BulletSpawner.h"
 #include "Util.h"
 
 struct Enemy
@@ -26,7 +26,7 @@ struct Enemy
 class EnemyManager
 {
 public:
-	EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer, ParticleManager& part, Sound& sound);
+	EnemyManager(Message& msg, LWindow& window, SDL_Renderer** renderer, BulletSpawner& gun, Sound& sound);
 	~EnemyManager();
 	void updateEnemies(int& score);
 	void spawnEnemies();
@@ -46,7 +46,7 @@ private:
 	Message& mMsg;
 	LWindow& mWindow;
 	SDL_Renderer** mRenderer;
-	ParticleManager& mPart;
+	BulletSpawner& mGun;
 	Sound& mSound;
 };
 
