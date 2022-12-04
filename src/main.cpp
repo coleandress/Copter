@@ -48,33 +48,24 @@ int main(int, char**)
 	SDL_Renderer* renderer;
 	Message msg{};
 	int previousHighScore{ -1 };
+
+	msg.log("In main(), calling: setup ...");
 	setup(msg, window, &renderer, previousHighScore);
+
 	Background background(msg, window, &renderer);
 	ParticleManager part(msg, &renderer, Util::MAX_PARTICLES);
 	BulletSpawner gun{ part };
-
 	Sound sound{ msg };
 	EnemyManager enemyManager{ msg, window, &renderer, gun, sound };
+	Player p1{ msg, &renderer, gun, sound };
+	CollisionChecker collisionChecker{ part, p1, enemyManager, sound };
+
 	int gameScene{ 0 };
-	//int highscore{ -1 };
 	int score{ 0 };
 	Font font{ msg };
-
-	msg.log("In main(), calling: setup ...");
-
 	bool paused = false;
-
-	// Create pointer for events
 	SDL_Event events;
-
-	// Game loop
 	bool quit = false;
-
-	// Create Player 1
-	Player p1{ msg, &renderer, gun, sound };
-	//p1.init();
-
-	CollisionChecker collisionChecker{ part, p1, enemyManager, sound };
 
 	// Timer
 	Timer fps;
@@ -88,11 +79,6 @@ int main(int, char**)
 	// game booleans
 	float fireTimer = 0;
 	float fireRate = 15;
-
-	// Player Variables
-	//const float playerFrameRate = 15;
-	//float playerFrameTimer = 0;
-	//int playerFrame = 0;
 
 	sound.playMusic();
 
@@ -108,6 +94,7 @@ int main(int, char**)
 		SDL_GetMouseState(&mx, &my);
 
 		// Handle Events
+		// TODO: Make an input class - CA 2022-12-03
 		while (SDL_PollEvent(&events)) {
 
 			// Handle window quit events
@@ -128,7 +115,6 @@ int main(int, char**)
 			if (gameScene)
 			{
 				// TODO: Mess with this later
-				
 				// particle test for particles
 				for (int i = 0; i < part.getParticles().size(); i++)
 				{
@@ -150,22 +136,11 @@ int main(int, char**)
 					}
 				}
 
-				// Update Players
 				p1.update(mx, my);
-
-				
 				enemyManager.updateEnemies(score);
-
 				collisionChecker.update();
-
 				background.moveBackgrounds();
-
-				// Update Particles
-				//ParticleUpdate(part, particles, 0, 0, mWidth, mHeight, 0, 0);
 				part.updateParticles(0, 0, window.getWidth(), window.getHeight(), 0, 0, window, sound);
-				//part.Update(particles, 0, 0, mWidth, mHeight, 0, 0);
-				//part.updateStarParticles(0, 0, window.getWidth(), window.getHeight());
-				//part.updateBulletParticles(0, 0, window.getWidth(), window.getHeight());
 
 				// Clear render screen
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
