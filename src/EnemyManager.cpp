@@ -203,9 +203,12 @@ void EnemyManager::renderEnemies()
 				mTankTexture.setAlpha(mEnemies[i].alpha);
 				mTankTexture.render(*mRenderer, (int)mEnemies[i].x - (int)camx, (int)mEnemies[i].y - (int)camy, (int)mEnemies[i].w, (int)mEnemies[i].h, &mTankRects[mEnemies[i].type]);
 			}
-			/*SDL_Rect playerPower = {enemy[i].x-camx, enemy[i].y-camy,  enemy[i].w, enemy[i].h};
-			SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
-			SDL_RenderDrawRect(gRenderer, &playerPower);*/
+			
+			// Debug rect
+			/*SDL_Rect playerPower = {mEnemies[i].x - camx, mEnemies[i].y - camy,  mEnemies[i].w, mEnemies[i].h};
+			SDL_SetRenderDrawColor(*mRenderer, 255, 255, 255, 255);
+			SDL_RenderDrawRect(*mRenderer, &playerPower);
+			*/
 		}
 	}
 }
